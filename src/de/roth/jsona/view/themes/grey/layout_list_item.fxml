@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <children>
+    <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <left>
+        <FlowPane alignment="CENTER" orientation="VERTICAL" prefWrapLength="0.0">
+          <children>
+            <Label fx:id="Artist">
+              <font>
+                <Font name="System Bold" size="13.0" />
+              </font>
+            </Label>
+            <Label fx:id="Song">
+              <font>
+                <Font size="11.0" />
+              </font>
+            </Label>
+          </children>
+        </FlowPane>
+      </left>
+      <right>
+        <Label BorderPane.alignment="CENTER">
+          <font>
+            <Font size="10.0" />
+          </font>
+        </Label>
+      </right>
+    </BorderPane>
+  </children>
+</AnchorPane>

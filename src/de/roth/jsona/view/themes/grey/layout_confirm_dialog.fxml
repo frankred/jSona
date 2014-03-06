@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<AnchorPane id="container" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="97.0" prefWidth="360.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <children>
+    <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="0.0">
+      <bottom>
+        <FlowPane alignment="CENTER" columnHalignment="RIGHT" hgap="4.0" orientation="HORIZONTAL" prefHeight="50.0" prefWidth="332.0" rowValignment="TOP">
+          <children>
+            <Button id="okButton" fx:id="okButton" mnemonicParsing="false" text="OK" />
+            <Button fx:id="abortButton" mnemonicParsing="false" text="Abort" />
+          </children>
+        </FlowPane>
+      </bottom>
+      <center>
+        <Label fx:id="confirmMessage" text="" wrapText="true" />
+      </center>
+    </BorderPane>
+  </children>
+</AnchorPane>
