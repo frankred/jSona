@@ -40,7 +40,7 @@
                 <Font size="18.0" />
               </font>
             </Label>
-            <Label fx:id="artistBio" alignment="TOP_LEFT" contentDisplay="LEFT" prefHeight="88.0" prefWidth="543.0" text="Version 0.3 - alpha" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="86.0" />
+            <Label fx:id="artistBio" alignment="TOP_LEFT" contentDisplay="LEFT" prefHeight="88.0" prefWidth="543.0" text="Version 1.0.0" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="86.0" />
             <AnchorPane minHeight="20.0" prefHeight="20.0" prefWidth="543.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="196.0">
               <children>
                 <Pane prefHeight="200.0" prefWidth="200.0" styleClass="root" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
