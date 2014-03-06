@@ -54,11 +54,7 @@ public class MediaPlayerManager {
 		// and remove listener
 		this.mediaPlayer.addMediaPlayerEventListener(new VlcjVolumeBugfixListener());
 
-		try {
-			this.play(new MusicListItem(new File(getClass().getResource("/de/roth/jsona/sound/empty.wav").toURI()), null));
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
+		this.play(new MusicListItem(new File("/de/roth/jsona/sound/empty.wav"), null));
 	}
 
 	/**
