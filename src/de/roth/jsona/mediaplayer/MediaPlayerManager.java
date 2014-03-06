@@ -2,7 +2,6 @@ package de.roth.jsona.mediaplayer;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -19,8 +18,10 @@ import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import com.sun.media.jfxmedia.events.PlayerStateEvent.PlayerState;
 
 import de.roth.jsona.config.Config;
+import de.roth.jsona.config.Global;
 import de.roth.jsona.mediaplayer.job.MediaPlayerManagerPlayer;
 import de.roth.jsona.model.MusicListItem;
+import de.roth.jsona.util.FileUtil;
 
 /**
  * MediaPlayerManager controls the vlcj mediaplayer
@@ -54,7 +55,9 @@ public class MediaPlayerManager {
 		// and remove listener
 		this.mediaPlayer.addMediaPlayerEventListener(new VlcjVolumeBugfixListener());
 
-		this.play(new MusicListItem(new File("/de/roth/jsona/sound/empty.wav"), null));
+		File emptyWav = new File(Global.CACHE_FOLDER + File.separator + "empty.wav");
+		FileUtil.copyFile(getClass().getResource("/de/roth/jsona/sound/empty.wav"), emptyWav);
+		this.play(new MusicListItem(emptyWav, null));
 	}
 
 	/**
