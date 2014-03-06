@@ -16,6 +16,8 @@ I'm proud to present you a screenshot of jSona! =)
 You want **new features**? On the following page you can vote for and submit new feature requests.
 [http://jsona.idea.informer.com](http://jsona.idea.informer.com)
 
+[![Feature requests](http://rssimg.com/signature.png?url=http%3A%2F%2Fjsona.idea.informer.com%2Fproj%2Frss&style=transparent-post)](http://jsona.idea.informer.com)
+
 ##Version
 Current version is 1.0.0 
 
