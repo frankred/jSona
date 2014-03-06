@@ -12,7 +12,6 @@ jSona is a configuration file(JSON), [vlcj](https://github.com/caprica/vlcj) and
 I'm proud to present you a screenshot of jSona! =)
 ![jSona screenshot](https://dl.dropboxusercontent.com/u/3669658/github/jSona/jsona_ui_2.png "You Got Rick Rolled!")
 
-
 ##Version
 Current version is 1.0.0 
 
@@ -61,6 +60,9 @@ Playbackmode of jSona. Choose one of them: {NORMAL, SHUFFLE}. Will be overwritte
 ###RECENTLY_ADDED_UNITL_TIME_IN_DAYS
 How long do you want to show new songs in the "New" tab. If you choose -7 then new songs will be displayed for one week in the "New" tab. This number should always be negative.
 
+###THEME
+Currently there is only one theme available: {"grey"}.
+
 ###KEY_SKIP_TIME
 If you change the duration slider with the help of the arrow keys(left or right) the slider rewind or skips 10 seconds.
 
@@ -80,9 +82,23 @@ Minimum window width.
 
 ###COLORIZE_ITEMS
 If the value is set to **true** the same music items will be displayed with a different smooth background color. If the value is set to **false** then the default JavaFX list background will be used (see screenshot above).
-
+s
 ![jSona screenshot](https://dl.dropboxusercontent.com/u/3669658/github/jSona/jsona_colorized_items.png "You Got Rick Rolled!")
 
+##Download
+* [Version 1.0.0](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.0.zip)
+* [Current version](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.0.zip)
+
+##Installation and Start
+Download the current zip file and extract it. Then put in your correct VLC path into the config.json file and start jSona with the following command.
+```
+java -jar jSona-1.0.0.jar
+```
+jSona uses JavaFX so a current Java virtual machine with JavaFX support should be installed.
+
+##Help / FAQ
+Here is a screenshot of jSona that explains the easy to use user interface.
+![jSona explaining the UI](https://dl.dropboxusercontent.com/u/3669658/github/jSona/jsona_explaining_the_ui.png)
 
 ##Thank you very much!
 This project is based on a set of amazing projects. Thank you to all programmers!
