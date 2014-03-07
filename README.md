@@ -30,9 +30,10 @@ Here is an example of the default configuration file. You have to setup your **V
   "MAX_SEARCH_RESULT_AMOUNT": 512,
   "VOLUME": 100,
   "FOLDERS": [
-    "D:/media/musik",
+    "D:/media/music",
     "C:/share",
-    "C:/downloads/musik"
+    "C:/downloads/music",
+    "\\nas\share\music"
   ],
   "PLAYBACK_MODE": "NORMAL",
   "RECENTLY_ADDED_UNITL_TIME_IN_DAYS": -7,
@@ -58,7 +59,7 @@ Maximum search results of the lucene engine (smaller is faster)
 Default startup volume. Will be overwritten by jSona (always save the recently changed volume).
 
 ###FOLDERS
-Your music folders. Care of JSON-Syntax and correct backslashes (/). See example above...
+Your music folders. Care of JSON-Syntax and correct backslashes (/). jSona also supports the usage of the Uniform Naming Convention and folders in a network (e.g.: "\\\\servername\folder\path"). See example above... 
 
 ###PLAYBACK_MODE
 Playbackmode of jSona. Choose one of them: {NORMAL, SHUFFLE}. Will be overwritten by jSona (always save the recently changed playback mode).
