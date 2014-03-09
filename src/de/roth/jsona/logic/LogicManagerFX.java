@@ -221,12 +221,22 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 	@Override
 	public void taggerStart(int filesAmount) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
-	public void taggerProgress(int j, MusicListItem item) {
-		// TODO Auto-generated method stub
+	public void taggerProgress(int current, int total, MusicListItem item, boolean addedToCache, boolean addedToLucene) {
+		// only log every 'SCANNER_AND_TAGGER_LOGGING_GRANULARITY'-th file,
+		// because logging of many files is very time expensive
+		if (current % Config.getInstance().SCANNER_AND_TAGGER_LOGGING_GRANULARITY == 0 || total == current) {
+			if (addedToCache && addedToLucene) {
+				Logger.get().log(Level.FINE, "+cache +lucene '" + item.getFile().getAbsolutePath() + "'.");
+				return;
+			}
+
+			if (addedToLucene) {
+				Logger.get().log(Level.FINE, "+lucene '" + item.getFile().getAbsolutePath() + "'.");
+			}
+		}
 	}
 
 	/**
@@ -244,7 +254,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 		// All folders tagged?
 		this.folderTaggedAmount++;
 		if (this.folderTaggedAmount == Config.getInstance().FOLDERS.size()) {
-			Logger.get().log(Level.INFO, "All folders have been tagged.");
+			Logger.get().log(Level.INFO, "Indexing and tagging done...");
 			ViewManagerFX.getInstance().getController().addMusicFolder(this, Global.NEW_FOLDER_NAME, Global.NEW_FOLDER_NAME, Config.getInstance().FOLDERS.size(), this.newList);
 			DataManager.getInstance().cleanup();
 		}
@@ -259,13 +269,19 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 		Logger.get().log(Level.INFO, "Folder '" + f.getAbsolutePath() + "' completly scanned.");
 	}
 
+	private int scannerFileCounter = 0;
+
 	@Override
 	public void scannerFileRead(File f) {
-		Logger.get().log(Level.INFO, "File '" + f.getAbsolutePath() + "' found.");
+		if (scannerFileCounter % Config.getInstance().SCANNER_AND_TAGGER_LOGGING_GRANULARITY == 0) {
+			Logger.get().log(Level.FINE, "File '" + f.getAbsolutePath() + "' found.");
+		}
+		++scannerFileCounter;
 	}
 
 	@Override
 	public void scannerFinished(String target, LinkedList<File> allFiles) {
+		Logger.get().log(Level.FINE, "File '" + allFiles.getLast().getAbsolutePath() + "' found.");
 	}
 
 	@Override
