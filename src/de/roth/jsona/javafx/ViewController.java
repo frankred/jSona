@@ -79,8 +79,8 @@ import de.roth.jsona.javafx.util.TabUtil;
 import de.roth.jsona.logic.LogicInterfaceFX;
 import de.roth.jsona.mediaplayer.PlayBackMode;
 import de.roth.jsona.model.MusicListItem;
-import de.roth.jsona.model.PlayList;
 import de.roth.jsona.model.MusicListItem.Status;
+import de.roth.jsona.model.PlayList;
 import de.roth.jsona.util.TimeFormatter;
 import de.umass.lastfm.Track;
 
@@ -840,8 +840,8 @@ public class ViewController implements Initializable, ViewInterface {
 
 		/**
 		 * Constructor for playlist
-		 * 
-		 * 
+		 *
+		 *
 		 * @param atomicId
 		 * @param logic
 		 */
@@ -939,7 +939,7 @@ public class ViewController implements Initializable, ViewInterface {
 		Platform.runLater(new Runnable() {
 			public void run() {
 				searchResultsListView.getItems().clear();
-				searchResultsListView.getItems().add(new MusicListItem(new File(message), null));
+				searchResultsListView.getItems().add(new MusicListItem(new File(message), null, null));
 			}
 		});
 	}
