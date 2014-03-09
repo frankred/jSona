@@ -1,9 +1,9 @@
 {
-  "PATH_TO_VLCJ": "D:/Program Files/VideoLAN/VLC",
+  "PATH_TO_VLCJ": "C:/Program Files/VideoLAN/VLC",
   "MAX_SEARCH_RESULT_AMOUNT": 512,
-  "VOLUME": 69,
+  "VOLUME": 49,
   "FOLDERS": [
-    "D:/media/musik"
+    "C:/media/musik"
   ],
   "PLAYBACK_MODE": "NORMAL",
   "RECENTLY_ADDED_UNITL_TIME_IN_DAYS": -7,
@@ -13,5 +13,23 @@
   "TITLE": "jSona - open source project by Frank Roth",
   "MIN_HEIGHT": 600,
   "MIN_WIDTH": 720,
-  "COLORIZE_ITEMS": false
+  "COLORIZE_ITEMS": false,
+  "FILEPATH_BASED_MUSIC_INFORMATIONS": [
+    {
+      "rule": "ROOT_SUBFOLDER_LEVEL_RULE",
+      "params": {
+        "PATTERN": "%ARTIST%",
+        "REPLACE_UNDERSCORES_WITH_SPACES": true,
+        "FOLDER_LEVEL": 1.0
+      }
+    },
+    {
+      "rule": "FILENAME_RULE",
+      "params": {
+        "PATTERN": "%ARTIST%-%TITLE%",
+        "IGNORE_FILE_ENDING": true,
+        "REPLACE_UNDERSCORES_WITH_SPACES": true
+      }
+    }
+  ]
 }
