@@ -55,6 +55,8 @@ import de.roth.jsona.mediaplayer.PlayBackMode;
 import de.roth.jsona.model.MusicListItem;
 import de.roth.jsona.model.MusicListItem.Status;
 import de.roth.jsona.model.PlayList;
+import de.roth.jsona.tag.detection.DetectorRulesManager;
+import de.roth.jsona.tag.detection.FieldResult;
 import de.roth.jsona.util.Logger;
 import de.roth.jsona.util.SerializeManager;
 import de.roth.jsona.util.TimeFormatter;
@@ -62,9 +64,9 @@ import de.roth.jsona.util.TimeFormatter;
 /**
  * Core class of the jSona, where everything comes together. This class
  * implements the main logic of the application
- * 
+ *
  * @author Frank Roth
- * 
+ *
  */
 public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListener, FileScannerListener, FileTaggerListener, WatchDirListener, ExternalInformationsListener {
 
@@ -428,7 +430,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 			return;
 		}
 
-		MusicListItem item = DataManager.getInstance().add(f);
+		MusicListItem item = DataManager.getInstance().add(f, pathToWatch.toFile());
 		DataManager.getInstance().commit();
 
 		// Add to folder tab
@@ -495,8 +497,45 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 	}
 
 	private void loadExternalInformation(MusicListItem item) {
+		// if no id3 tagged on this file!
+		if (item.getArtist() == null || item.getTitle() == null) {
+			ArrayList<FieldResult> results = DetectorRulesManager.getInstance().detect(item.getRootFolder(), item.getFile());
+
+			// if there are any solutions for filepath tagging
+			if (results.size() > 0) {
+				StringBuffer buffer = new StringBuffer();
+				for (FieldResult f : results) {
+					switch (f.getField()) {
+					case ARTIST:
+						item.setArtist(f.getResult().trim());
+						break;
+					case TITLE:
+						item.setTitle(f.getResult().trim());
+						break;
+					case ALBUM:
+						item.setAlbum(f.getResult().trim());
+						break;
+					case TRACK_NO:
+						item.setTrackNo(f.getResult().trim());
+						break;
+					default:
+						break;
+					}
+					buffer.append(f.toString());
+				}
+				Logger.get().log(Level.INFO, "Filepath detection results '" + buffer.toString() + "'.");
+				DataManager.getInstance().updateCache(item);
+				DataManager.getInstance().commit();
+			}
+		}
+
+		// Load artist informations from artist cache
 		JSonaArtist artist = this.artistsCache.get(item.getArtist());
+
+		// Show informations immediately
 		ViewManagerFX.getInstance().getController().showInformations(null, item);
+
+		// Load external informations for this artist
 		if (artist == null) {
 			// load external informations
 			new Thread(new ExternalInformationsThread(httpClient, item, ImageType.ARTIST, this, artistsCache)).start();

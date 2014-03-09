@@ -12,9 +12,9 @@ import de.roth.jsona.model.MusicListItem;
 /**
  * Util class to create music items for each new file and tag files. Also create
  * lucene indexes with the help of the DataManager.
- * 
+ *
  * @author Frank Roth
- * 
+ *
  */
 public class FileTagger {
 
@@ -41,7 +41,7 @@ public class FileTagger {
 			if (item == null) {
 				somethingChanged = true;
 				// create item
-				item = DataManager.getInstance().add(f);
+				item = DataManager.getInstance().add(f, rootFolder);
 				item.setTmp_keep_in_cache(true);
 				recentlyAdded.add(item);
 				
@@ -61,11 +61,13 @@ public class FileTagger {
 					DataManager.getInstance().delete(item);
 
 					// create item
-					item = DataManager.getInstance().add(f);
+
+					item = DataManager.getInstance().add(f, rootFolder);
 
 					// File changed so add to cache and lucene
 					listener.taggerProgress(progress, total, item, true, true);
 				} else {
+
 					// add to lucene only
 					DataManager.getInstance().addLuceneOnly(item);
 					
@@ -88,6 +90,7 @@ public class FileTagger {
 
 			// Add
 			items.add(item);
+			listener.taggerProgress(progress, item);
 			++progress;
 		}
 

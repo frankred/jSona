@@ -13,13 +13,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import de.roth.jsona.mediaplayer.PlayBackMode;
+import de.roth.jsona.tag.detection.DetectorRule;
+import de.roth.jsona.tag.detection.DetectorRuleConfig;
+import de.roth.jsona.tag.detection.FilenameDetectorRule;
 
 /**
  * Singleton that represents the configuration of the application with all its
  * attributes.
- * 
+ *
  * @author Frank Roth
- * 
+ *
  */
 public class Config {
 
@@ -27,7 +30,7 @@ public class Config {
 
 	/**
 	 * Return a configuration instance
-	 * 
+	 *
 	 * @return Config
 	 */
 	public static Config getInstance() {
@@ -51,8 +54,8 @@ public class Config {
 	public int MIN_HEIGHT;
 	public int MIN_WIDTH;
 	public boolean COLORIZE_ITEMS;
+	public ArrayList<DetectorRuleConfig> FILEPATH_BASED_MUSIC_INFORMATIONS;
 	public int SCANNER_AND_TAGGER_LOGGING_GRANULARITY;
-
 	public Config() {
 		// default values
 		this.TITLE = "jSona powered by VLCJ and  JavaFX!";
@@ -71,7 +74,7 @@ public class Config {
 
 	/**
 	 * Load the configuration from the over given file
-	 * 
+	 *
 	 * @param file
 	 *            for the configuration
 	 */
@@ -86,7 +89,7 @@ public class Config {
 
 	/**
 	 * Load the configuration from the over given path
-	 * 
+	 *
 	 * @param file
 	 *            for the configuration
 	 */
@@ -96,7 +99,7 @@ public class Config {
 
 	/**
 	 * Load the configuration from the default values, no file required.
-	 * 
+	 *
 	 * @return
 	 */
 	private static Config fromDefaults() {
@@ -106,7 +109,7 @@ public class Config {
 
 	/**
 	 * Save the configuration to the over given file path.
-	 * 
+	 *
 	 * @param file
 	 */
 	public void toFile(String file) {
@@ -115,7 +118,7 @@ public class Config {
 
 	/**
 	 * Save the configuration to the over given file
-	 * 
+	 *
 	 * @param file
 	 */
 	public void toFile(File file) {
@@ -139,7 +142,7 @@ public class Config {
 
 	/**
 	 * Converts a string array list with file paths in a file array list
-	 * 
+	 *
 	 * @param filepaths
 	 *            - String array with file paths
 	 * @return ArrayList<File> files

@@ -20,9 +20,9 @@ import de.roth.jsona.util.SerializeManager;
 
 /**
  * Singleton class that load the cache and manages all cache and lucene actions.
- * 
+ *
  * @author Frank Roth
- * 
+ *
  */
 public class DataManager {
 
@@ -43,7 +43,7 @@ public class DataManager {
 
 	/**
 	 * Delete a music item from cache and from lucene.
-	 * 
+	 *
 	 * @param item
 	 */
 	public void delete(MusicListItem item) {
@@ -54,7 +54,7 @@ public class DataManager {
 
 	/**
 	 * Index MusicListItem without a submit.
-	 * 
+	 *
 	 * @param item
 	 */
 	public void addLuceneOnly(MusicListItem item) {
@@ -68,13 +68,13 @@ public class DataManager {
 	/**
 	 * Create MusicListItem for the over given file, and add the item to cache
 	 * and index it via lucene.
-	 * 
+	 *
 	 * @param f
 	 * @return
 	 */
-	public MusicListItem add(File f) {
+	public MusicListItem add(File f, File rootFolder) {
 		try {
-			MusicListItem item = new MusicListItem(f, UUID.randomUUID().toString());
+			MusicListItem item = new MusicListItem(f, rootFolder, UUID.randomUUID().toString());
 			item.setCreationDate(Calendar.getInstance().getTime());
 			item.setTmp_keep_in_cache(true);
 			this.add(item);
@@ -128,13 +128,21 @@ public class DataManager {
 	/**
 	 * Perform a cache lookup for the file with the over given file path and
 	 * return the MusicListItem.
-	 * 
+	 *
 	 * @param File
 	 *            f
 	 * @return MusicListItem
 	 */
 	public MusicListItem get(File f) {
 		return cache.get(f.getAbsolutePath());
+	}
+
+	/**
+	 * Update a item in the cache
+	 * @param item
+	 */
+	public void updateCache(MusicListItem item){
+		this.cache.put(item.getFile().getAbsolutePath(), item);
 	}
 
 	/**

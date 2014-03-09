@@ -4,13 +4,19 @@ jSona is a configuration file(JSON), [vlcj](https://github.com/caprica/vlcj) and
 
   - Supports all common media formats that VLC [supports](https://wiki.videolan.org/VLC_Features_Formats/)
   - Load artist informations and images via [last.fm](http://www.lastfm.de/api) and [MusicBrainz](http://musicbrainz.org/)
-  - Include your music folders
+  - Include your music foldersf
   - Create multiple playlists
   - Fulltext search
 
 ##Screenhot
 I'm proud to present you a screenshot of jSona! =)
 ![jSona screenshot](https://dl.dropboxusercontent.com/u/3669658/github/jSona/jsona_ui_2.png "You Got Rick Rolled!")
+
+##New features
+You want **new features**? On the following page you can vote for and submit new feature requests.
+[http://jsona.idea.informer.com](http://jsona.idea.informer.com)
+
+[![Feature requests](http://rssimg.com/signature.png?url=http%3A%2F%2Fjsona.idea.informer.com%2Fproj%2Frss&style=transparent-post)](http://jsona.idea.informer.com)
 
 ##Version
 Current version is 1.0.0 
@@ -24,9 +30,10 @@ Here is an example of the default configuration file. You have to setup your **V
   "MAX_SEARCH_RESULT_AMOUNT": 512,
   "VOLUME": 100,
   "FOLDERS": [
-    "D:/media/musik",
+    "D:/media/music",
     "C:/share",
-    "C:/downloads/musik"
+    "C:/downloads/music",
+    "\\nas\share\music"
   ],
   "PLAYBACK_MODE": "NORMAL",
   "RECENTLY_ADDED_UNITL_TIME_IN_DAYS": -7,
@@ -52,7 +59,7 @@ Maximum search results of the lucene engine (smaller is faster)
 Default startup volume. Will be overwritten by jSona (always save the recently changed volume).
 
 ###FOLDERS
-Your music folders. Care of JSON-Syntax and correct backslashes (/). See example above...
+Your music folders. Care of JSON-Syntax and correct backslashes (/). jSona also supports the usage of the Uniform Naming Convention and folders in a network (e.g.: "\\\\servername\folder\path"). See example above... 
 
 ###PLAYBACK_MODE
 Playbackmode of jSona. Choose one of them: {NORMAL, SHUFFLE}. Will be overwritten by jSona (always save the recently changed playback mode).
