@@ -2,7 +2,6 @@ package de.roth.jsona.database;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -24,7 +23,6 @@ import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
 
 import de.roth.jsona.config.Config;
-import de.roth.jsona.util.Logger;
 
 /**
  * Singleton abstraction class to manage all lucene interactions.
@@ -78,7 +76,6 @@ public class LuceneManager {
 	 * @return Results as ScoreDoc[]
 	 */
 	public ScoreDoc[] search(String searchword) {
-		Logger.get().log(Level.ALL, "Search for '" + QueryParser.escape(searchword) + "'.");
 		String queryWord = QueryParser.escape(searchword.toLowerCase());
 		queryWord = queryWord.replace(" ", "*");
 		Query query = new WildcardQuery(new Term(SEARCH_FIELD, "*" + queryWord + "*"));

@@ -59,7 +59,6 @@ public class DataManager {
 	 */
 	public void addLuceneOnly(MusicListItem item) {
 		try {
-			Logger.get().log(Level.INFO, "Indexing file '" + item.getFile().getAbsolutePath() + "'.");
 			LuceneManager.getInstance().add(DocumentCreator.create(item));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -167,8 +166,6 @@ public class DataManager {
 
 	private void add(MusicListItem item) {
 		try {
-			Logger.get().log(Level.INFO, "+ Add '" + item.getFile().getAbsolutePath() + "'.");
-
 			// tag music file
 			item = MP3Tagger.tag(item);
 
