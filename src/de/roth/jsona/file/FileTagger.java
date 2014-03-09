@@ -90,7 +90,6 @@ public class FileTagger {
 
 			// Add
 			items.add(item);
-			listener.taggerProgress(progress, item);
 			++progress;
 		}
 
