@@ -9,7 +9,7 @@ public interface FileTaggerListener {
 
 	public void taggerStart(int filesAmount);
 
-	public void taggerProgress(int j, MusicListItem item);
+	public void taggerProgress(int current, int total, MusicListItem item, boolean addedToCache, boolean addedToLucene);
 
 	public void taggingFinished(File rootFile, boolean cacheHasChanged, ArrayList<MusicListItem> items, ArrayList<MusicListItem> recentlyAddedItems);
 
