@@ -9,6 +9,7 @@ public class MusicListItem implements Serializable {
 	private static final long serialVersionUID = -3582887378286675733L;
 	private String id;
 	private File file;
+	private File rootFolder;
 	private String duration;
 	private String artist;
 	private String title;
@@ -33,11 +34,12 @@ public class MusicListItem implements Serializable {
 	private boolean tmp_view_insertBeforeMe = false;
 	private boolean tmp_keep_in_cache = false;
 
-	public MusicListItem(File file, String id) {
+	public MusicListItem(File file, File rootFolder, String id) {
 		this.id = id;
 		this.genre = -1;
 		this.lastFileModification = file.lastModified();
 		this.file = file;
+		this.rootFolder = rootFolder;
 		this.duration = new String();
 		this.tmp_status = Status.SET_NONE;
 	}
@@ -226,5 +228,13 @@ public class MusicListItem implements Serializable {
 
 	public void setGenre(int genre) {
 		this.genre = genre;
+	}
+
+	public File getRootFolder() {
+		return rootFolder;
+	}
+
+	public void setRootFolder(File rootFolder) {
+		this.rootFolder = rootFolder;
 	}
 }
