@@ -24,8 +24,6 @@ public class Logger {
 	public static java.util.logging.Logger get() {
 		if (l == null) {
 			l = java.util.logging.Logger.getLogger("jsona");
-			// Set logger output
-			Logger.get().setLevel(Level.ALL);
 			Handler[] handlers = l.getHandlers();
 			for (Handler h : handlers) {
 				l.removeHandler(h);
@@ -33,6 +31,7 @@ public class Logger {
 			l.setUseParentHandlers(false);
 
 			ConsoleHandler handler = new ConsoleHandler();
+			handler.setLevel(Level.FINEST);
 			handler.setFormatter(new SingleLineLogger());
 			l.addHandler(handler);
 		}
