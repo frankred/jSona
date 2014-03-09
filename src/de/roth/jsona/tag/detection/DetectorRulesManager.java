@@ -68,6 +68,10 @@ public class DetectorRulesManager {
 
 		List<DetectorRuleConfig> configs = Config.getInstance().FILEPATH_BASED_MUSIC_INFORMATIONS;
 
+		if(configs == null){
+			return;
+		}
+
 		for (DetectorRuleConfig c : configs) {
 
 			// default booleans
