@@ -51,6 +51,7 @@ public class Config {
 	public int MIN_HEIGHT;
 	public int MIN_WIDTH;
 	public boolean COLORIZE_ITEMS;
+	public int SCANNER_AND_TAGGER_LOGGING_GRANULARITY;
 
 	public Config() {
 		// default values
@@ -65,6 +66,7 @@ public class Config {
 		this.MIN_HEIGHT = 400;
 		this.MIN_WIDTH = 600;
 		this.COLORIZE_ITEMS = true;
+		this.SCANNER_AND_TAGGER_LOGGING_GRANULARITY = 1;
 	}
 
 	/**
