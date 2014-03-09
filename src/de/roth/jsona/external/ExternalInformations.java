@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.ricecode.similarity.JaroWinklerStrategy;
 import net.ricecode.similarity.StringSimilarityService;
@@ -24,6 +23,7 @@ import de.roth.jsona.config.Global;
 import de.roth.jsona.http.HttpClientHelper;
 import de.roth.jsona.http.ImageType;
 import de.roth.jsona.model.MusicListItem;
+import de.roth.jsona.util.Logger;
 import de.umass.lastfm.Artist;
 import de.umass.lastfm.ImageSize;
 import de.umass.lastfm.Track;
@@ -77,7 +77,7 @@ public class ExternalInformations {
 		Artist artist = null;
 		String infoKey = null;
 
-		Logger.getLogger("jsona").log(Level.INFO, "Collection informations for '" + key + "'.");
+		Logger.get().log(Level.INFO, "Collection informations for '" + key + "'.");
 
 		// search via last.fm
 		Collection<Artist> artists;
@@ -85,7 +85,7 @@ public class ExternalInformations {
 			artists = Artist.search(key, Global.LASTFM_API_KEY);
 			artist = getMostSimilarArtist(item.getArtist(), artists);
 		} catch (Exception e) {
-			Logger.getLogger("jsona").log(Level.INFO, "Error during Last.fm-API call for '" + key + "', maybe API out of date or no internet connection.");
+			Logger.get().log(Level.INFO, "Error during Last.fm-API call for '" + key + "', maybe API out of date or no internet connection.");
 		}
 
 		// set info
@@ -116,7 +116,7 @@ public class ExternalInformations {
 
 		// nothing found for this artist
 		if (infoKey == null) {
-			Logger.getLogger("jsona").log(Level.INFO, "No artist found on last.fm and musicbrainz.org for '" + key + "'.");
+			Logger.get().log(Level.INFO, "No artist found on last.fm and musicbrainz.org for '" + key + "'.");
 			return;
 		}
 
@@ -140,10 +140,10 @@ public class ExternalInformations {
 		// download image to json.artists
 		if (url != null && !url.equals("")) {
 			if (HttpClientHelper.downloadFile(url, jsonaArtist.getImageFilesystemPath(), client)) {
-				Logger.getLogger("jsona").log(Level.INFO, "Image downloaded from last.fm for artist '" + jsonaArtist.getArtist().getName() + "' to the file '" + jsonaArtist.getImageFilesystemPath() + "'.");
+				Logger.get().log(Level.INFO, "Image downloaded from last.fm for artist '" + jsonaArtist.getArtist().getName() + "' to the file '" + jsonaArtist.getImageFilesystemPath() + "'.");
 				l.artistInformationsReady(item, jsonaArtist);
 			} else {
-				Logger.getLogger("jsona").log(Level.INFO, "Image downloaded from last.fm for artist '" + jsonaArtist.getArtist().getName() + "' failed.");
+				Logger.get().log(Level.INFO, "Image downloaded from last.fm for artist '" + jsonaArtist.getArtist().getName() + "' failed.");
 			}
 		}
 
