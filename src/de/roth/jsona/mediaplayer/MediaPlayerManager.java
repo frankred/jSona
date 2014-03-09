@@ -25,9 +25,9 @@ import de.roth.jsona.util.FileUtil;
 
 /**
  * MediaPlayerManager controls the vlcj mediaplayer
- * 
+ *
  * @author Frank Roth
- * 
+ *
  */
 public class MediaPlayerManager {
 
@@ -57,12 +57,12 @@ public class MediaPlayerManager {
 
 		File emptyWav = new File(Global.CACHE_FOLDER + File.separator + "empty.wav");
 		FileUtil.copyFile(getClass().getResource("/de/roth/jsona/sound/empty.wav"), emptyWav);
-		this.play(new MusicListItem(emptyWav, null));
+		this.play(new MusicListItem(emptyWav, null, null));
 	}
 
 	/**
 	 * Register media player event listener
-	 * 
+	 *
 	 * @param listener
 	 */
 	public void addActionListener(uk.co.caprica.vlcj.player.MediaPlayerEventListener listener) {
@@ -71,7 +71,7 @@ public class MediaPlayerManager {
 
 	/**
 	 * Remove the media player event listener
-	 * 
+	 *
 	 * @param listener
 	 */
 	public void removeActionListener(uk.co.caprica.vlcj.player.MediaPlayerEventListener listener) {
@@ -80,7 +80,7 @@ public class MediaPlayerManager {
 
 	/**
 	 * Plays a music item in a new thread
-	 * 
+	 *
 	 * @param item
 	 */
 	public void play(MusicListItem item) {
@@ -123,7 +123,7 @@ public class MediaPlayerManager {
 
 	/**
 	 * Set the volume of the media player
-	 * 
+	 *
 	 * @param volume
 	 */
 	public void setVolume(int volume) {
@@ -132,7 +132,7 @@ public class MediaPlayerManager {
 
 	/**
 	 * Set the current play back time of the media player in ms.
-	 * 
+	 *
 	 * @param time
 	 */
 	public void setTime(int time) {
@@ -161,7 +161,7 @@ public class MediaPlayerManager {
 
 	/**
 	 * Get the current item of the media player that is played pause or stopped
-	 * 
+	 *
 	 * @return
 	 */
 	public MusicListItem getItem() {
@@ -175,9 +175,9 @@ public class MediaPlayerManager {
 	/**
 	 * Bugfix media player listener to play the empty.wav file at startup, this
 	 * will workaround the volume bug from the vlc core.
-	 * 
+	 *
 	 * @author Frank Roth
-	 * 
+	 *
 	 */
 	public class VlcjVolumeBugfixListener implements uk.co.caprica.vlcj.player.MediaPlayerEventListener {
 		public VlcjVolumeBugfixListener() {
