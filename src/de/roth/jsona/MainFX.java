@@ -24,6 +24,10 @@ public class MainFX extends Application {
 		// Set default language
 		Locale.setDefault(Locale.ENGLISH);
 
+		// Set log level
+		Logger.get().setLevel(Level.ALL);
+		
+		// Print out the logo
 		Logger.get().log(Level.INFO, "Starting jSona..." + System.lineSeparator() + getLogo());
 
 		// Load configuration
