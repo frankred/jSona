@@ -1,7 +1,7 @@
 {
   "PATH_TO_VLCJ": "D:/Program Files/VideoLAN/VLC",
   "MAX_SEARCH_RESULT_AMOUNT": 512,
-  "VOLUME": 69,
+  "VOLUME": 46,
   "FOLDERS": [
     "D:/media/musik"
   ],
@@ -13,5 +13,6 @@
   "TITLE": "jSona - open source project by Frank Roth",
   "MIN_HEIGHT": 600,
   "MIN_WIDTH": 720,
-  "COLORIZE_ITEMS": false
+  "COLORIZE_ITEMS": false,
+  "SCANNER_AND_TAGGER_LOGGING_GRANULARITY": 128
 }
