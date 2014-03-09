@@ -24,7 +24,9 @@ public class FileTagger {
 
 		listener.taggerStart(files.size());
 
-		int progress = 0;
+		int total = files.size();
+		int progress = 1;
+		
 		boolean somethingChanged = false;
 		File currentParentFolder = files.getFirst().getParentFile();
 		int colorClassCounter = 0;
@@ -42,10 +44,14 @@ public class FileTagger {
 				item = DataManager.getInstance().add(f);
 				item.setTmp_keep_in_cache(true);
 				recentlyAdded.add(item);
+				
+				// File added to cache and lucene
+				listener.taggerProgress(progress, total, item, true, true);
 			}
 
 			// old file -> check modification
 			else {
+				// Found in cache, it's needed again so keep file in cache
 				item.setTmp_keep_in_cache(true);
 
 				// Check for changes
@@ -56,9 +62,15 @@ public class FileTagger {
 
 					// create item
 					item = DataManager.getInstance().add(f);
+
+					// File changed so add to cache and lucene
+					listener.taggerProgress(progress, total, item, true, true);
 				} else {
-					// add du lucene only
+					// add to lucene only
 					DataManager.getInstance().addLuceneOnly(item);
+					
+					// File added to lucene, not to cache
+					listener.taggerProgress(progress, total, item, false, true);
 				}
 
 				// Check if is recently added
@@ -76,7 +88,6 @@ public class FileTagger {
 
 			// Add
 			items.add(item);
-			listener.taggerProgress(progress, item);
 			++progress;
 		}
 
