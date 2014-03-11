@@ -98,7 +98,13 @@ Logging every file in the scanner and tagging process can be very time expensive
 
 ##Download
 * [Version 1.0.0](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.0.zip)
-* [Current version](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.0.zip)
+* [Version 1.0.1](https://dl.dropboxusercontent.com/u/3669658/github/jsona/binary/jSona-1.0.1.zip)
+* [Current version](https://dl.dropboxusercontent.com/u/3669658/github/jsona/binary/jSona-1.0.1.zip)
+
+##Changelog
+###1.0.1
+* Music informations like artist or title can now be detected from the filepath with the help of detector rules in the config.json
+* Logging granularity of file scanner and tagger can now be defined in the config.json
 
 ##Installation and Start
 Download the current zip file and extract it. Then put in your correct VLC path into the config.json file and start jSona with the following command.
