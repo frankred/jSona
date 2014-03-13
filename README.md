@@ -166,7 +166,7 @@ Logging every file in the scanner and tagging process can be very time expensive
 ##Installation and Start
 Download the current zip file and extract it. Then put in your correct VLC path into the config.json file and start jSona with the following command.
 ```
-java -jar jSona-1.0.0.jar
+java -jar jSona-1.0.1.jar
 ```
 jSona uses JavaFX so a current Java virtual machine with JavaFX support should be installed.
 
