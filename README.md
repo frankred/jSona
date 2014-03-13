@@ -91,6 +91,66 @@ If the value is set to **true** the same music items will be displayed with a di
 s
 ![jSona screenshot](https://dl.dropboxusercontent.com/u/3669658/github/jSona/jsona_colorized_items.png "You Got Rick Rolled!")
 
+###FILEPATH_BASED_MUSIC_INFORMATIONS
+There is the possibility to define rules to detect music informations with the help of the file path. Currently there are two kind of rules {"ROOT_SUBFOLDER_LEVEL_RULE", "FILENAME_RULE"}. The "ROOT_SUBFOLDER_LEVEL_RULE" is a rule based on the subfolder level according to the root directory. With the help of the "FILENAME_RULE" you can match everything according to the filename (not file path) of the file. It is possible to ignore file endings and to replace underscores with a space.
+
+The follwing examples should help you with to use these rules.
+
+If you have a folder structure like this and this is your music file name:
+```
+C:\media\music\Rock\ACDC\Highway to Hell\03 - Walk All Over You.mp3'
+```
+
+Your root folder is
+```
+C:\media\music'
+```
+
+With the follwing rules you can match the genre (%GENRE%), the artist (%ARTIST%), the title (%TITLE%), the track number (%TRACK_NO%) and the title (%TITLE%):
+```
+{
+
+...
+
+"FILEPATH_BASED_MUSIC_INFORMATIONS": [
+    {
+      "rule": "ROOT_SUBFOLDER_LEVEL_RULE",
+      "params": {
+        "PATTERN": "%GENRE%",
+        "REPLACE_UNDERSCORES_WITH_SPACES": false,
+        "FOLDER_LEVEL": 1
+      }
+    },
+    {
+      "rule": "ROOT_SUBFOLDER_LEVEL_RULE",
+      "params": {
+        "PATTERN": "%ARTIST%",
+        "REPLACE_UNDERSCORES_WITH_SPACES": false,
+        "FOLDER_LEVEL": 2
+      }
+    } 
+  {
+      "rule": "ROOT_SUBFOLDER_LEVEL_RULE",
+      "params": {
+        "PATTERN": "%ALBUM%",
+        "REPLACE_UNDERSCORES_WITH_SPACES": false,
+        "FOLDER_LEVEL": 3
+      }
+    }    
+    {
+      "rule": "FILENAME_RULE",
+      "params": {
+        "PATTERN": "%TRACK_NO% - %TITLE%",
+        "IGNORE_FILE_ENDING": true,
+        "REPLACE_UNDERSCORES_WITH_SPACES": true
+      }
+    }
+  ]
+}
+```
+Every matching **%VARIABLE%** will be trimmed at the ending, so it does not mather if you choose **%TRACK_NO% - %TITLE%** or **%TRACK_NO%-%TITLE%** as a pattern.
+
+
 ###SCANNER_AND_TAGGER_LOGGING_GRANULARITY
 Logging every file in the scanner and tagging process can be very time expensive. Because of that you can define the granularity of the scanner and tagging logging. If the value is set to 1 every file is logged (time expensive). If the value is set to 128 only every 128th and the last file will be logged. This value can be every number > 0.
 
