@@ -148,8 +148,7 @@ With the follwing rules you can match the genre (%GENRE%), the artist (%ARTIST%)
   ]
 }
 ```
-Every matching **%VARIABLE%** will be trimmed at the ending, so it does not mather if you choose **%TRACK_NO% - %TITLE%** or **%TRACK_NO%-%TITLE%** as a pattern.
-
+Every matching **%VARIABLE%** will be trimmed at the ending, so it does not mather if you choose **%TRACK_NO% - %TITLE%** or **%TRACK_NO%-%TITLE%** as a pattern. It is also possible to ignore areas in the path by producing non declared Variables like: %TMP%, %I_DONT_NEED_THAT%, %IGNORE%... you can create anything...
 
 ###SCANNER_AND_TAGGER_LOGGING_GRANULARITY
 Logging every file in the scanner and tagging process can be very time expensive. Because of that you can define the granularity of the scanner and tagging logging. If the value is set to 1 every file is logged (time expensive). If the value is set to 128 only every 128th and the last file will be logged. This value can be every number > 0.
