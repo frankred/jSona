@@ -107,7 +107,7 @@ C:\media\music'
 ```
 
 With the follwing rules you can match the genre (%GENRE%), the artist (%ARTIST%), the title (%TITLE%), the track number (%TRACK_NO%) and the title (%TITLE%):
-```
+```json
 {
 
 ...
