@@ -31,6 +31,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.FocusModel;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -413,6 +414,28 @@ public class ViewController implements Initializable, ViewInterface {
 				return new ListItemCell(logic);
 			}
 		});
+		// keys
+		searchResultsListView.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+			public void handle(final KeyEvent keyEvent) {
+				switch (keyEvent.getCode()) {
+				case ENTER:
+					ListItemManager.getInstance().play(logic, searchResultsListView, searchResultsListView.getSelectionModel().getSelectedItem());
+					break;
+				default:
+					break;
+				}
+			}
+		});
+
+		searchText.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+			public void handle(KeyEvent event) {
+				if (event.getCode() == KeyCode.DOWN) {
+					searchResultsListView.getSelectionModel().clearAndSelect(0);
+					searchResultsListView.requestFocus();
+					searchResultsListView.getFocusModel().focus(0);
+				}
+			};
+		});
 		searchResultsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		enableListViewDragItems(searchResultsListView, TransferMode.COPY);
 	}
@@ -581,6 +604,19 @@ public class ViewController implements Initializable, ViewInterface {
 
 					// Enable draggable itmes
 					enableListViewDragItems(listView, TransferMode.COPY);
+
+					// keys
+					listView.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+						public void handle(final KeyEvent keyEvent) {
+							switch (keyEvent.getCode()) {
+							case ENTER:
+								ListItemManager.getInstance().play(logic, listView, listView.getSelectionModel().getSelectedItem());
+								break;
+							default:
+								break;
+							}
+						}
+					});
 
 					musicListViews.add(listView);
 
@@ -855,8 +891,6 @@ public class ViewController implements Initializable, ViewInterface {
 							if (mouseEvent.getClickCount() == 2) {
 								// Fix: that the slider isn't toggling if length
 								// changed is first called
-								ViewManagerFX.getInstance().getController().durationSlider.setValue(0);
-								ViewManagerFX.getInstance().getController().durationProgress.setProgress(0);
 								ListItemManager.getInstance().play(logic, getListView(), getItem());
 							}
 						}
@@ -1171,6 +1205,9 @@ public class ViewController implements Initializable, ViewInterface {
 		}
 
 		public void play(LogicInterfaceFX logic, final ListView<MusicListItem> playMeListView, final MusicListItem playMe) {
+			ViewManagerFX.getInstance().getController().durationSlider.setValue(0);
+			ViewManagerFX.getInstance().getController().durationProgress.setProgress(0);
+
 			final ListView<MusicListItem> listViewOld = ListItemManager.getInstance().getCurrentListView();
 
 			// Is there an item that was played befored?
