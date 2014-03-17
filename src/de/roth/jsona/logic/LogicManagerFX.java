@@ -275,8 +275,11 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 		// Show folder
 		ViewManagerFX.getInstance().getController().addMusicFolder(this, rootFile.getAbsolutePath(), rootFile.getAbsolutePath(), 0, items);
 
-		// Add new
-		this.newList.addAll(recentlyAddedItems);
+		// If all are new, dont add them to the "new" tab
+		if (items.size() != recentlyAddedItems.size()) {
+			// Add new
+			this.newList.addAll(recentlyAddedItems);
+		}
 
 		// All folders tagged?
 		this.folderTaggedAmount++;

@@ -16,10 +16,8 @@ I'm proud to present you a screenshot of jSona! =)
 You want **new features**? On the following page you can vote for and submit new feature requests.
 [http://jsona.idea.informer.com](http://jsona.idea.informer.com)
 
-[![Feature requests](http://rssimg.com/signature.png?url=http%3A%2F%2Fjsona.idea.informer.com%2Fproj%2Frss&style=transparent-post)](http://jsona.idea.informer.com)
-
 ##Version
-Current version is 1.0.0 
+Current version is 1.0.1
 
 ##Configuration file / config.json
 
@@ -43,7 +41,8 @@ Here is an example of the default configuration file. You have to setup your **V
   "TITLE": "jSona - open source project by Frank Roth",
   "MIN_HEIGHT": 600,
   "MIN_WIDTH": 720,
-  "COLORIZE_ITEMS": true
+  "COLORIZE_ITEMS": true,
+  "SCANNER_AND_TAGGER_LOGGING_GRANULARITY": 128
 }
 ```
 
@@ -92,17 +91,82 @@ If the value is set to **true** the same music items will be displayed with a di
 s
 ![jSona screenshot](https://dl.dropboxusercontent.com/u/3669658/github/jSona/jsona_colorized_items.png "You Got Rick Rolled!")
 
+###FILEPATH_BASED_MUSIC_INFORMATIONS
+There is the possibility to define rules to detect music informations with the help of the file path. Currently there are two kind of rules {"ROOT_SUBFOLDER_LEVEL_RULE", "FILENAME_RULE"}. The "ROOT_SUBFOLDER_LEVEL_RULE" is a rule based on the subfolder level according to the root directory. With the help of the "FILENAME_RULE" you can match everything according to the filename (not file path) of the file. It is possible to ignore file endings and to replace underscores with a space.
+
+The follwing examples should help you with to use these rules.
+
+If you have a folder structure like this and this is your music file name:
+```
+C:\media\music\Rock\ACDC\Highway to Hell\03 - Walk All Over You.mp3'
+```
+
+Your root folder is
+```
+C:\media\music'
+```
+
+With the follwing rules you can match the genre (%GENRE%), the artist (%ARTIST%), the title (%TITLE%), the track number (%TRACK_NO%) and the title (%TITLE%):
+```json
+{
+
+...
+
+"FILEPATH_BASED_MUSIC_INFORMATIONS": [
+    {
+      "rule": "ROOT_SUBFOLDER_LEVEL_RULE",
+      "params": {
+        "PATTERN": "%GENRE%",
+        "REPLACE_UNDERSCORES_WITH_SPACES": false,
+        "FOLDER_LEVEL": 1
+      }
+    },
+    {
+      "rule": "ROOT_SUBFOLDER_LEVEL_RULE",
+      "params": {
+        "PATTERN": "%ARTIST%",
+        "REPLACE_UNDERSCORES_WITH_SPACES": false,
+        "FOLDER_LEVEL": 2
+      }
+    } 
+  {
+      "rule": "ROOT_SUBFOLDER_LEVEL_RULE",
+      "params": {
+        "PATTERN": "%ALBUM%",
+        "REPLACE_UNDERSCORES_WITH_SPACES": false,
+        "FOLDER_LEVEL": 3
+      }
+    }    
+    {
+      "rule": "FILENAME_RULE",
+      "params": {
+        "PATTERN": "%TRACK_NO% - %TITLE%",
+        "IGNORE_FILE_ENDING": true,
+        "REPLACE_UNDERSCORES_WITH_SPACES": true
+      }
+    }
+  ]
+}
+```
+Every matching **%VARIABLE%** will be trimmed at the ending, so it does not mather if you choose **%TRACK_NO% - %TITLE%** or **%TRACK_NO%-%TITLE%** as a pattern. It is also possible to ignore areas in the path by producing non declared Variables like: %TMP%, %I_DONT_NEED_THAT%, %IGNORE%... you can create anything...
+
 ###SCANNER_AND_TAGGER_LOGGING_GRANULARITY
-Logging every file in the scanner and tagging process can be very time expensive. Because of that you can define the granularity of the scanner and tagging logging. If the value is set to 1 every file is logged (time expensive). If the value is set to 512 only every 512th and the last file will be logged.      
+Logging every file in the scanner and tagging process can be very time expensive. Because of that you can define the granularity of the scanner and tagging logging. If the value is set to 1 every file is logged (time expensive). If the value is set to 128 only every 128th and the last file will be logged. This value can be every number > 0.
 
 ##Download
 * [Version 1.0.0](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.0.zip)
-* [Current version](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.0.zip)
+* [Version 1.0.1](https://dl.dropboxusercontent.com/u/3669658/github/jsona/binary/jSona-1.0.1.zip)
+* [Current version](https://dl.dropboxusercontent.com/u/3669658/github/jsona/binary/jSona-1.0.1.zip)
+
+##Changelog
+###1.0.1
+* Music informations like artist or title can now be detected from the filepath with the help of detector rules in the config.json
+* Logging granularity of file scanner and tagger can now be defined in the config.json
 
 ##Installation and Start
 Download the current zip file and extract it. Then put in your correct VLC path into the config.json file and start jSona with the following command.
 ```
-java -jar jSona-1.0.0.jar
+java -jar jSona-1.0.1.jar
 ```
 jSona uses JavaFX so a current Java virtual machine with JavaFX support should be installed.
 
