@@ -1,5 +1,7 @@
 package de.roth.jsona.config;
 
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,18 +13,19 @@ import java.util.ArrayList;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
 
+import de.roth.jsona.keyevent.ApplicationEvent;
+import de.roth.jsona.keyevent.HotkeyConfig;
 import de.roth.jsona.mediaplayer.PlayBackMode;
-import de.roth.jsona.tag.detection.DetectorRule;
 import de.roth.jsona.tag.detection.DetectorRuleConfig;
-import de.roth.jsona.tag.detection.FilenameDetectorRule;
 
 /**
  * Singleton that represents the configuration of the application with all its
  * attributes.
- *
+ * 
  * @author Frank Roth
- *
+ * 
  */
 public class Config {
 
@@ -30,7 +33,7 @@ public class Config {
 
 	/**
 	 * Return a configuration instance
-	 *
+	 * 
 	 * @return Config
 	 */
 	public static Config getInstance() {
@@ -40,22 +43,25 @@ public class Config {
 		return instance;
 	}
 
-	public String PATH_TO_VLCJ;
-	public int MAX_SEARCH_RESULT_AMOUNT;
-	public int VOLUME;
-	public ArrayList<String> FOLDERS;
-	public PlayBackMode PLAYBACK_MODE;
-	public String SENT_TO_PATH;
-	public int RECENTLY_ADDED_UNITL_TIME_IN_DAYS;
-	public String THEME;
-	public int KEY_SKIP_TIME;
-	public boolean WINDOW_UNDECORATED;
-	public String TITLE;
-	public int MIN_HEIGHT;
-	public int MIN_WIDTH;
-	public boolean COLORIZE_ITEMS;
-	public ArrayList<DetectorRuleConfig> FILEPATH_BASED_MUSIC_INFORMATIONS;
-	public int SCANNER_AND_TAGGER_LOGGING_GRANULARITY;
+	@Expose public String PATH_TO_VLCJ;
+	@Expose public int MAX_SEARCH_RESULT_AMOUNT;
+	@Expose public int VOLUME;
+	@Expose public ArrayList<String> FOLDERS;
+	@Expose public PlayBackMode PLAYBACK_MODE;
+	@Expose public String SENT_TO_PATH;
+	@Expose public int RECENTLY_ADDED_UNITL_TIME_IN_DAYS;
+	@Expose public String THEME;
+	@Expose public int KEY_SKIP_TIME;
+	@Expose public boolean WINDOW_UNDECORATED;
+	@Expose public String TITLE;
+	@Expose public int MIN_HEIGHT;
+	@Expose public int MIN_WIDTH;
+	@Expose public boolean COLORIZE_ITEMS;
+	@Expose public ArrayList<DetectorRuleConfig> FILEPATH_BASED_MUSIC_INFORMATIONS;
+	@Expose public int SCANNER_AND_TAGGER_LOGGING_GRANULARITY;
+	@Expose public ArrayList<HotkeyConfig> HOTKEYS;
+	@Expose public int VOLUME_UP_DOWN_AMOUNT;
+
 	public Config() {
 		// default values
 		this.TITLE = "jSona powered by VLCJ and  JavaFX!";
@@ -70,11 +76,19 @@ public class Config {
 		this.MIN_WIDTH = 600;
 		this.COLORIZE_ITEMS = true;
 		this.SCANNER_AND_TAGGER_LOGGING_GRANULARITY = 1;
+		this.VOLUME_UP_DOWN_AMOUNT = 20;
+
+		HOTKEYS = new ArrayList<HotkeyConfig>();
+		HOTKEYS.add(new HotkeyConfig(KeyEvent.VK_ADD, null, ApplicationEvent.PLAYER_VOLUME_UP, true));
+		HOTKEYS.add(new HotkeyConfig(KeyEvent.VK_SUBTRACT, null, ApplicationEvent.PLAYER_VOLUME_DOWN, true));
+		HOTKEYS.add(new HotkeyConfig(KeyEvent.VK_PAUSE, null, ApplicationEvent.PLAYER_PLAY_PAUSE, true));
+		HOTKEYS.add(new HotkeyConfig(KeyEvent.VK_1, new int[]{ InputEvent.CTRL_DOWN_MASK }, ApplicationEvent.VIEW_HIDE_SHOW, true));
+
 	}
 
 	/**
 	 * Load the configuration from the over given file
-	 *
+	 * 
 	 * @param file
 	 *            for the configuration
 	 */
@@ -89,7 +103,7 @@ public class Config {
 
 	/**
 	 * Load the configuration from the over given path
-	 *
+	 * 
 	 * @param file
 	 *            for the configuration
 	 */
@@ -99,7 +113,7 @@ public class Config {
 
 	/**
 	 * Load the configuration from the default values, no file required.
-	 *
+	 * 
 	 * @return
 	 */
 	private static Config fromDefaults() {
@@ -109,7 +123,7 @@ public class Config {
 
 	/**
 	 * Save the configuration to the over given file path.
-	 *
+	 * 
 	 * @param file
 	 */
 	public void toFile(String file) {
@@ -118,11 +132,11 @@ public class Config {
 
 	/**
 	 * Save the configuration to the over given file
-	 *
+	 * 
 	 * @param file
 	 */
 	public void toFile(File file) {
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
 		String jsonConfig = gson.toJson(this);
 		FileWriter writer;
 		try {
@@ -142,7 +156,7 @@ public class Config {
 
 	/**
 	 * Converts a string array list with file paths in a file array list
-	 *
+	 * 
 	 * @param filepaths
 	 *            - String array with file paths
 	 * @return ArrayList<File> files

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -81,6 +82,7 @@ import de.roth.jsona.mediaplayer.PlayBackMode;
 import de.roth.jsona.model.MusicListItem;
 import de.roth.jsona.model.MusicListItem.Status;
 import de.roth.jsona.model.PlayList;
+import de.roth.jsona.util.Logger;
 import de.roth.jsona.util.TimeFormatter;
 import de.umass.lastfm.Track;
 
@@ -144,10 +146,6 @@ public class ViewController implements Initializable, ViewInterface {
 	// Tmp
 	private int searchResultCounter = -1;
 
-	public Slider getDurationSlider() {
-		return durationSlider;
-	}
-
 	public ViewController(Stage stage) {
 		this.stage = stage;
 	}
@@ -155,7 +153,7 @@ public class ViewController implements Initializable, ViewInterface {
 	private void setVolumeFX(int value, boolean updateItself) {
 		// Volume
 		if (updateItself) {
-			volumeSlider.setValue(value);
+			volumeSlider.valueProperty().set(value);
 		}
 		volumeProgress.setProgress(value / 100d);
 		volumeLabel.setText(value + "%");
@@ -178,12 +176,31 @@ public class ViewController implements Initializable, ViewInterface {
 		}
 	}
 
+	public Slider getDurationSlider() {
+		return durationSlider;
+	}
+
 	public Stage getStage() {
 		return this.stage;
 	}
 
 	private void setDurationLength(long ms) {
 		durationSlider.setMax(ms);
+	}
+
+	public void toggleView() {
+		Platform.runLater(new Runnable() {
+			public void run() {
+				if(!stage.isFocused()){
+					stage.setIconified(false);
+					stage.toFront();
+				} else {
+					if(!stage.isIconified()){
+						stage.setIconified(true);
+					}
+				}
+			}
+		});
 	}
 
 	@Override
@@ -437,7 +454,7 @@ public class ViewController implements Initializable, ViewInterface {
 	public void setVolume(final int vol) {
 		Platform.runLater(new Runnable() {
 			public void run() {
-				setVolumeFX(Config.getInstance().VOLUME, false);
+				setVolumeFX(Config.getInstance().VOLUME, true);
 			}
 		});
 	}
@@ -840,8 +857,8 @@ public class ViewController implements Initializable, ViewInterface {
 
 		/**
 		 * Constructor for playlist
-		 *
-		 *
+		 * 
+		 * 
 		 * @param atomicId
 		 * @param logic
 		 */

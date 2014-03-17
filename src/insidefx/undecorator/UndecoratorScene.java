@@ -111,7 +111,7 @@ public class UndecoratorScene extends Scene {
         undecorator.setAsStageDraggable(stage, node);
     }
 
-    public void setBackgroundStyle(String style) {
+ /*   public void setBackgroundStyle(String style) {
         undecorator.getBackground().setStyle(style);
     }
 
@@ -119,7 +119,7 @@ public class UndecoratorScene extends Scene {
         undecorator.removeDefaultBackgroundStyleClass();
         undecorator.getBackground().setFill(paint);
     }
-
+*/
     public Undecorator getUndecorator() {
         return undecorator;
     }

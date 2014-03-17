@@ -1,5 +1,7 @@
 package de.roth.jsona.logic;
 
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,6 +22,8 @@ import java.util.logging.Level;
 
 import javafx.concurrent.Task;
 
+import javax.swing.KeyStroke;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.lucene.document.Document;
@@ -34,6 +38,9 @@ import uk.co.caprica.vlcj.player.MediaPlayerEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sun.media.jfxmedia.events.PlayerStateEvent.PlayerState;
+import com.tulskiy.keymaster.common.HotKey;
+import com.tulskiy.keymaster.common.HotKeyListener;
+import com.tulskiy.keymaster.common.Provider;
 
 import de.roth.jsona.artist.JSonaArtist;
 import de.roth.jsona.config.Config;
@@ -50,6 +57,7 @@ import de.roth.jsona.folderwatch.DirWatcher;
 import de.roth.jsona.folderwatch.WatchDirListener;
 import de.roth.jsona.http.ImageType;
 import de.roth.jsona.javafx.ViewManagerFX;
+import de.roth.jsona.keyevent.HotkeyConfig;
 import de.roth.jsona.mediaplayer.MediaPlayerManager;
 import de.roth.jsona.mediaplayer.PlayBackMode;
 import de.roth.jsona.model.MusicListItem;
@@ -64,11 +72,11 @@ import de.roth.jsona.util.TimeFormatter;
 /**
  * Core class of the jSona, where everything comes together. This class
  * implements the main logic of the application
- *
+ * 
  * @author Frank Roth
- *
+ * 
  */
-public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListener, FileScannerListener, FileTaggerListener, WatchDirListener, ExternalInformationsListener {
+public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListener, FileScannerListener, FileTaggerListener, WatchDirListener, ExternalInformationsListener, HotKeyListener {
 
 	// Model
 	private ArrayList<MusicListItem> newList;
@@ -83,6 +91,9 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 	private MediaPlayerManager mediaPlayerManager;
 	private BlockingQueue<Runnable> importTaggingWorksQueue;
 	private ThreadPoolExecutor importTaggingExecutor;
+
+	// Hotkeys
+	private Provider hotkeysProvider;
 
 	// Caches
 	private HashMap<String, JSonaArtist> artistsCache;
@@ -109,6 +120,10 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 		this.importTaggingExecutor = new ThreadPoolExecutor(1, 1, Integer.MAX_VALUE, TimeUnit.SECONDS, importTaggingWorksQueue);
 		this.importTaggingExecutor.allowCoreThreadTimeOut(false);
 
+		// Hotkeys
+		this.hotkeysProvider = Provider.getCurrentProvider(false);
+		this.hotkeysProvider.reset();
+
 		// Caches
 		this.artistsCache = new HashMap<String, JSonaArtist>();
 
@@ -128,6 +143,13 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 		ViewManagerFX.getInstance().getController().setPlaybackMode(Config.getInstance().PLAYBACK_MODE);
 		checkInitFolder();
 
+		for (HotkeyConfig c : Config.getInstance().HOTKEYS) {
+			// System.out.println("Config: " +  c.getKeyStroke().getModifiers());
+			this.hotkeysProvider.register(c.getKeyStroke(), this);
+		}
+
+		this.hotkeysProvider.register(KeyStroke.getKeyStroke("control shift PLUS"), this);
+		
 		// Music folders
 		ArrayList<File> folders = Config.asFileArrayList(Config.getInstance().FOLDERS);
 
@@ -201,6 +223,9 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 	 * Close jSona and write config file.
 	 */
 	public void close() {
+		this.hotkeysProvider.reset();
+		this.hotkeysProvider.stop();
+
 		Logger.get().log(Level.INFO, "Saving current configuration to '" + Global.CONFIG_JSON + "'...");
 		Config.getInstance().toFile(Global.CONFIG_JSON);
 
@@ -698,5 +723,71 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 	@Override
 	public void event_play_url(String url) {
 
+	}
+
+	@Override
+	public void onHotKey(HotKey hotKey) {
+		for (HotkeyConfig c : Config.getInstance().HOTKEYS) {
+			// Check hotkey and modifiers
+			if (c.getKey() == hotKey.keyStroke.getKeyCode() && c.getAllModifiers() == hotKey.keyStroke.getModifiers()) {
+				
+				switch (c.getApplicationEvent()) {
+				case PLAYER_VOLUME_UP:
+					this.action_player_volume_up();
+					break;
+				case PLAYER_VOLUME_DOWN:
+					this.action_player_volume_down();
+					break;
+				case PLAYER_PLAY_PAUSE:
+					this.event_player_play_pause();
+					break;
+				case VIEW_HIDE_SHOW:
+					this.action_toggle_view();
+				default:
+					break;
+				}
+			}
+		}
+	}
+
+	@Override
+	public void action_player_volume_up() {
+		Config.getInstance().VOLUME += Config.getInstance().VOLUME_UP_DOWN_AMOUNT;
+		if (Config.getInstance().VOLUME >= 100) {
+			Config.getInstance().VOLUME = 100;
+		} else if (Config.getInstance().VOLUME < 0) {
+			Config.getInstance().VOLUME = 0;
+		}
+		Logger.get().log(Level.INFO, "Set volume to '" + Config.getInstance().VOLUME + "'.");
+		ViewManagerFX.getInstance().getController().setVolume(Config.getInstance().VOLUME);
+		mediaPlayerManager.setVolume(Config.getInstance().VOLUME);
+	}
+
+	@Override
+	public void action_player_volume_down() {
+		Config.getInstance().VOLUME -= Config.getInstance().VOLUME_UP_DOWN_AMOUNT;
+		if (Config.getInstance().VOLUME >= 100) {
+			Config.getInstance().VOLUME = 100;
+		} else if (Config.getInstance().VOLUME < 0) {
+			Config.getInstance().VOLUME = 0;
+		}
+		Logger.get().log(Level.INFO, "Set volume to '" + Config.getInstance().VOLUME + "'.");
+		ViewManagerFX.getInstance().getController().setVolume(Config.getInstance().VOLUME);
+		mediaPlayerManager.setVolume(Config.getInstance().VOLUME);
+	}
+
+	@Override
+	public void action_volume_mute_unmute() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void action_player_play_pause() {
+		event_player_play_pause();
+	}
+
+	@Override
+	public void action_toggle_view() {
+		ViewManagerFX.getInstance().getController().toggleView();
 	}
 }

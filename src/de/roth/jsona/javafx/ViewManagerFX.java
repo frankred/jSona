@@ -7,6 +7,7 @@ import java.io.IOException;
 import de.roth.jsona.config.Config;
 import de.roth.jsona.javafx.close.CloseEventHandler;
 import de.roth.jsona.logic.LogicManagerFX;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -31,7 +32,9 @@ public class ViewManagerFX {
 			// setting application properties
 			stage.getIcons().add(new Image("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "icon.png"));
 			stage.setTitle(Config.getInstance().TITLE);
-
+			Platform.setImplicitExit(false);
+			
+			
 			// setting controller
 			this.controller = new ViewController(stage);
 

@@ -492,10 +492,10 @@ public class Undecorator extends StackPane {
         shadowRectangle.getStyleClass().remove(backgroundStyleClass);
     }
 
-    public Rectangle getBackground() {
+/*    public Rectangle getBackground() {
         return shadowRectangle;
     }
-
+*/
     /**
      * Manage buttons and menu items
      */

@@ -3,6 +3,8 @@ package de.roth.jsona.tag.detection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gson.annotations.Expose;
+
 /**
  * This class is only for saving the detector rules for jsona in the config.
  *
@@ -21,8 +23,8 @@ public class DetectorRuleConfig {
 		ROOT_SUBFOLDER_LEVEL_RULE, FILENAME_RULE
 	}
 
-	private DetectorRuleEnum rule;
-	private Map<String, Object> params;
+	@Expose private DetectorRuleEnum rule;
+	@Expose private Map<String, Object> params;
 
 	public DetectorRuleConfig(DetectorRuleEnum rule) {
 		this.rule = rule;

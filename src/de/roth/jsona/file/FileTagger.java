@@ -87,6 +87,8 @@ public class FileTagger {
 			}
 			item.setColorClass(colorClassCounter);
 			currentParentFolder = f.getParentFile();
+			
+			item.setTmp_status(MusicListItem.Status.SET_NONE);
 
 			// Add
 			items.add(item);

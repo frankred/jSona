@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.gson.annotations.Expose;
+
 import de.roth.jsona.tag.detection.FieldResult.Field;
 
 /**
@@ -16,9 +18,9 @@ import de.roth.jsona.tag.detection.FieldResult.Field;
  */
 public abstract class DetectorRule implements DetectorRuleInterface {
 
-	private String pattern;
-	private boolean replaceUnderscoresWithSpaceInResults;
-	private boolean ignoreFileEnding;
+	@Expose private String pattern;
+	@Expose private boolean replaceUnderscoresWithSpaceInResults;
+	@Expose private boolean ignoreFileEnding;
 
 	public boolean isReplaceUnderscoresWithSpaceInResults() {
 		return replaceUnderscoresWithSpaceInResults;
