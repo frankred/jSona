@@ -13,9 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import de.roth.jsona.mediaplayer.PlayBackMode;
-import de.roth.jsona.tag.detection.DetectorRule;
 import de.roth.jsona.tag.detection.DetectorRuleConfig;
-import de.roth.jsona.tag.detection.FilenameDetectorRule;
 
 /**
  * Singleton that represents the configuration of the application with all its
