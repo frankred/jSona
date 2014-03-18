@@ -98,12 +98,12 @@ The follwing examples should help you with to use these rules.
 
 If you have a folder structure like this and this is your music file name:
 ```
-C:\media\music\Rock\ACDC\Highway to Hell\03 - Walk All Over You.mp3'
+C:\media\music\Rock\ACDC\Highway to Hell\03 - Walk All Over You.mp3
 ```
 
 Your root folder is
 ```
-C:\media\music'
+C:\media\music
 ```
 
 With the follwing rules you can match the genre (%GENRE%), the artist (%ARTIST%), the title (%TITLE%), the track number (%TRACK_NO%) and the title (%TITLE%):
