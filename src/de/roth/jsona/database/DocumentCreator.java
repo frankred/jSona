@@ -4,15 +4,14 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
 
-import de.roth.jsona.config.Global;
 import de.roth.jsona.genre.GenreManager;
 import de.roth.jsona.model.MusicListItem;
 
 /**
  * Class for creating a lucene searchable document
- * 
+ *
  * @author Frank Roth
- * 
+ *
  */
 public class DocumentCreator {
 
@@ -22,7 +21,7 @@ public class DocumentCreator {
 	 * All meaningful fields (file path, artist, title, album) are added all to
 	 * the 'all' field seperated by a whitespace. There some more fields: id,
 	 * file, genre, year
-	 * 
+	 *
 	 * @param item
 	 * @return
 	 */
