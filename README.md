@@ -106,7 +106,7 @@ Your root folder is
 C:\media\music
 ```
 
-With the follwing rules you can match the genre (%GENRE%), the artist (%ARTIST%), the title (%TITLE%), the track number (%TRACK_NO%) and the title (%TITLE%):
+With the follwing rules you can match the genre (%GENRE%), the artist (%ARTIST%), the title (%TITLE%), the album (%ALBUM%) and the track number (%TRACK_NO%):
 ```json
 {
 
