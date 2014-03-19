@@ -16,8 +16,11 @@ jSona is a configuration file(JSON), [vlcj](https://github.com/caprica/vlcj) and
 You want **new features**? On the following page you can vote for and submit new feature requests.
 [http://jsona.idea.informer.com](http://jsona.idea.informer.com)
 
-##Version
-Current version is 1.0.1
+##Download
+* [Version 1.0.0](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.0.zip)
+* [Version 1.0.1](https://dl.dropboxusercontent.com/u/3669658/github/jsona/binary/jSona-1.0.1.zip)
+* [Version 1.0.2](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.2.zip)
+* [Current version](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.2.zip)
 
 ##Configuration file / config.json
 
@@ -155,7 +158,7 @@ Logging every file in the scanner and tagging process can be very time expensive
 
 ###HOTKEYS
 Here is a list of all modifiers and keys that can be used: https://github.com/frankred/jSona/wiki/Key-Codes.
-Currently only global hotkeys work.
+Currently only global hotkeys work. Supported application events are: {PLAYER_VOLUME_UP, PLAYER_VOLUME_DOWN, PLAYER_PLAY_PAUSE, VIEW_HIDE_SHOW}
 
 ```json
 {
@@ -187,12 +190,10 @@ Currently only global hotkeys work.
 }
 ```
 
-##Download
-* [Version 1.0.0](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.0.zip)
-* [Version 1.0.1](https://dl.dropboxusercontent.com/u/3669658/github/jsona/binary/jSona-1.0.1.zip)
-* [Current version](https://dl.dropboxusercontent.com/u/3669658/github/jsona/binary/jSona-1.0.1.zip)
-
 ##Changelog
+###1.0.2
+* HOTKEYS can now be defined in the config.json.
+* VOLUME_UP_DOWN_AMOUNT amount for hotkeys can be defined in the config.json
 ###1.0.1
 * Music informations like artist or title can now be detected from the filepath with the help of detector rules in the config.json
 * Logging granularity of file scanner and tagger can now be defined in the config.json
@@ -200,7 +201,7 @@ Currently only global hotkeys work.
 ##Installation and Start
 Download the current zip file and extract it. Then put in your correct VLC path into the config.json file and start jSona with the following command.
 ```
-java -jar jSona-1.0.1.jar
+java -jar jSona-1.0.2.jar
 ```
 jSona uses JavaFX so a current Java virtual machine with JavaFX support should be installed.
 
