@@ -25,7 +25,6 @@ public class HotkeyConfig {
 	private ApplicationEvent event;
 	@Expose
 	private boolean global;
-	@Expose
 	private KeyStroke stroke;
 
 	public HotkeyConfig(int key, int[] modifiers, ApplicationEvent applicationEvent, boolean global) {
