@@ -162,6 +162,7 @@ Currently only global hotkeys work. Supported application events are: {PLAYER_VO
 
 ```json
 {
+
 ...
 
 "HOTKEYS": [
