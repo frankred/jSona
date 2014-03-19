@@ -153,6 +153,40 @@ Every matching **%VARIABLE%** will be trimmed at the ending, so it does not math
 ###SCANNER_AND_TAGGER_LOGGING_GRANULARITY
 Logging every file in the scanner and tagging process can be very time expensive. Because of that you can define the granularity of the scanner and tagging logging. If the value is set to 1 every file is logged (time expensive). If the value is set to 128 only every 128th and the last file will be logged. This value can be every number > 0.
 
+###HOTKEYS
+Here is a list of all modifiers and keys that can be used: https://github.com/frankred/jSona/wiki/Key-Codes.
+Currently only global hotkeys work.
+
+```json
+{
+"HOTKEYS": [
+    {
+      "key": 107,
+      "event": "PLAYER_VOLUME_UP",
+      "global": true
+    },
+    {
+      "key": 109,
+      "event": "PLAYER_VOLUME_DOWN",
+      "global": true
+    },
+    {
+      "key": 19,
+      "event": "PLAYER_PLAY_PAUSE",
+      "global": true
+    },
+    {
+      "key": 49,
+      "modifiers": [
+        128
+      ],
+      "event": "VIEW_HIDE_SHOW",
+      "global": true
+    }
+  ],
+}
+```
+
 ##Download
 * [Version 1.0.0](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.0.zip)
 * [Version 1.0.1](https://dl.dropboxusercontent.com/u/3669658/github/jsona/binary/jSona-1.0.1.zip)
