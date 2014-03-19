@@ -197,6 +197,7 @@ Currently only global hotkeys work. Supported application events are: {PLAYER_VO
 ###1.0.2
 * HOTKEYS can now be defined in the config.json.
 * VOLUME_UP_DOWN_AMOUNT amount for hotkeys can be defined in the config.json
+
 ###1.0.1
 * Music informations like artist or title can now be detected from the filepath with the help of detector rules in the config.json
 * Logging granularity of file scanner and tagger can now be defined in the config.json
