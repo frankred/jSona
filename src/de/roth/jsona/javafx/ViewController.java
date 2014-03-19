@@ -188,6 +188,10 @@ public class ViewController implements Initializable, ViewInterface {
 	private void setDurationLength(long ms) {
 		durationSlider.setMax(ms);
 	}
+	
+	public void hide(){
+		stage.hide();
+	}
 
 	public void toggleView() {
 		Platform.runLater(new Runnable() {
