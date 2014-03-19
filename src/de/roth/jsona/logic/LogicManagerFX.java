@@ -1,7 +1,5 @@
 package de.roth.jsona.logic;
 
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,8 +19,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 import javafx.concurrent.Task;
-
-import javax.swing.KeyStroke;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
@@ -143,13 +139,11 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 		ViewManagerFX.getInstance().getController().setPlaybackMode(Config.getInstance().PLAYBACK_MODE);
 		checkInitFolder();
 
+		// Register global hotkeys
 		for (HotkeyConfig c : Config.getInstance().HOTKEYS) {
-			// System.out.println("Config: " +  c.getKeyStroke().getModifiers());
 			this.hotkeysProvider.register(c.getKeyStroke(), this);
 		}
 
-		this.hotkeysProvider.register(KeyStroke.getKeyStroke("control shift PLUS"), this);
-		
 		// Music folders
 		ArrayList<File> folders = Config.asFileArrayList(Config.getInstance().FOLDERS);
 
@@ -223,6 +217,8 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 	 * Close jSona and write config file.
 	 */
 	public void close() {
+		ViewManagerFX.getInstance().getController().hide();
+		
 		this.hotkeysProvider.reset();
 		this.hotkeysProvider.stop();
 
@@ -733,7 +729,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 		for (HotkeyConfig c : Config.getInstance().HOTKEYS) {
 			// Check hotkey and modifiers
 			if (c.getKey() == hotKey.keyStroke.getKeyCode() && c.getAllModifiers() == hotKey.keyStroke.getModifiers()) {
-				
+
 				switch (c.getApplicationEvent()) {
 				case PLAYER_VOLUME_UP:
 					this.action_player_volume_up();
