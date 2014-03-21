@@ -1,7 +1,5 @@
 package de.roth.jsona.config;
 
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,7 +13,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 
-import de.roth.jsona.keyevent.ApplicationEvent;
 import de.roth.jsona.keyevent.HotkeyConfig;
 import de.roth.jsona.mediaplayer.PlayBackMode;
 import de.roth.jsona.tag.detection.DetectorRuleConfig;
@@ -77,13 +74,6 @@ public class Config {
 		this.COLORIZE_ITEMS = true;
 		this.SCANNER_AND_TAGGER_LOGGING_GRANULARITY = 1;
 		this.VOLUME_UP_DOWN_AMOUNT = 20;
-
-		HOTKEYS = new ArrayList<HotkeyConfig>();
-		HOTKEYS.add(new HotkeyConfig(KeyEvent.VK_ADD, null, ApplicationEvent.PLAYER_VOLUME_UP, true));
-		HOTKEYS.add(new HotkeyConfig(KeyEvent.VK_SUBTRACT, null, ApplicationEvent.PLAYER_VOLUME_DOWN, true));
-		HOTKEYS.add(new HotkeyConfig(KeyEvent.VK_PAUSE, null, ApplicationEvent.PLAYER_PLAY_PAUSE, true));
-		HOTKEYS.add(new HotkeyConfig(KeyEvent.VK_1, new int[]{ InputEvent.CTRL_DOWN_MASK }, ApplicationEvent.VIEW_HIDE_SHOW, true));
-
 	}
 
 	/**
