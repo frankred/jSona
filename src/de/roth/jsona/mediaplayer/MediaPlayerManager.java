@@ -138,6 +138,14 @@ public class MediaPlayerManager {
 	public void setTime(int time) {
 		mediaPlayer.setTime(time);
 	}
+	
+	public long getTime(){
+		return mediaPlayer.getTime();
+	}
+	
+	public long getLength(){
+		return mediaPlayer.getLength();
+	}
 
 	/**
 	 * Set audio output
