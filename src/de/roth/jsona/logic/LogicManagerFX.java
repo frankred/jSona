@@ -132,6 +132,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 	 * Start jSona, scan the folder, start watching the folder for changes and
 	 * loading the playlists.
 	 */
+	@SuppressWarnings("unchecked")
 	public void start() {
 		// Init
 		ViewManagerFX.getInstance().getController().init(this, Config.getInstance().THEME);
@@ -218,7 +219,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 	 */
 	public void close() {
 		ViewManagerFX.getInstance().getController().hide();
-		
+
 		this.hotkeysProvider.reset();
 		this.hotkeysProvider.stop();
 
@@ -742,6 +743,27 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 					break;
 				case VIEW_HIDE_SHOW:
 					this.action_toggle_view();
+					break;
+				case PLAYER_NEXT:
+					ViewManagerFX.getInstance().getController().next(this);
+					break;
+				case PLAYER_PREVIOUS:
+					ViewManagerFX.getInstance().getController().prev(this);
+					break;
+				case PLAYER_TIME_UP:
+					long newTime_up = this.mediaPlayerManager.getTime() + Config.getInstance().KEY_SKIP_TIME * 1000;
+					if (newTime_up > this.mediaPlayerManager.getLength()) {
+						newTime_up = this.mediaPlayerManager.getLength();
+					}
+					event_player_play_skipto(newTime_up);
+					break;
+				case PLAYER_TIME_DOWN:
+					long newTime_down = this.mediaPlayerManager.getTime() - Config.getInstance().KEY_SKIP_TIME * 1000;
+					if (newTime_down < 0) {
+						newTime_down = 0;
+					}
+					event_player_play_skipto(newTime_down);
+					break;
 				default:
 					break;
 				}
