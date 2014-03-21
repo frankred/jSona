@@ -146,3 +146,26 @@
 .list-view:horizontal .list-cell:filled:selected, .list-view:horizontal .list-cell:filled:selected:hover {
     -fx-background-color: linear-gradient(to right, derive(-fx-accent,-7.0%), derive(-fx-accent,-25.0%));
 }
+
+.hyperlink {
+    -fx-text-fill: #757575;
+    -fx-background-color: transparent;
+    -fx-padding: 0.0;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.hyperlink:hover {
+    -fx-underline: true;
+    -fx-border-color: transparent;
+}
+
+.hyperlink:focused {
+    -fx-border-width: 0.0;
+    -fx-border-color: transparent;
+}
+
+.hyperlink:visited {
+    -fx-text-fill: #757575;
+    -fx-border-color: transparent;
+}
