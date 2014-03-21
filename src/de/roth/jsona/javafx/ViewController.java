@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -82,7 +81,6 @@ import de.roth.jsona.mediaplayer.PlayBackMode;
 import de.roth.jsona.model.MusicListItem;
 import de.roth.jsona.model.MusicListItem.Status;
 import de.roth.jsona.model.PlayList;
-import de.roth.jsona.util.Logger;
 import de.roth.jsona.util.TimeFormatter;
 import de.umass.lastfm.Track;
 
@@ -1206,7 +1204,7 @@ public class ViewController implements Initializable, ViewInterface {
 			Platform.runLater(new Runnable() {
 				public void run() {
 					// scrollTo is fuckin' slow, don't know how to workarround
-					// that
+					// that. Fixed in Java8!
 					currentListView.scrollTo(prevIndex);
 					currentItem.setTmp_status(Status.SET_NONE);
 
