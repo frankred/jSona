@@ -16,11 +16,11 @@ You want **new features**? On the following page you can vote for and submit new
 [http://jsona.idea.informer.com](http://jsona.idea.informer.com)
 
 ##Download
-* [Version 1.0.0](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.0.zip)
-* [Version 1.0.1](https://dl.dropboxusercontent.com/u/3669658/github/jsona/binary/jSona-1.0.1.zip)
-* [Version 1.0.2](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.2.zip)
-* [Version 1.0.3](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.3.zip)
 * [Current version](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.3.zip)
+* [Version 1.0.3](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.3.zip)
+* [Version 1.0.2](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.2.zip)
+* [Version 1.0.1](https://dl.dropboxusercontent.com/u/3669658/github/jsona/binary/jSona-1.0.1.zip)
+* [Version 1.0.0](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.0.zip)
 
 ##Configuration file / config.json
 
