@@ -194,13 +194,16 @@ Currently only global hotkeys work. Supported application events are: {PLAYER_VO
 ```
 
 ##Changelog
+###1.0.3
+* Loading animation for each folder added in frontend.
+
 ###1.0.2
 * HOTKEYS can now be defined in the config.json.
-* VOLUME_UP_DOWN_AMOUNT amount for hotkeys can be defined in the config.json
+* VOLUME_UP_DOWN_AMOUNT amount for hotkeys can be defined in the config.json.
 
 ###1.0.1
-* Music informations like artist or title can now be detected from the filepath with the help of detector rules in the config.json
-* Logging granularity of file scanner and tagger can now be defined in the config.json
+* Music informations like artist or title can now be detected from the filepath with the help of detector rules in the config.json.
+* Logging granularity of file scanner and tagger can now be defined in the config.json.
 
 ##Installation and Start
 Download the current zip file and extract it. Then put in your correct VLC path into the config.json file and start jSona with the following command.
