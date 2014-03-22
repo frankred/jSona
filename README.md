@@ -208,7 +208,7 @@ Currently only global hotkeys work. Supported application events are: {PLAYER_VO
 ##Installation and Start
 Download the current zip file and extract it. Then put in your correct VLC path into the config.json file and start jSona with the following command.
 ```
-java -jar jSona-1.0.2.jar
+java -jar jSona-1.0.3.jar
 ```
 jSona uses JavaFX so a current Java virtual machine with JavaFX support should be installed.
 
