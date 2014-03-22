@@ -26,15 +26,15 @@ public class ViewManagerFX {
 	public void init(Stage stage, LogicManagerFX logic, boolean undecorated) {
 		try {
 			// setting min windows size
-			stage.setMinHeight(Config.getInstance().MIN_HEIGHT); 
+			stage.setMinHeight(Config.getInstance().MIN_HEIGHT);
 			stage.setMinWidth(Config.getInstance().MIN_WIDTH);
-			
+
 			// setting application properties
 			stage.getIcons().add(new Image("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "icon.png"));
 			stage.setTitle(Config.getInstance().TITLE);
 			Platform.setImplicitExit(false);
-			
-			
+
+
 			// setting controller
 			this.controller = new ViewController(stage);
 

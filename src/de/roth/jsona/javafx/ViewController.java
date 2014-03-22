@@ -12,12 +12,11 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -36,6 +35,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
@@ -60,7 +60,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -136,7 +138,9 @@ public class ViewController implements Initializable, ViewInterface {
 	private Stage stage;
 	private Scene scene;
 	private ArrayList<ListView<MusicListItem>> playListViews;
-	private ArrayList<ListView<MusicListItem>> musicListViews;
+	private HashMap<String, Tab> musicFolderTabs;
+	private HashMap<String, ListView<MusicListItem>> musicFolderListViews;
+	private HashMap<String, ProgressIndicator> musicFolderListLoadingViews;
 
 	// Dragging data
 	private static final DataFormat DATA_FORMAT_LIST = new DataFormat("java.util.List");
@@ -146,6 +150,15 @@ public class ViewController implements Initializable, ViewInterface {
 
 	public ViewController(Stage stage) {
 		this.stage = stage;
+	}
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		this.playListViews = new ArrayList<ListView<MusicListItem>>();
+		this.musicFolderListViews = new HashMap<String, ListView<MusicListItem>>();
+		this.musicFolderTabs = new HashMap<String, Tab>();
+		this.musicFolderListLoadingViews = new HashMap<String, ProgressIndicator>();
+		this.artistImage.setImage(new Image("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "icon.png"));
 	}
 
 	private void setVolumeFX(int value, boolean updateItself) {
@@ -185,19 +198,19 @@ public class ViewController implements Initializable, ViewInterface {
 	private void setDurationLength(long ms) {
 		durationSlider.setMax(ms);
 	}
-	
-	public void hide(){
+
+	public void hide() {
 		stage.hide();
 	}
 
 	public void toggleView() {
 		Platform.runLater(new Runnable() {
 			public void run() {
-				if(!stage.isFocused()){
+				if (!stage.isFocused()) {
 					stage.setIconified(false);
 					stage.toFront();
 				} else {
-					if(!stage.isIconified()){
+					if (!stage.isIconified()) {
 						stage.setIconified(true);
 					}
 				}
@@ -205,28 +218,19 @@ public class ViewController implements Initializable, ViewInterface {
 		});
 	}
 
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		this.playListViews = new ArrayList<ListView<MusicListItem>>();
-		this.musicListViews = new ArrayList<ListView<MusicListItem>>();
-		artistImage.setImage(new Image("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "icon.png"));
-	}
-
 	public void removeItem(final MusicListItem item) {
-		final ArrayList<ListView<MusicListItem>> p = this.playListViews;
-		final ArrayList<ListView<MusicListItem>> m = this.musicListViews;
-		final ListView<MusicListItem> s = this.searchResultsListView;
 		Platform.runLater(new Runnable() {
 			public void run() {
-				for (ListView<MusicListItem> listView : p) {
+				// Remove from playLists
+				for (ListView<MusicListItem> listView : playListViews) {
 					listView.getItems().remove(item);
 				}
 
-				for (ListView<MusicListItem> listView : m) {
-					listView.getItems().remove(item);
-				}
+				// Remove from musicLists
+				musicFolderListViews.get(item.getRootFolder().getAbsolutePath()).getItems().remove(item);
 
-				s.getItems().remove(item);
+				// Remove from searchList
+				searchResultsListView.getItems().remove(item);
 			}
 		});
 	}
@@ -561,7 +565,7 @@ public class ViewController implements Initializable, ViewInterface {
 	}
 
 	public synchronized void addMusicListItem(final String musicListViewId, final String rootFolder, final MusicListItem item) {
-		final ListView<MusicListItem> listView = getMusicListView(musicListViewId);
+		final ListView<MusicListItem> listView = this.musicFolderListViews.get(musicListViewId);
 		if (listView == null) {
 			return;
 		}
@@ -590,63 +594,122 @@ public class ViewController implements Initializable, ViewInterface {
 		});
 	}
 
-	public ListView<MusicListItem> getMusicListView(String id) {
-		for (ListView<MusicListItem> listView : this.musicListViews) {
-			if (listView.getId().equals(id)) {
-				return listView;
-			}
-		}
-		return null;
-	}
-
-	public void addMusicFolder(final LogicInterfaceFX logic, final String t, final String id, final int pos, final ArrayList<MusicListItem> items) {
+	public void updateMusicFolderLoading(final int current, final int total, final MusicListItem item, final String id) {
 		Platform.runLater(new Runnable() {
 			public void run() {
-				Tab m = new Tab();
-				try {
-					AnchorPane listPane = (AnchorPane) FXMLLoader.load(getClass().getResource("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "layout_list.fxml"));
-					@SuppressWarnings("unchecked")
-					final ListView<MusicListItem> listView = (ListView<MusicListItem>) listPane.getChildren().get(0);
-					listView.setItems(FXCollections.observableList(items));
-					listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-					listView.setId(id);
+				musicFolderListLoadingViews.get(id).setProgress((double) current / (double) total);
+				Text t = (Text) musicFolderListLoadingViews.get(id).lookup(".percentage");
 
-					// ListCell
-					listView.setCellFactory(new Callback<ListView<MusicListItem>, ListCell<MusicListItem>>() {
-						@Override
-						public ListCell<MusicListItem> call(ListView<MusicListItem> item) {
-							// http://docs.oracle.com/javafx/2/ui_controls/list-view.htm
-							return new MusicListItemCell(logic);
-						}
-					});
-
-					// Enable draggable itmes
-					enableListViewDragItems(listView, TransferMode.COPY);
-
-					// keys
-					listView.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
-						public void handle(final KeyEvent keyEvent) {
-							switch (keyEvent.getCode()) {
-							case ENTER:
-								ListItemManager.getInstance().play(logic, listView, listView.getSelectionModel().getSelectedItem());
-								break;
-							default:
-								break;
-							}
-						}
-					});
-
-					musicListViews.add(listView);
-
-					m.setContent(listPane);
-				} catch (IOException e) {
-					e.printStackTrace();
+				if (t == null) {
+					return;
 				}
-				StringProperty tabTextProperty = new SimpleStringProperty(t);
-				m.textProperty().bindBidirectional(tabTextProperty);
-				musicTabs.getTabs().add(pos, m);
+
+				if (current > 0) {
+					if (current == total) {
+						t.setText("Done");
+					}
+					t.setText(current + "/" + total);
+				} else {
+					t.setText("Scanning files...");
+				}
 			}
 		});
+	}
+
+	public void createLoadingMusicFolder(final String tabLabel, final String id, int pos) {
+		Tab tab = new Tab();
+		tab.setText(tabLabel);
+		tab.setId(id);
+		AnchorPane loadingPane = null;
+		try {
+			loadingPane = (AnchorPane) FXMLLoader.load(getClass().getResource("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "layout_music_folder_loading.fxml"));
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		VBox vbox = (VBox) loadingPane.getChildren().get(0);
+		ProgressIndicator indicator = (ProgressIndicator) vbox.getChildren().get(0);
+		tab.setContent(loadingPane);
+
+		this.musicFolderTabs.put(id, tab);
+		this.musicFolderListLoadingViews.put(id, indicator);
+		this.musicTabs.getTabs().add(pos, tab);
+		this.musicTabs.getSelectionModel().select(0);
+	}
+
+	public void createMusicFolder(final LogicInterfaceFX logic, final String tabLabel, final String id, final int pos, final ArrayList<MusicListItem> items) {
+		Platform.runLater(new Runnable() {
+			public void run() {
+				Tab tab = new Tab();
+				tab.setText(tabLabel);
+				tab.setId(id);
+				AnchorPane musicPane = null;
+				try {
+					musicPane = (AnchorPane) FXMLLoader.load(getClass().getResource("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "layout_list.fxml"));
+				} catch (IOException e) {
+					e.printStackTrace();
+					return;
+				}
+				ListView<MusicListItem> listView = prepareMusicListPane(logic, id, items, musicPane);
+				tab.setContent(listView);
+
+				musicFolderListViews.put(id, listView);
+				musicTabs.getTabs().add(pos, tab);
+				musicTabs.getSelectionModel().select(0);
+			}
+		});
+	}
+
+	public void setMusicFolder(final LogicInterfaceFX logic, final String t, final String id, final int pos, final ArrayList<MusicListItem> items) {
+		Platform.runLater(new Runnable() {
+			public void run() {
+				AnchorPane listPane = null;
+				try {
+					listPane = (AnchorPane) FXMLLoader.load(getClass().getResource("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "layout_list.fxml"));
+					musicFolderTabs.get(id).setContent(listPane);
+				} catch (IOException e) {
+					e.printStackTrace();
+					return;
+				}
+				ListView<MusicListItem> listView = prepareMusicListPane(logic, id, items, listPane);
+				musicFolderListViews.put(id, listView);
+			}
+		});
+	}
+
+	private ListView<MusicListItem> prepareMusicListPane(final LogicInterfaceFX logic, final String id, final ArrayList<MusicListItem> items, AnchorPane listPane) {
+		@SuppressWarnings("unchecked")
+		final ListView<MusicListItem> listView = (ListView<MusicListItem>) listPane.getChildren().get(0);
+		listView.setItems(FXCollections.observableList(items));
+		listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		listView.setId(id);
+
+		// ListCell
+		listView.setCellFactory(new Callback<ListView<MusicListItem>, ListCell<MusicListItem>>() {
+			@Override
+			public ListCell<MusicListItem> call(ListView<MusicListItem> item) {
+				// http://docs.oracle.com/javafx/2/ui_controls/list-view.htm
+				return new MusicListItemCell(logic);
+			}
+		});
+
+		// Enable draggable itmes
+		enableListViewDragItems(listView, TransferMode.COPY);
+
+		// keys
+		listView.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+			public void handle(final KeyEvent keyEvent) {
+				switch (keyEvent.getCode()) {
+				case ENTER:
+					ListItemManager.getInstance().play(logic, listView, listView.getSelectionModel().getSelectedItem());
+					break;
+				default:
+					break;
+				}
+			}
+		});
+
+		return listView;
 	}
 
 	private Tab createPlayList(final LogicInterfaceFX logic, final PlayList playlist, boolean selectTitle, boolean activateTab) {
@@ -894,8 +957,8 @@ public class ViewController implements Initializable, ViewInterface {
 
 		/**
 		 * Constructor for playlist
-		 * 
-		 * 
+		 *
+		 *
 		 * @param atomicId
 		 * @param logic
 		 */

@@ -68,9 +68,9 @@ import de.roth.jsona.util.TimeFormatter;
 /**
  * Core class of the jSona, where everything comes together. This class
  * implements the main logic of the application
- * 
+ *
  * @author Frank Roth
- * 
+ *
  */
 public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListener, FileScannerListener, FileTaggerListener, WatchDirListener, ExternalInformationsListener, HotKeyListener {
 
@@ -148,7 +148,11 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 		// Music folders
 		ArrayList<File> folders = Config.asFileArrayList(Config.getInstance().FOLDERS);
 
-		// Show the cached files for that folder, if no files are chache
+		// Create view music folders
+		for (int i = folders.size() - 1; i >= 0; i--) {
+			ViewManagerFX.getInstance().getController().createLoadingMusicFolder(folders.get(i).getAbsolutePath(), folders.get(i).getAbsolutePath(), 0);
+		}
+
 		this.folderTaggedAmount = 0;
 		for (File f : folders) {
 			// add cache
@@ -161,6 +165,8 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+
+			ViewManagerFX.getInstance().getController().updateMusicFolderLoading(-1, 0, null, f.getAbsolutePath());
 
 			// tag entries
 			Task<Void> fileScannerTask = new FileScannerTask(f, 0, this, this, f.getAbsolutePath());
@@ -261,6 +267,9 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 				Logger.get().log(Level.FINE, "+lucene '" + item.getFile().getAbsolutePath() + "'.");
 			}
 		}
+
+		// Update view
+		ViewManagerFX.getInstance().getController().updateMusicFolderLoading(current, total, item, item.getRootFolder().getAbsolutePath());
 	}
 
 	/**
@@ -270,7 +279,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 	@Override
 	public synchronized void taggingFinished(File rootFile, boolean somethingChanged, ArrayList<MusicListItem> items, ArrayList<MusicListItem> recentlyAddedItems) {
 		// Show folder
-		ViewManagerFX.getInstance().getController().addMusicFolder(this, rootFile.getAbsolutePath(), rootFile.getAbsolutePath(), 0, items);
+		ViewManagerFX.getInstance().getController().setMusicFolder(this, rootFile.getAbsolutePath(), rootFile.getAbsolutePath(), 0, items);
 
 		// If all are new, dont add them to the "new" tab
 		if (items.size() != recentlyAddedItems.size()) {
@@ -282,8 +291,8 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 		this.folderTaggedAmount++;
 		if (this.folderTaggedAmount == Config.getInstance().FOLDERS.size()) {
 			Logger.get().log(Level.INFO, "Indexing and tagging done...");
-			ViewManagerFX.getInstance().getController().addMusicFolder(this, Global.NEW_FOLDER_NAME, Global.NEW_FOLDER_NAME, Config.getInstance().FOLDERS.size(), this.newList);
 			DataManager.getInstance().cleanup();
+			ViewManagerFX.getInstance().getController().createMusicFolder(this, Global.NEW_FOLDER_NAME, Global.NEW_FOLDER_NAME, Config.getInstance().FOLDERS.size(), this.newList);
 		}
 	}
 
