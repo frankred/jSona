@@ -102,23 +102,28 @@ public class DataManager {
 	 * tmp_keep_in_cache property and save cache to file.
 	 */
 	public void cleanup() {
-		// Clean up cache with unsed files
-		Iterator<Map.Entry<String, MusicListItem>> iter = this.cache.entrySet().iterator();
-		while (iter.hasNext()) {
-			Map.Entry<String, MusicListItem> pair = (Map.Entry<String, MusicListItem>) iter.next();
-			MusicListItem item = pair.getValue();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// Clean up cache with unsed files
+				Iterator<Map.Entry<String, MusicListItem>> iter = cache.entrySet().iterator();
+				while (iter.hasNext()) {
+					Map.Entry<String, MusicListItem> pair = (Map.Entry<String, MusicListItem>) iter.next();
+					MusicListItem item = pair.getValue();
 
-			if (!item.isTmp_keep_in_cache()) {
-				Logger.get().log(Level.INFO, "Remove file '" + item.getFile().getAbsolutePath() + "' from cache.");
-				iter.remove();
+					if (!item.isTmp_keep_in_cache()) {
+						Logger.get().log(Level.INFO, "Remove file '" + item.getFile().getAbsolutePath() + "' from cache.");
+						iter.remove();
+					}
+
+					// Reset tmp property before saving...
+					item.setTmp_keep_in_cache(false);
+				}
+
+				// Save new cache to file
+				SerializeManager.save(Global.FILES_CACHE, cache);
 			}
-
-			// Reset tmp property before saving...
-			item.setTmp_keep_in_cache(false);
-		}
-
-		// Save new cache to file
-		SerializeManager.save(Global.FILES_CACHE, this.cache);
+		}).start();
 	}
 
 	public MusicListItem get(String path) {
