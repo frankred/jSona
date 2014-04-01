@@ -211,6 +211,10 @@ Download the current zip file and extract it. Then put in your correct VLC path 
 java -jar jSona-1.0.3.jar
 ```
 jSona uses JavaFX so a current Java virtual machine with JavaFX support should be installed.
+Run jSona without console under Windows OS
+```
+start javaw -jar jSona-1.0.3.jar
+```
 
 ##Help / FAQ
 Here is a screenshot of jSona that explains the easy to use user interface.
