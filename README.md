@@ -224,6 +224,7 @@ This project is based on a set of amazing projects. Thank you to all programmers
 * [last.fm-java](https://code.google.com/p/lastfm-java/)
 * [Apache Lucene](http://lucene.apache.org/core/)
 * [JavaFX](http://www.oracle.com/technetwork/java/javafx/overview/index.html)
+* [Yootheme](http://www.yootheme.com/icons)
 
 ##License
 MIT - **Free Software, Hell Yeah!**
