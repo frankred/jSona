@@ -158,7 +158,7 @@ Logging every file in the scanner and tagging process can be very time expensive
 
 ###HOTKEYS
 Here is a list of all modifiers and keys that can be used: https://github.com/frankred/jSona/wiki/Key-Codes.
-Currently only global hotkeys work. Supported application events are: {PLAYER_VOLUME_UP, PLAYER_VOLUME_DOWN, PLAYER_PLAY_PAUSE, VIEW_HIDE_SHOW}
+Currently only global hotkeys work. Supported application events are: {PLAYER_VOLUME_UP, PLAYER_VOLUME_DOWN, PLAYER_PLAY_PAUSE, VIEW_HIDE_SHOW, PLAYER_NEXT, PLAYER_PREVIOUS, PLAYER_TIME_UP, PLAYER_TIME_DOWN}
 
 ```json
 {
