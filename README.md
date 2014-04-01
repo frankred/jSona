@@ -51,50 +51,50 @@ Here is an example of the default configuration file. You have to setup your **V
 
 And here an explanation of all possible attributes:
 
-###PATH_TO_VLCJ
+#####PATH_TO_VLCJ
 Path to your VLC root directory where the libvlc or libvlccore library is. (In windows the files are called libvlc.dll and libvlccore.dll).
 
-###MAX_SEARCH_RESULT_AMOUNT
+#####MAX_SEARCH_RESULT_AMOUNT
 Maximum search results of the lucene engine (smaller is faster)
 
-###VOLUME
+#####VOLUME
 Default startup volume. Will be overwritten by jSona (always save the recently changed volume).
 
-###FOLDERS
+#####FOLDERS
 Your music folders. Care of JSON-Syntax and correct backslashes (/). jSona also supports the usage of the Uniform Naming Convention and folders in a network (e.g.: "\\\\servername\folder\path"). See example above... 
 
-###PLAYBACK_MODE
+#####PLAYBACK_MODE
 Playbackmode of jSona. Choose one of them: {NORMAL, SHUFFLE}. Will be overwritten by jSona (always save the recently changed playback mode).
 
-###RECENTLY_ADDED_UNITL_TIME_IN_DAYS
+#####RECENTLY_ADDED_UNITL_TIME_IN_DAYS
 How long do you want to show new songs in the "New" tab. If you choose -7 then new songs will be displayed for one week in the "New" tab. This number should always be negative.
 
-###THEME
+#####THEME
 Currently there is only one theme available: {"grey"}.
 
-###KEY_SKIP_TIME
-If you change the duration slider with the help of the arrow keys(left or right) the slider rewind or skips 10 seconds.
+#####KEY_SKIP_TIME
+If you change the duration slider with the help of the arrow keys(left or right) or hotkeys the slider rewind or skips 10 seconds.
 
-###WINDOW_UNDECORATED
+#####WINDOW_UNDECORATED
 If you set the value on **false** the normal OS look and feel will be used. If you set the value on **true** [in-sideFX Undecorator](https://github.com/in-sideFX/Undecorator) will be used to make the jSona window beautiful.
 
 ![jSona screenshot - undecorated: false](https://dl.dropboxusercontent.com/u/3669658/github/jSona/jsona_undecorated_2.png "undecorated: false")
 
-###TITLE
+#####TITLE
 Window title of jSona. Will only be displayed if the **WINDOW_UNDECORATED** property is set to **false**.
 
-### MIN_HEIGHT
+#####MIN_HEIGHT
 Minimum window height.
 
-### MIN_WIDTH
+#####MIN_WIDTH
 Minimum window width.
 
-###COLORIZE_ITEMS
+#####COLORIZE_ITEMS
 If the value is set to **true** the same music items will be displayed with a different smooth background color. If the value is set to **false** then the default JavaFX list background will be used (see screenshot above).
 s
 ![jSona screenshot](https://dl.dropboxusercontent.com/u/3669658/github/jSona/jsona_colorized_items.png "You Got Rick Rolled!")
 
-###FILEPATH_BASED_MUSIC_INFORMATIONS
+#####FILEPATH_BASED_MUSIC_INFORMATIONS
 There is the possibility to define rules to detect music informations with the help of the file path. Currently there are two kind of rules {"ROOT_SUBFOLDER_LEVEL_RULE", "FILENAME_RULE"}. The "ROOT_SUBFOLDER_LEVEL_RULE" is a rule based on the subfolder level according to the root directory. With the help of the "FILENAME_RULE" you can match everything according to the filename (not file path) of the file. It is possible to ignore file endings and to replace underscores with a space.
 
 The follwing examples should help you with to use these rules.
@@ -153,10 +153,10 @@ With the follwing rules you can match the genre (%GENRE%), the artist (%ARTIST%)
 ```
 Every matching **%VARIABLE%** will be trimmed at the ending, so it does not mather if you choose **%TRACK_NO% - %TITLE%** or **%TRACK_NO%-%TITLE%** as a pattern. It is also possible to ignore areas in the path by producing non declared Variables like: %TMP%, %I_DONT_NEED_THAT%, %IGNORE%... you can create anything...
 
-###SCANNER_AND_TAGGER_LOGGING_GRANULARITY
+#####SCANNER_AND_TAGGER_LOGGING_GRANULARITY
 Logging every file in the scanner and tagging process can be very time expensive. Because of that you can define the granularity of the scanner and tagging logging. If the value is set to 1 every file is logged (time expensive). If the value is set to 128 only every 128th and the last file will be logged. This value can be every number > 0.
 
-###HOTKEYS
+#####HOTKEYS
 Here is a list of all modifiers and keys that can be used: https://github.com/frankred/jSona/wiki/Key-Codes.
 Currently only global hotkeys work. Supported application events are: {PLAYER_VOLUME_UP, PLAYER_VOLUME_DOWN, PLAYER_PLAY_PAUSE, VIEW_HIDE_SHOW, PLAYER_NEXT, PLAYER_PREVIOUS, PLAYER_TIME_UP, PLAYER_TIME_DOWN}
 
