@@ -3,7 +3,7 @@
 jSona is a configuration file(JSON), [vlcj](https://github.com/caprica/vlcj) and [JavaFx](http://www.oracle.com/technetwork/java/javafx/overview/index.html) based music and media player. The aim of jSona is to always keep your playlists in synch with your music folders. For fast fulltext search jSona uses [Apache Lucene](http://lucene.apache.org/core/). The follwing features are fully supported:
 
   - Supports all common media formats that VLC [supports](https://wiki.videolan.org/VLC_Features_Formats/)
-  - Load artist informations and images via [last.fm](http://www.lastfm.de/api) and [MusicBrainz](http://musicbrainz.org/)
+  - Load artist information and images via [last.fm](http://www.lastfm.de/api) and [MusicBrainz](http://musicbrainz.org/)
   - Include your music foldersf
   - Create multiple playlists
   - Fulltext search
@@ -95,7 +95,7 @@ s
 ![jSona screenshot](https://dl.dropboxusercontent.com/u/3669658/github/jSona/jsona_colorized_items.png "You Got Rick Rolled!")
 
 #####FILEPATH_BASED_MUSIC_INFORMATIONS
-There is the possibility to define rules to detect music informations with the help of the file path. Currently there are two kind of rules {"ROOT_SUBFOLDER_LEVEL_RULE", "FILENAME_RULE"}. The "ROOT_SUBFOLDER_LEVEL_RULE" is a rule based on the subfolder level according to the root directory. With the help of the "FILENAME_RULE" you can match everything according to the filename (not file path) of the file. It is possible to ignore file endings and to replace underscores with a space.
+There is the possibility to define rules to detect music information with the help of the file path. Currently there are two kind of rules {"ROOT_SUBFOLDER_LEVEL_RULE", "FILENAME_RULE"}. The "ROOT_SUBFOLDER_LEVEL_RULE" is a rule based on the subfolder level according to the root directory. With the help of the "FILENAME_RULE" you can match everything according to the filename (not file path) of the file. It is possible to ignore file endings and to replace underscores with a space.
 
 The follwing examples should help you with to use these rules.
 
@@ -202,7 +202,7 @@ Currently only global hotkeys work. Supported application events are: {PLAYER_VO
 * VOLUME_UP_DOWN_AMOUNT amount for hotkeys can be defined in the config.json.
 
 ###1.0.1
-* Music informations like artist or title can now be detected from the filepath with the help of detector rules in the config.json.
+* Music information like artist or title can now be detected from the filepath with the help of detector rules in the config.json.
 * Logging granularity of file scanner and tagger can now be defined in the config.json.
 
 ##Installation and Start
