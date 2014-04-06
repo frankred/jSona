@@ -2,16 +2,12 @@
 
 <?import java.lang.*?>
 <?import java.net.*?>
-<?import java.util.*?>
-<?import javafx.collections.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.scene.web.*?>
 
 <AnchorPane fx:id="applicationContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="598.0" prefWidth="857.0" style="" styleClass="root" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
   <children>
@@ -40,7 +36,7 @@
                 <Font size="18.0" />
               </font>
             </Label>
-            <Label fx:id="artistBio" alignment="TOP_LEFT" contentDisplay="LEFT" prefHeight="88.0" prefWidth="543.0" text="Version 1.0.0" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="86.0" />
+            <Label fx:id="artistBio" alignment="TOP_LEFT" contentDisplay="LEFT" prefHeight="88.0" prefWidth="543.0" text="Version 1.0.3" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="86.0" />
             <AnchorPane minHeight="20.0" prefHeight="20.0" prefWidth="543.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="196.0">
               <children>
                 <Pane prefHeight="200.0" prefWidth="200.0" styleClass="root" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
@@ -58,7 +54,7 @@
         </AnchorPane>
       </left>
     </BorderPane>
-    <SplitPane dividerPositions="0.5006045949214026" focusTraversable="true" prefHeight="303.0" prefWidth="829.0" style="" AnchorPane.bottomAnchor="66.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="229.0">
+    <SplitPane dividerPositions="0.5006045949214026" focusTraversable="true" prefHeight="303.0" prefWidth="829.0" style="" styleClass="splitPane" AnchorPane.bottomAnchor="66.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="229.0">
       <items>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
           <children>
@@ -68,8 +64,8 @@
                   <content>
                     <AnchorPane fx:id="searchContent" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                       <children>
-                        <TextField fx:id="searchText" prefHeight="26.0" prefWidth="411.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                        <ListView fx:id="searchResultsListView" prefHeight="243.99990000000253" prefWidth="411.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="26.0" />
+                        <TextField fx:id="searchText" prefHeight="26.0" prefWidth="411.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0" />
+                        <ListView fx:id="searchResultsListView" prefHeight="243.99990000000253" prefWidth="411.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="28.0" />
                       </children>
                     </AnchorPane>
                   </content>
@@ -102,18 +98,18 @@
     </Button>
     <StackPane prefHeight="24.0" prefWidth="125.0" styleClass="sliderProgress" AnchorPane.bottomAnchor="23.0" AnchorPane.leftAnchor="148.0">
       <children>
-        <ProgressBar fx:id="volumeProgress" minHeight="14.0" minWidth="118.0" prefHeight="14.0" prefWidth="118.0" progress="0.0" style="-fx-background-radius: 10;" styleClass="volumeProgress" StackPane.alignment="CENTER" />
-        <Slider id="volume" fx:id="volumeSlider" minHeight="14.0" minWidth="125.0" prefWidth="125.0" showTickLabels="false" showTickMarks="false" snapToTicks="false" style="" StackPane.alignment="CENTER" />
+        <ProgressBar fx:id="volumeProgress" minHeight="14.0" minWidth="118.0" prefHeight="14.0" prefWidth="118.0" progress="0.0" styleClass="volumeProgress" StackPane.alignment="CENTER" />
+        <Slider id="volume" fx:id="volumeSlider" minHeight="18.0" minWidth="125.0" prefHeight="18.0" prefWidth="125.0" showTickLabels="false" showTickMarks="false" snapToTicks="false" StackPane.alignment="CENTER" />
       </children>
     </StackPane>
-    <StackPane prefWidth="378.0" styleClass="sliderProgress" AnchorPane.bottomAnchor="28.0" AnchorPane.leftAnchor="358.0" AnchorPane.rightAnchor="121.0">
+    <StackPane prefHeight="24.0" prefWidth="378.0" styleClass="sliderProgress" AnchorPane.bottomAnchor="23.0" AnchorPane.leftAnchor="358.0" AnchorPane.rightAnchor="121.0">
       <children>
-        <AnchorPane minHeight="6.0" prefHeight="6.0" prefWidth="-1.0" StackPane.alignment="CENTER">
+        <AnchorPane minHeight="24.0" minWidth="378.0" prefHeight="24.0" prefWidth="378.0" StackPane.alignment="CENTER">
           <children>
-            <ProgressBar fx:id="durationProgress" minHeight="6.0" prefHeight="6.0" progress="0.0" styleClass="durationProgress" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="4.0" />
+            <ProgressBar fx:id="durationProgress" minHeight="10.0" minWidth="378.0" prefHeight="10.0" prefWidth="378.0" progress="0.0" styleClass="durationProgress" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="7.0" />
           </children>
         </AnchorPane>
-        <Slider fx:id="durationSlider" showTickLabels="false" showTickMarks="false" snapToTicks="false" StackPane.alignment="CENTER" />
+        <Slider fx:id="durationSlider" minHeight="24.0" minWidth="378.0" prefHeight="24.0" prefWidth="378.0" showTickLabels="false" showTickMarks="false" snapToTicks="false" StackPane.alignment="CENTER" />
       </children>
     </StackPane>
     <ToggleButton fx:id="shuffleToggleButton" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" style="-fx-background-radius: 80 80 80 80;&#10;-fx-focus-color: transparent;" text="" AnchorPane.bottomAnchor="19.0" AnchorPane.rightAnchor="15.0">
