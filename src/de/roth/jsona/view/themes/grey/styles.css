@@ -1,3 +1,7 @@
+.tab {
+	-fx-focus-color: transparent;
+}
+
 .root{
 	-fx-background-color: #f4f4f4;
 }
@@ -18,7 +22,7 @@
 }
 
 .volumeProgress{
-	-fx-background-radius: 7.0;	/* 14 height of volume progress */
+	-fx-background-radius: 10;
 }
 
 .durationProgress{
