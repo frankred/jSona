@@ -68,9 +68,9 @@ import de.roth.jsona.util.TimeFormatter;
 /**
  * Core class of the jSona, where everything comes together. This class
  * implements the main logic of the application
- *
+ * 
  * @author Frank Roth
- *
+ * 
  */
 public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListener, FileScannerListener, FileTaggerListener, WatchDirListener, ExternalInformationsListener, HotKeyListener {
 
@@ -224,8 +224,21 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 	 * Close jSona and write config file.
 	 */
 	public void close() {
+		// Closing takes some time, so first stop playing music then hide the
+		// view...
+
+		// Stop playing
+		if (mediaPlayerManager.getState() == PlayerState.PLAYING) {
+			mediaPlayerManager.pause();
+		}
+
+		// Hide view
 		ViewManagerFX.getInstance().getController().hide();
 
+		// Save cache
+		DataManager.getInstance().commit();
+
+		// Stop hotkeys
 		this.hotkeysProvider.reset();
 		this.hotkeysProvider.stop();
 
@@ -327,7 +340,9 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 
 	@Override
 	public void lengthChanged(MediaPlayer mediaPlayer, long newLengthInMs) {
-		this.mediaPlayerManager.getItem().setDuration(TimeFormatter.formatMilliseconds(newLengthInMs));
+		if (this.mediaPlayerManager.getItem().getDuration() == null || this.mediaPlayerManager.getItem().getDuration().equals("")) {
+			this.mediaPlayerManager.getItem().setDuration(TimeFormatter.formatMilliseconds(newLengthInMs));
+		}
 		ViewManagerFX.getInstance().getController().setCurrentTotalDuration(newLengthInMs);
 	}
 
