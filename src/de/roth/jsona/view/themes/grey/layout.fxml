@@ -102,7 +102,11 @@
         <Slider id="volume" fx:id="volumeSlider" minHeight="18.0" minWidth="125.0" prefHeight="18.0" prefWidth="125.0" showTickLabels="false" showTickMarks="false" snapToTicks="false" StackPane.alignment="CENTER" />
       </children>
     </StackPane>
-    <Label fx:id="volumeLabel" layoutX="281.0" prefWidth="63.0" text="100%" AnchorPane.bottomAnchor="28.0" />
+    <Label fx:id="volumeLabel" layoutX="281.0" prefWidth="63.0" text="100" AnchorPane.bottomAnchor="28.0">
+      <font>
+        <Font name="System Bold" size="11.0" />
+      </font>
+    </Label>
     <StackPane prefHeight="24.0" prefWidth="378.0" styleClass="sliderProgress" AnchorPane.bottomAnchor="23.0" AnchorPane.leftAnchor="358.0" AnchorPane.rightAnchor="121.0">
       <children>
         <AnchorPane minHeight="24.0" minWidth="-1.0" prefHeight="24.0" prefWidth="378.0" StackPane.alignment="CENTER">
@@ -118,7 +122,11 @@
         <ImageView fx:id="shuffleToggleButtonImage" fitHeight="16.0" fitWidth="16.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="false" translateX="0.0" x="20.0" />
       </graphic>
     </ToggleButton>
-    <Label fx:id="durationLabel" prefWidth="63.0" text="" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="48.0" />
+    <Label fx:id="durationLabel" prefWidth="63.0" text="" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="48.0">
+      <font>
+        <Font size="11.0" />
+      </font>
+    </Label>
   </children>
   <stylesheets>
     <URL value="@styles.css" />

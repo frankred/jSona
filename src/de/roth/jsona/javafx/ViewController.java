@@ -167,7 +167,7 @@ public class ViewController implements Initializable, ViewInterface {
 			volumeSlider.valueProperty().set(value);
 		}
 		volumeProgress.setProgress(value / 100d);
-		volumeLabel.setText(value + "%");
+		volumeLabel.setText(String.valueOf(value));
 	}
 
 	private void setDurationFX(long ms, boolean updateItself) {
