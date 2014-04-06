@@ -48,7 +48,6 @@ public class Config {
 	@Expose public String SENT_TO_PATH;
 	@Expose public int RECENTLY_ADDED_UNITL_TIME_IN_DAYS;
 	@Expose public String THEME;
-	@Expose public int KEY_SKIP_TIME;
 	@Expose public boolean WINDOW_UNDECORATED;
 	@Expose public String TITLE;
 	@Expose public int MIN_HEIGHT;
@@ -57,7 +56,12 @@ public class Config {
 	@Expose public ArrayList<DetectorRuleConfig> FILEPATH_BASED_MUSIC_INFORMATIONS;
 	@Expose public int SCANNER_AND_TAGGER_LOGGING_GRANULARITY;
 	@Expose public ArrayList<HotkeyConfig> HOTKEYS;
+	
 	@Expose public int VOLUME_UP_DOWN_AMOUNT;
+	@Expose public int VOLUME_SCROLL_UP_DOWN_AMOUNT;
+	@Expose public int DURATION_ARROW_KEYS_SKIP_TIME;
+	@Expose public int DURATION_SCROLL_SKIP_TIME;
+	
 
 	public Config() {
 		// default values
@@ -66,7 +70,6 @@ public class Config {
 		this.VOLUME = 80;
 		this.MAX_SEARCH_RESULT_AMOUNT = 512;
 		this.PLAYBACK_MODE = PlayBackMode.NORMAL;
-		this.KEY_SKIP_TIME = 10;
 		this.RECENTLY_ADDED_UNITL_TIME_IN_DAYS = -7;
 		this.WINDOW_UNDECORATED = false;
 		this.MIN_HEIGHT = 400;
@@ -74,6 +77,9 @@ public class Config {
 		this.COLORIZE_ITEMS = true;
 		this.SCANNER_AND_TAGGER_LOGGING_GRANULARITY = 1;
 		this.VOLUME_UP_DOWN_AMOUNT = 20;
+		this.VOLUME_SCROLL_UP_DOWN_AMOUNT = 5;
+		this.DURATION_ARROW_KEYS_SKIP_TIME = 10;
+		this.DURATION_SCROLL_SKIP_TIME = 10;
 	}
 
 	/**

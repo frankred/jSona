@@ -775,14 +775,14 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 					ViewManagerFX.getInstance().getController().prev(this);
 					break;
 				case PLAYER_TIME_UP:
-					long newTime_up = this.mediaPlayerManager.getTime() + Config.getInstance().KEY_SKIP_TIME * 1000;
+					long newTime_up = this.mediaPlayerManager.getTime() + Config.getInstance().DURATION_ARROW_KEYS_SKIP_TIME * 1000;
 					if (newTime_up > this.mediaPlayerManager.getLength()) {
 						newTime_up = this.mediaPlayerManager.getLength();
 					}
 					event_player_play_skipto(newTime_up);
 					break;
 				case PLAYER_TIME_DOWN:
-					long newTime_down = this.mediaPlayerManager.getTime() - Config.getInstance().KEY_SKIP_TIME * 1000;
+					long newTime_down = this.mediaPlayerManager.getTime() - Config.getInstance().DURATION_ARROW_KEYS_SKIP_TIME * 1000;
 					if (newTime_down < 0) {
 						newTime_down = 0;
 					}
@@ -794,10 +794,26 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 			}
 		}
 	}
+	
+	public void action_player_volume_up(int stepSize){
+		Config.getInstance().VOLUME += stepSize;
+		if (Config.getInstance().VOLUME >= 100) {
+			Config.getInstance().VOLUME = 100;
+		} else if (Config.getInstance().VOLUME < 0) {
+			Config.getInstance().VOLUME = 0;
+		}
+		Logger.get().log(Level.INFO, "Set volume to '" + Config.getInstance().VOLUME + "'.");
+		ViewManagerFX.getInstance().getController().setVolume(Config.getInstance().VOLUME);
+		mediaPlayerManager.setVolume(Config.getInstance().VOLUME);
+	}
 
 	@Override
 	public void action_player_volume_up() {
-		Config.getInstance().VOLUME += Config.getInstance().VOLUME_UP_DOWN_AMOUNT;
+		action_player_volume_up(Config.getInstance().VOLUME_UP_DOWN_AMOUNT);
+	}
+	
+	public void action_player_volume_down(int stepSize) {
+		Config.getInstance().VOLUME -= stepSize;
 		if (Config.getInstance().VOLUME >= 100) {
 			Config.getInstance().VOLUME = 100;
 		} else if (Config.getInstance().VOLUME < 0) {
@@ -810,15 +826,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 
 	@Override
 	public void action_player_volume_down() {
-		Config.getInstance().VOLUME -= Config.getInstance().VOLUME_UP_DOWN_AMOUNT;
-		if (Config.getInstance().VOLUME >= 100) {
-			Config.getInstance().VOLUME = 100;
-		} else if (Config.getInstance().VOLUME < 0) {
-			Config.getInstance().VOLUME = 0;
-		}
-		Logger.get().log(Level.INFO, "Set volume to '" + Config.getInstance().VOLUME + "'.");
-		ViewManagerFX.getInstance().getController().setVolume(Config.getInstance().VOLUME);
-		mediaPlayerManager.setVolume(Config.getInstance().VOLUME);
+		action_player_volume_down(Config.getInstance().VOLUME_UP_DOWN_AMOUNT);
 	}
 
 	@Override

@@ -55,6 +55,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -373,27 +374,34 @@ public class ViewController implements Initializable, ViewInterface {
 				logic.event_player_volume(newValue.intValue(), oldValue.intValue());
 			}
 		});
+		volumeSlider.setOnScroll(new EventHandler<ScrollEvent>() {
+			@Override
+			public void handle(ScrollEvent arg0) {
+				if (arg0.getDeltaY() > 0) {
+					logic.action_player_volume_up(Config.getInstance().VOLUME_SCROLL_UP_DOWN_AMOUNT);
+				} else {
+					logic.action_player_volume_down(Config.getInstance().VOLUME_SCROLL_UP_DOWN_AMOUNT);
+				}
+			}
+		});
 
 		durationSlider.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent m) {
 				blockDurationProgress = true;
 			};
 		});
-
 		durationSlider.addEventHandler(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent m) {
 				blockDurationProgress = false;
 				logic.event_player_play_skipto(durationSlider.getValue());
 			};
 		});
-
 		durationSlider.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> arg0, Number oldValue, Number newValue) {
 				setDurationFX(newValue.longValue(), false);
 			}
 		});
-
 		durationSlider.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent arg0) {
@@ -401,14 +409,14 @@ public class ViewController implements Initializable, ViewInterface {
 
 				switch (arg0.getCode()) {
 				case RIGHT:
-					newTime = durationSlider.getValue() + Config.getInstance().KEY_SKIP_TIME * 1000;
+					newTime = durationSlider.getValue() + Config.getInstance().DURATION_ARROW_KEYS_SKIP_TIME * 1000;
 					if (newTime > durationSlider.getMax()) {
 						newTime = durationSlider.getMax();
 					}
 					logic.event_player_play_skipto(newTime);
 					break;
 				case LEFT:
-					newTime = durationSlider.getValue() - Config.getInstance().KEY_SKIP_TIME * 1000;
+					newTime = durationSlider.getValue() - Config.getInstance().DURATION_ARROW_KEYS_SKIP_TIME * 1000;
 					if (newTime < 0) {
 						newTime = 0;
 					}
@@ -418,6 +426,25 @@ public class ViewController implements Initializable, ViewInterface {
 					break;
 				}
 
+			}
+		});
+		durationSlider.setOnScroll(new EventHandler<ScrollEvent>() {
+			@Override
+			public void handle(ScrollEvent arg0) {
+				double newTime;
+				if (arg0.getDeltaY() > 0) {
+					newTime = durationSlider.getValue() + Config.getInstance().DURATION_SCROLL_SKIP_TIME * 1000;
+					if (newTime > durationSlider.getMax()) {
+						newTime = durationSlider.getMax();
+					}
+					logic.event_player_play_skipto(newTime);
+				} else {
+					newTime = durationSlider.getValue() - Config.getInstance().DURATION_SCROLL_SKIP_TIME * 1000;
+					if (newTime < 0) {
+						newTime = 0;
+					}
+					logic.event_player_play_skipto(newTime);
+				}
 			}
 		});
 
@@ -598,11 +625,11 @@ public class ViewController implements Initializable, ViewInterface {
 		Platform.runLater(new Runnable() {
 			public void run() {
 				ProgressIndicator p = musicFolderListLoadingViews.get(id);
-				
-				if(p == null){
+
+				if (p == null) {
 					return;
 				}
-				
+
 				p.setProgress((double) current / (double) total);
 				Text t = (Text) musicFolderListLoadingViews.get(id).lookup(".percentage");
 
@@ -633,7 +660,7 @@ public class ViewController implements Initializable, ViewInterface {
 			e.printStackTrace();
 			return;
 		}
-		
+
 		VBox vbox = (VBox) loadingPane.getChildren().get(0);
 		ProgressIndicator indicator = (ProgressIndicator) vbox.getChildren().get(0);
 		tab.setContent(loadingPane);
@@ -694,7 +721,7 @@ public class ViewController implements Initializable, ViewInterface {
 		// ListCell
 		listView.setCellFactory(new Callback<ListView<MusicListItem>, ListCell<MusicListItem>>() {
 			@Override
-			public ListCell<MusicListItem> call(ListView<MusicListItem> item) {
+			public ListCell<MusicListItem> call(ListView<MusicListItem> listView) {
 				// http://docs.oracle.com/javafx/2/ui_controls/list-view.htm
 				return new MusicListItemCell(logic);
 			}
@@ -964,8 +991,8 @@ public class ViewController implements Initializable, ViewInterface {
 
 		/**
 		 * Constructor for playlist
-		 *
-		 *
+		 * 
+		 * 
 		 * @param atomicId
 		 * @param logic
 		 */
@@ -1021,6 +1048,7 @@ public class ViewController implements Initializable, ViewInterface {
 			super.updateItem(item, empty);
 
 			if (!empty && item != null) {
+
 				// Duration
 				this.duration.setText(item.getDuration());
 

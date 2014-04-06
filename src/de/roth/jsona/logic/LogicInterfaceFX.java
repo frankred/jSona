@@ -32,7 +32,9 @@ public interface LogicInterfaceFX {
 	public void event_search_music(String query);
 	
 	public void action_player_volume_up();
+	public void action_player_volume_up(int stepsize);
 	public void action_player_volume_down();
+	public void action_player_volume_down(int stepsize);
 	public void action_volume_mute_unmute();
 	public void action_player_play_pause();
 	public void action_toggle_view();

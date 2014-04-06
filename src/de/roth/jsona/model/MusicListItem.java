@@ -23,7 +23,7 @@ public class MusicListItem implements Serializable {
 	private int colorClass;
 
 	public enum Status {
-		NO_OPERATION, SET_NONE, SET_PLAYING, SET_PAUSED
+		SET_NONE, SET_PLAYING, SET_PAUSED
 	}
 
 	private Status tmp_status; // this breaks MVC, but fuck my life, JavaFX does
