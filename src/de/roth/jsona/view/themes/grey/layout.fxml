@@ -81,6 +81,11 @@
         </AnchorPane>
       </items>
     </SplitPane>
+    <Button fx:id="prevButton" layoutX="17.0" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" style="-fx-background-radius: 80 80 80 80;" text="" underline="false" wrapText="false" AnchorPane.bottomAnchor="20.0">
+      <graphic>
+        <ImageView fx:id="prevButtonImage" fitHeight="16.0" fitWidth="16.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="false" translateX="0.0" x="20.0" />
+      </graphic>
+    </Button>
     <Button fx:id="playButton" layoutX="54.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-radius: 80 80 80 80;" text="" underline="false" wrapText="false" AnchorPane.bottomAnchor="15.0">
       <graphic>
         <ImageView fx:id="playButtonImage" fitHeight="32.0" fitWidth="32.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="false" translateX="2.0" x="20.0" />
@@ -91,25 +96,21 @@
         <ImageView fx:id="nextButtonImage" fitHeight="16.0" fitWidth="16.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="false" translateX="0.0" x="20.0" />
       </graphic>
     </Button>
-    <Button fx:id="prevButton" layoutX="17.0" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" style="-fx-background-radius: 80 80 80 80;" text="" underline="false" wrapText="false" AnchorPane.bottomAnchor="20.0">
-      <graphic>
-        <ImageView fx:id="prevButtonImage" fitHeight="16.0" fitWidth="16.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="false" translateX="0.0" x="20.0" />
-      </graphic>
-    </Button>
-    <StackPane prefHeight="24.0" prefWidth="125.0" styleClass="sliderProgress" AnchorPane.bottomAnchor="23.0" AnchorPane.leftAnchor="148.0">
+    <StackPane layoutX="148.0" prefHeight="24.0" prefWidth="125.0" styleClass="sliderProgress" AnchorPane.bottomAnchor="23.0">
       <children>
         <ProgressBar fx:id="volumeProgress" minHeight="14.0" minWidth="118.0" prefHeight="14.0" prefWidth="118.0" progress="0.0" styleClass="volumeProgress" StackPane.alignment="CENTER" />
         <Slider id="volume" fx:id="volumeSlider" minHeight="18.0" minWidth="125.0" prefHeight="18.0" prefWidth="125.0" showTickLabels="false" showTickMarks="false" snapToTicks="false" StackPane.alignment="CENTER" />
       </children>
     </StackPane>
+    <Label fx:id="volumeLabel" layoutX="281.0" prefWidth="63.0" text="100%" AnchorPane.bottomAnchor="28.0" />
     <StackPane prefHeight="24.0" prefWidth="378.0" styleClass="sliderProgress" AnchorPane.bottomAnchor="23.0" AnchorPane.leftAnchor="358.0" AnchorPane.rightAnchor="121.0">
       <children>
-        <AnchorPane minHeight="24.0" minWidth="378.0" prefHeight="24.0" prefWidth="378.0" StackPane.alignment="CENTER">
+        <AnchorPane minHeight="24.0" minWidth="-1.0" prefHeight="24.0" prefWidth="378.0" StackPane.alignment="CENTER">
           <children>
-            <ProgressBar fx:id="durationProgress" minHeight="10.0" minWidth="378.0" prefHeight="10.0" prefWidth="378.0" progress="0.0" styleClass="durationProgress" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="7.0" />
+            <ProgressBar fx:id="durationProgress" minHeight="10.0" minWidth="-1.0" prefHeight="10.0" prefWidth="378.0" progress="0.0" styleClass="durationProgress" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="7.0" />
           </children>
         </AnchorPane>
-        <Slider fx:id="durationSlider" minHeight="24.0" minWidth="378.0" prefHeight="24.0" prefWidth="378.0" showTickLabels="false" showTickMarks="false" snapToTicks="false" StackPane.alignment="CENTER" />
+        <Slider fx:id="durationSlider" minHeight="24.0" minWidth="-1.0" prefHeight="24.0" prefWidth="378.0" showTickLabels="false" showTickMarks="false" snapToTicks="false" StackPane.alignment="CENTER" />
       </children>
     </StackPane>
     <ToggleButton fx:id="shuffleToggleButton" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" style="-fx-background-radius: 80 80 80 80;&#10;-fx-focus-color: transparent;" text="" AnchorPane.bottomAnchor="19.0" AnchorPane.rightAnchor="15.0">
@@ -118,7 +119,6 @@
       </graphic>
     </ToggleButton>
     <Label fx:id="durationLabel" prefWidth="63.0" text="" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="48.0" />
-    <Label fx:id="volumeLabel" layoutX="281.0" prefWidth="63.0" text="100%" AnchorPane.bottomAnchor="28.0" />
   </children>
   <stylesheets>
     <URL value="@styles.css" />
