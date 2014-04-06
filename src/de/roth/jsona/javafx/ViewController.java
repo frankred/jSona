@@ -597,7 +597,13 @@ public class ViewController implements Initializable, ViewInterface {
 	public void updateMusicFolderLoading(final int current, final int total, final MusicListItem item, final String id) {
 		Platform.runLater(new Runnable() {
 			public void run() {
-				musicFolderListLoadingViews.get(id).setProgress((double) current / (double) total);
+				ProgressIndicator p = musicFolderListLoadingViews.get(id);
+				
+				if(p == null){
+					return;
+				}
+				
+				p.setProgress((double) current / (double) total);
 				Text t = (Text) musicFolderListLoadingViews.get(id).lookup(".percentage");
 
 				if (t == null) {
@@ -627,6 +633,7 @@ public class ViewController implements Initializable, ViewInterface {
 			e.printStackTrace();
 			return;
 		}
+		
 		VBox vbox = (VBox) loadingPane.getChildren().get(0);
 		ProgressIndicator indicator = (ProgressIndicator) vbox.getChildren().get(0);
 		tab.setContent(loadingPane);
