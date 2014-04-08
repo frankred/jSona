@@ -4,7 +4,7 @@ jSona is a configuration file(JSON), [vlcj](https://github.com/caprica/vlcj) and
 
   - Supports all common media formats that VLC [supports](https://wiki.videolan.org/VLC_Features_Formats/)
   - Load artist information and images via [last.fm](http://www.lastfm.de/api) and [MusicBrainz](http://musicbrainz.org/)
-  - Include your music foldersf
+  - Include your music folders
   - Create multiple playlists
   - Fulltext search
 
