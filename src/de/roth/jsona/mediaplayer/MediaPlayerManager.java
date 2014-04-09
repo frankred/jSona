@@ -3,13 +3,16 @@ package de.roth.jsona.mediaplayer;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import uk.co.caprica.vlcj.binding.LibVlcConst;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.player.AudioOutput;
+import uk.co.caprica.vlcj.player.Equalizer;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.ModuleDescription;
@@ -34,9 +37,10 @@ public class MediaPlayerManager {
 	private MediaPlayerFactory factory;
 	private List<AudioOutput> audioOutputs;
 	private EmbeddedMediaPlayer mediaPlayer;
+	private Map<String, Equalizer> allEqualizer;
+	private Equalizer equalizer;
 	private List<ModuleDescription> audioFilters;
 	private MusicListItem currentItem;
-
 	private BlockingQueue<Runnable> worksQueue;
 	private ThreadPoolExecutor executor;
 
@@ -49,6 +53,27 @@ public class MediaPlayerManager {
 		this.executor = new ThreadPoolExecutor(1, 1, 10, TimeUnit.SECONDS, worksQueue);
 		this.executor.allowCoreThreadTimeOut(false);
 		this.state = PlayerState.PAUSED;
+		this.mediaPlayer = factory.newEmbeddedMediaPlayer();
+		
+		
+		// Equalizer
+		if(this.factory.isEqualizerAvailable()){
+			this.equalizer = this.factory.newEqualizer("Rock");
+			this.mediaPlayer.setEqualizer(this.equalizer);
+			this.allEqualizer = this.factory.getAllPresetEqualizers();
+			
+			System.out.println(this.equalizer.getBandCount());
+			
+			int i = 0;
+			
+			for(String s : factory.getEqualizerPresetNames()){
+				System.out.println(s);
+			}
+			
+			for(Float f : this.equalizer.getAmps()){
+				System.out.println(i++ + ": " + f);
+			}
+		}
 
 		// Vlcj bug workarround - volume is accepted only if a media file
 		// played, so add a listener wait till empty.wav is play then set volume
@@ -176,8 +201,48 @@ public class MediaPlayerManager {
 		return currentItem;
 	}
 
+	/**
+	 * Get current state of the media player
+	 * @return
+	 */
 	public PlayerState getState() {
 		return state;
+	}
+	
+	/**
+	 * Return all vlc predefined equalizer
+	 * @return
+	 */
+	public List<String> getEqualizerPresetNames(){
+		if (this.equalizer == null){
+			return null;
+		}
+		
+		return this.factory.getEqualizerPresetNames();
+	}
+	
+	public float getEqualizerMaxGain(){
+		return LibVlcConst.MAX_GAIN;
+	}
+	
+	public float getEqualizerMinGain(){
+		return LibVlcConst.MIN_GAIN;
+	}
+	
+	public int getEqualizerAmpsAmount(){
+		return this.equalizer.getAmps().length;
+	}
+	
+	public float[] getEqualizerPreset(String name){
+		return this.allEqualizer.get(name).getAmps();
+	}
+	
+	public void setEqualizerAmps(float[] amps){
+		this.equalizer.setAmps(amps);
+	}
+	
+	public void setEqualizerAmp(int index, int newAmp){
+		this.equalizer.setAmp(index, newAmp);
 	}
 
 	/**

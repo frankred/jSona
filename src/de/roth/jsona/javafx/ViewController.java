@@ -1,7 +1,5 @@
 package de.roth.jsona.javafx;
 
-import insidefx.undecorator.Undecorator;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,6 +11,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.ResourceBundle;
 
@@ -27,9 +26,9 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -60,13 +59,11 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
 import org.jsoup.Jsoup;
@@ -76,8 +73,8 @@ import com.sun.media.jfxmedia.events.PlayerStateEvent.PlayerState;
 import de.roth.jsona.artist.JSonaArtist;
 import de.roth.jsona.config.Config;
 import de.roth.jsona.javafx.draghandler.ListItemDragHandler;
-import de.roth.jsona.javafx.util.AlignmentUtil;
 import de.roth.jsona.javafx.util.BrowserUtil;
+import de.roth.jsona.javafx.util.DialogUtil;
 import de.roth.jsona.javafx.util.TabUtil;
 import de.roth.jsona.logic.LogicInterfaceFX;
 import de.roth.jsona.mediaplayer.PlayBackMode;
@@ -119,7 +116,7 @@ public class ViewController implements Initializable, ViewInterface {
 	private Hyperlink removePlaylistButton;
 
 	@FXML
-	private ImageView playButtonImage, pauseButtonImage, nextButtonImage, prevButtonImage, shuffleToggleButtonImage, artistImage, addPlaylistImage;
+	private ImageView playButtonImage, pauseButtonImage, nextButtonImage, prevButtonImage, shuffleToggleButtonImage, artistImage, addPlaylistImage, equalizerIcon;
 
 	@FXML
 	private ToggleButton shuffleToggleButton;
@@ -128,13 +125,13 @@ public class ViewController implements Initializable, ViewInterface {
 	private Image playImage, pauseImage;
 
 	@FXML
-	AnchorPane imageContainer;
+	private AnchorPane imageContainer;
 
 	@FXML
-	TextField searchText;
+	private TextField searchText;
 
 	@FXML
-	ListView<MusicListItem> searchResultsListView;
+	private ListView<MusicListItem> searchResultsListView;
 
 	private Stage stage;
 	private Scene scene;
@@ -142,6 +139,7 @@ public class ViewController implements Initializable, ViewInterface {
 	private HashMap<String, Tab> musicFolderTabs;
 	private HashMap<String, ListView<MusicListItem>> musicFolderListViews;
 	private HashMap<String, ProgressIndicator> musicFolderListLoadingViews;
+	private Stage equalizerStage;
 
 	// Dragging data
 	private static final DataFormat DATA_FORMAT_LIST = new DataFormat("java.util.List");
@@ -159,7 +157,6 @@ public class ViewController implements Initializable, ViewInterface {
 		this.musicFolderListViews = new HashMap<String, ListView<MusicListItem>>();
 		this.musicFolderTabs = new HashMap<String, Tab>();
 		this.musicFolderListLoadingViews = new HashMap<String, ProgressIndicator>();
-		this.artistImage.setImage(new Image("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "icon.png"));
 	}
 
 	private void setVolumeFX(int value, boolean updateItself) {
@@ -245,6 +242,8 @@ public class ViewController implements Initializable, ViewInterface {
 		this.nextButtonImage.setImage(new Image(themePath + "/" + "next.png"));
 		this.prevButtonImage.setImage(new Image(themePath + "/" + "prev.png"));
 		this.shuffleToggleButtonImage.setImage(new Image(themePath + "/" + "shuffle.png"));
+		this.artistImage.setImage(new Image(themePath + "/" + "icon.png"));
+		this.equalizerIcon.setImage(new Image(themePath + "/" + "equalizer.png"));
 
 		// Application keys
 		getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN), new Runnable() {
@@ -302,51 +301,35 @@ public class ViewController implements Initializable, ViewInterface {
 		removePlaylistButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				try {
-					final Stage dialog = new Stage(StageStyle.TRANSPARENT);
-					dialog.initModality(Modality.WINDOW_MODAL);
-					dialog.initOwner(stage);
-					dialog.setResizable(false);
+				final Stage dialog = DialogUtil.createDialog(stage, getClass().getResource("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "layout_confirm_dialog.fxml"), false);
+				Pane root = (Pane) dialog.getScene().getRoot();
 
-					FXMLLoader loader = new FXMLLoader(getClass().getResource("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "layout_confirm_dialog.fxml"));
-					Parent root = (Parent) loader.load();
+				Button ok = (Button) root.lookup("#okButton");
+				Button abort = (Button) root.lookup("#abortButton");
+				Label message = (Label) root.lookup("#confirmMessage");
+				message.setText("Do you really want to delete the playlist '" + ((Label) playlistTabs.getSelectionModel().getSelectedItem().getGraphic()).getText() + "'?");
 
-					Button ok = (Button) root.lookup("#okButton");
-					Button abort = (Button) root.lookup("#abortButton");
-					Label message = (Label) root.lookup("#confirmMessage");
-					message.setText("Do you really want to delete the playlist '" + ((Label) playlistTabs.getSelectionModel().getSelectedItem().getGraphic()).getText() + "'?");
+				ok.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent e) {
+						// Delete the tab and playlist
+						Tab t = playlistTabs.getSelectionModel().getSelectedItem();
+						String atomicId = t.getId();
+						playlistTabs.getTabs().remove(t);
+						logic.event_playlist_remove(atomicId);
 
-					ok.setOnAction(new EventHandler<ActionEvent>() {
-						@Override
-						public void handle(ActionEvent e) {
-							// Delete the tab and playlist
-							Tab t = playlistTabs.getSelectionModel().getSelectedItem();
-							String atomicId = t.getId();
-							playlistTabs.getTabs().remove(t);
-							logic.event_playlist_remove(atomicId);
+						dialog.hide();
+					}
+				});
 
-							dialog.hide();
-						}
-					});
+				abort.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent e) {
+						dialog.hide();
+					}
+				});
 
-					abort.setOnAction(new EventHandler<ActionEvent>() {
-						@Override
-						public void handle(ActionEvent e) {
-							dialog.hide();
-						}
-					});
-
-					Undecorator undecorator = new Undecorator(dialog, (Region) root);
-					undecorator.getStylesheets().add("insidefx/undecorator/undecorator.css");
-
-					Scene s = new Scene(undecorator);
-					s.setFill(Color.TRANSPARENT);
-					dialog.setScene(s);
-					AlignmentUtil.center(stage, dialog);
-					dialog.show();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+				dialog.show();
 			}
 		});
 		removePlaylistButton.setTooltip(new Tooltip("Remove selected playlist."));
@@ -487,6 +470,73 @@ public class ViewController implements Initializable, ViewInterface {
 		});
 		searchResultsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		enableListViewDragItems(searchResultsListView, TransferMode.COPY);
+
+		// Equalizer
+		this.equalizerIcon.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent m) {
+				// Create equalizer dialog once
+				if (equalizerStage == null) {
+					equalizerStage = DialogUtil.createDialog(stage, getClass().getResource("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "layout_equalizer.fxml"), false);
+					Pane root = (Pane) equalizerStage.getScene().getRoot();
+					final GridPane gridPane = (GridPane) root.lookup("#equalizerSliderGridPane");
+					Slider patternSlider = (Slider) gridPane.getChildren().get(0);
+					gridPane.getChildren().clear();
+					
+					// Create for each amp one slider
+					final Map<Integer, Slider> allSlider = new HashMap<Integer, Slider>();
+					int i = 0;
+					while(i < logic.equalizer_amps_amount()){
+						Slider slider = new Slider();
+						slider.setMax(logic.equalizer_max_gain());
+						slider.setMin(logic.equalizer_min_gain());
+						slider.setValue(0);
+						
+						// Clone attributes from the pattern slider
+						slider.setOrientation(patternSlider.getOrientation());
+						slider.setShowTickMarks(patternSlider.isShowTickMarks());
+						slider.setShowTickLabels(patternSlider.isShowTickLabels());
+						slider.setMajorTickUnit(patternSlider.getMajorTickUnit());
+						slider.setMinorTickCount(patternSlider.getMinorTickCount());
+						
+						final int x = i;
+						
+						slider.valueProperty().addListener(new ChangeListener<Number>() {
+							@Override
+							public void changed(ObservableValue<? extends Number> arg0, Number oldValue, Number newValue) {
+								logic.equalizer_set_amp(x, newValue.intValue());
+							}
+						});
+						
+						allSlider.put(i, slider);
+						gridPane.add(slider, i, 0);
+						i++;
+					}
+					
+					// Create for each preset one choicebox entry
+					@SuppressWarnings("unchecked")
+					final ChoiceBox<String> choiceBox = (ChoiceBox<String>) root.lookup("#equalizerPresetsChoiceBox");
+					choiceBox.getItems().addAll(logic.equalizer_presets());
+					choiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+
+						@Override
+						public void changed(ObservableValue<? extends Number> arg0, Number oldValue, Number newValue) {
+							// Set preset amps on view
+							float[] amps = logic.equalizer_amps(choiceBox.getItems().get(newValue.intValue()));
+							int i = 0;
+							for(float f : amps){
+								 Slider s = ((Slider)gridPane.getChildren().get(i++));
+								 s.setValue(f);
+							}
+							
+							// Activate preset
+							logic.equalizer_set_amps(amps);
+						}
+					});
+				}
+				
+				equalizerStage.show();
+			};
+		});
 	}
 
 	public void setPlaybackMode(final PlayBackMode mode) {

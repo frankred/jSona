@@ -173,3 +173,13 @@
     -fx-text-fill: #757575;
     -fx-border-color: transparent;
 }
+
+/* Equalizer */
+#equalizerIcon{
+	-fx-opacity: 0.2;
+}
+
+#equalizerIcon:hover{
+	-fx-cursor: hand;
+	-fx-opacity: 0.5;
+}

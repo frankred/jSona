@@ -39,4 +39,11 @@ public interface LogicInterfaceFX {
 	public void action_player_play_pause();
 	public void action_toggle_view();
 	
+	public List<String> equalizer_presets();
+	public float equalizer_max_gain();
+	public float equalizer_min_gain();
+	public int equalizer_amps_amount();
+	public float[] equalizer_amps(String preset);
+	public void equalizer_set_amps(float[] amps);
+	public void equalizer_set_amp(int index, int value);
 }

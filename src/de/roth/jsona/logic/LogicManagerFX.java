@@ -22,6 +22,7 @@ import javafx.concurrent.Task;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -794,8 +795,8 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 			}
 		}
 	}
-	
-	public void action_player_volume_up(int stepSize){
+
+	public void action_player_volume_up(int stepSize) {
 		Config.getInstance().VOLUME += stepSize;
 		if (Config.getInstance().VOLUME >= 100) {
 			Config.getInstance().VOLUME = 100;
@@ -811,7 +812,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 	public void action_player_volume_up() {
 		action_player_volume_up(Config.getInstance().VOLUME_UP_DOWN_AMOUNT);
 	}
-	
+
 	public void action_player_volume_down(int stepSize) {
 		Config.getInstance().VOLUME -= stepSize;
 		if (Config.getInstance().VOLUME >= 100) {
@@ -842,5 +843,54 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 	@Override
 	public void action_toggle_view() {
 		ViewManagerFX.getInstance().getController().toggleView();
+	}
+
+	@Override
+	public List<String> equalizer_presets() {
+		return this.mediaPlayerManager.getEqualizerPresetNames();
+	}
+
+	@Override
+	public float equalizer_max_gain() {
+		return this.mediaPlayerManager.getEqualizerMaxGain();
+	}
+
+	@Override
+	public float equalizer_min_gain() {
+		return this.mediaPlayerManager.getEqualizerMinGain();
+	}
+
+	@Override
+	public int equalizer_amps_amount() {
+		return this.mediaPlayerManager.getEqualizerAmpsAmount();
+	}
+
+	@Override
+	public float[] equalizer_amps(String preset) {
+		return this.mediaPlayerManager.getEqualizerPreset(preset);
+	}
+
+	@Override
+	public void equalizer_set_amps(float[] amps) {
+		StringBuffer ampsOut = new StringBuffer();
+		
+		ampsOut.append("{");
+		
+		for(int i = 0; i < amps.length;i++){
+			ampsOut.append(i);
+			ampsOut.append(": ");
+			ampsOut.append(amps[i]);
+			ampsOut.append(", ");
+		}
+		
+		ampsOut.append("{");
+		
+		Logger.get().log(Level.FINE, "Equalizer change to " + ampsOut + ".");
+		this.mediaPlayerManager.setEqualizerAmps(amps);
+	}
+
+	@Override
+	public void equalizer_set_amp(int index, int value) {
+		this.mediaPlayerManager.setEqualizerAmp(index, value);
 	}
 }
