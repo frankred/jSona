@@ -26,11 +26,11 @@ public interface LogicInterfaceFX {
 
 	public void event_playbackmode_normal();
 	public void event_playbackmode_shuffle();
-	
+
 	public void event_play_url(String url);
 
 	public void event_search_music(String query);
-	
+
 	public void action_player_volume_up();
 	public void action_player_volume_up(int stepsize);
 	public void action_player_volume_down();
@@ -38,12 +38,13 @@ public interface LogicInterfaceFX {
 	public void action_volume_mute_unmute();
 	public void action_player_play_pause();
 	public void action_toggle_view();
-	
+
 	public List<String> equalizer_presets();
 	public float equalizer_max_gain();
 	public float equalizer_min_gain();
 	public int equalizer_amps_amount();
 	public float[] equalizer_amps(String preset);
 	public void equalizer_set_amps(float[] amps);
-	public void equalizer_set_amp(int index, int value);
+	public void equalizer_set_amp(int index, float value);
+	public boolean equalizer_available();
 }

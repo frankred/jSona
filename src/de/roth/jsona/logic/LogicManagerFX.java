@@ -22,7 +22,6 @@ import javafx.concurrent.Task;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -62,6 +61,7 @@ import de.roth.jsona.model.MusicListItem.Status;
 import de.roth.jsona.model.PlayList;
 import de.roth.jsona.tag.detection.DetectorRulesManager;
 import de.roth.jsona.tag.detection.FieldResult;
+import de.roth.jsona.util.JoinUtil;
 import de.roth.jsona.util.Logger;
 import de.roth.jsona.util.SerializeManager;
 import de.roth.jsona.util.TimeFormatter;
@@ -69,9 +69,9 @@ import de.roth.jsona.util.TimeFormatter;
 /**
  * Core class of the jSona, where everything comes together. This class
  * implements the main logic of the application
- * 
+ *
  * @author Frank Roth
- * 
+ *
  */
 public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListener, FileScannerListener, FileTaggerListener, WatchDirListener, ExternalInformationsListener, HotKeyListener {
 
@@ -872,25 +872,18 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 
 	@Override
 	public void equalizer_set_amps(float[] amps) {
-		StringBuffer ampsOut = new StringBuffer();
-		
-		ampsOut.append("{");
-		
-		for(int i = 0; i < amps.length;i++){
-			ampsOut.append(i);
-			ampsOut.append(": ");
-			ampsOut.append(amps[i]);
-			ampsOut.append(", ");
-		}
-		
-		ampsOut.append("{");
-		
-		Logger.get().log(Level.FINE, "Equalizer change to " + ampsOut + ".");
+		Logger.get().log(Level.FINE, "Equalizer change to [" + JoinUtil.join(amps, ", ", true) + "].");
 		this.mediaPlayerManager.setEqualizerAmps(amps);
 	}
 
 	@Override
-	public void equalizer_set_amp(int index, int value) {
+	public void equalizer_set_amp(int index, float value) {
+		Logger.get().log(Level.FINE, "Equalizer change " + index + ": " + value);
 		this.mediaPlayerManager.setEqualizerAmp(index, value);
+	}
+
+	@Override
+	public boolean equalizer_available() {
+		return this.mediaPlayerManager.isEqualizerAvailable();
 	}
 }

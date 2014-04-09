@@ -54,22 +54,22 @@ public class MediaPlayerManager {
 		this.executor.allowCoreThreadTimeOut(false);
 		this.state = PlayerState.PAUSED;
 		this.mediaPlayer = factory.newEmbeddedMediaPlayer();
-		
-		
+
+
 		// Equalizer
 		if(this.factory.isEqualizerAvailable()){
 			this.equalizer = this.factory.newEqualizer("Rock");
 			this.mediaPlayer.setEqualizer(this.equalizer);
 			this.allEqualizer = this.factory.getAllPresetEqualizers();
-			
+
 			System.out.println(this.equalizer.getBandCount());
-			
+
 			int i = 0;
-			
+
 			for(String s : factory.getEqualizerPresetNames()){
 				System.out.println(s);
 			}
-			
+
 			for(Float f : this.equalizer.getAmps()){
 				System.out.println(i++ + ": " + f);
 			}
@@ -163,11 +163,11 @@ public class MediaPlayerManager {
 	public void setTime(int time) {
 		mediaPlayer.setTime(time);
 	}
-	
+
 	public long getTime(){
 		return mediaPlayer.getTime();
 	}
-	
+
 	public long getLength(){
 		return mediaPlayer.getLength();
 	}
@@ -208,7 +208,7 @@ public class MediaPlayerManager {
 	public PlayerState getState() {
 		return state;
 	}
-	
+
 	/**
 	 * Return all vlc predefined equalizer
 	 * @return
@@ -217,32 +217,36 @@ public class MediaPlayerManager {
 		if (this.equalizer == null){
 			return null;
 		}
-		
+
 		return this.factory.getEqualizerPresetNames();
 	}
-	
+
 	public float getEqualizerMaxGain(){
 		return LibVlcConst.MAX_GAIN;
 	}
-	
+
 	public float getEqualizerMinGain(){
 		return LibVlcConst.MIN_GAIN;
 	}
-	
+
 	public int getEqualizerAmpsAmount(){
 		return this.equalizer.getAmps().length;
 	}
-	
+
 	public float[] getEqualizerPreset(String name){
 		return this.allEqualizer.get(name).getAmps();
 	}
-	
+
 	public void setEqualizerAmps(float[] amps){
 		this.equalizer.setAmps(amps);
 	}
-	
-	public void setEqualizerAmp(int index, int newAmp){
+
+	public void setEqualizerAmp(int index, float newAmp){
 		this.equalizer.setAmp(index, newAmp);
+	}
+
+	public boolean isEqualizerAvailable() {
+		return this.factory.isEqualizerAvailable();
 	}
 
 	/**

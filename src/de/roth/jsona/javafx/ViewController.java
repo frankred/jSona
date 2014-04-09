@@ -157,6 +157,7 @@ public class ViewController implements Initializable, ViewInterface {
 		this.musicFolderListViews = new HashMap<String, ListView<MusicListItem>>();
 		this.musicFolderTabs = new HashMap<String, Tab>();
 		this.musicFolderListLoadingViews = new HashMap<String, ProgressIndicator>();
+		this.equalizerIcon.setImage(null);
 	}
 
 	private void setVolumeFX(int value, boolean updateItself) {
@@ -243,7 +244,12 @@ public class ViewController implements Initializable, ViewInterface {
 		this.prevButtonImage.setImage(new Image(themePath + "/" + "prev.png"));
 		this.shuffleToggleButtonImage.setImage(new Image(themePath + "/" + "shuffle.png"));
 		this.artistImage.setImage(new Image(themePath + "/" + "icon.png"));
-		this.equalizerIcon.setImage(new Image(themePath + "/" + "equalizer.png"));
+
+		if(logic.equalizer_available()){
+			this.equalizerIcon.setImage(new Image(themePath + "/" + "equalizer.png"));
+		} else {
+			this.equalizerIcon.setDisable(true);
+		}
 
 		// Application keys
 		getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN), new Runnable() {
@@ -472,71 +478,73 @@ public class ViewController implements Initializable, ViewInterface {
 		enableListViewDragItems(searchResultsListView, TransferMode.COPY);
 
 		// Equalizer
-		this.equalizerIcon.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent m) {
-				// Create equalizer dialog once
-				if (equalizerStage == null) {
-					equalizerStage = DialogUtil.createDialog(stage, getClass().getResource("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "layout_equalizer.fxml"), false);
-					Pane root = (Pane) equalizerStage.getScene().getRoot();
-					final GridPane gridPane = (GridPane) root.lookup("#equalizerSliderGridPane");
-					Slider patternSlider = (Slider) gridPane.getChildren().get(0);
-					gridPane.getChildren().clear();
-					
-					// Create for each amp one slider
-					final Map<Integer, Slider> allSlider = new HashMap<Integer, Slider>();
-					int i = 0;
-					while(i < logic.equalizer_amps_amount()){
-						Slider slider = new Slider();
-						slider.setMax(logic.equalizer_max_gain());
-						slider.setMin(logic.equalizer_min_gain());
-						slider.setValue(0);
-						
-						// Clone attributes from the pattern slider
-						slider.setOrientation(patternSlider.getOrientation());
-						slider.setShowTickMarks(patternSlider.isShowTickMarks());
-						slider.setShowTickLabels(patternSlider.isShowTickLabels());
-						slider.setMajorTickUnit(patternSlider.getMajorTickUnit());
-						slider.setMinorTickCount(patternSlider.getMinorTickCount());
-						
-						final int x = i;
-						
-						slider.valueProperty().addListener(new ChangeListener<Number>() {
+		if(logic.equalizer_available()){
+			this.equalizerIcon.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+				public void handle(MouseEvent m) {
+					// Create equalizer dialog once
+					if (equalizerStage == null) {
+						equalizerStage = DialogUtil.createDialog(stage, getClass().getResource("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "layout_equalizer.fxml"), false);
+						Pane root = (Pane) equalizerStage.getScene().getRoot();
+						final GridPane gridPane = (GridPane) root.lookup("#equalizerSliderGridPane");
+						Slider patternSlider = (Slider) gridPane.getChildren().get(0);
+						gridPane.getChildren().clear();
+
+						// Create for each amp one slider
+						final Map<Integer, Slider> allSlider = new HashMap<Integer, Slider>();
+						int i = 0;
+						while(i < logic.equalizer_amps_amount()){
+							Slider slider = new Slider();
+							slider.setMax(logic.equalizer_max_gain());
+							slider.setMin(logic.equalizer_min_gain());
+							slider.setValue(0);
+
+							// Clone attributes from the pattern slider
+							slider.setOrientation(patternSlider.getOrientation());
+							slider.setShowTickMarks(patternSlider.isShowTickMarks());
+							slider.setShowTickLabels(patternSlider.isShowTickLabels());
+							slider.setMajorTickUnit(patternSlider.getMajorTickUnit());
+							slider.setMinorTickCount(patternSlider.getMinorTickCount());
+
+							final int x = i;
+
+							slider.valueProperty().addListener(new ChangeListener<Number>() {
+								@Override
+								public void changed(ObservableValue<? extends Number> arg0, Number oldValue, Number newValue) {
+									logic.equalizer_set_amp(x, newValue.floatValue());
+								}
+							});
+
+							allSlider.put(i, slider);
+							gridPane.add(slider, i, 0);
+							i++;
+						}
+
+						// Create for each preset one choicebox entry
+						@SuppressWarnings("unchecked")
+						final ChoiceBox<String> choiceBox = (ChoiceBox<String>) root.lookup("#equalizerPresetsChoiceBox");
+						choiceBox.getItems().addAll(logic.equalizer_presets());
+						choiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+
 							@Override
 							public void changed(ObservableValue<? extends Number> arg0, Number oldValue, Number newValue) {
-								logic.equalizer_set_amp(x, newValue.intValue());
+								// Set preset amps on view
+								float[] amps = logic.equalizer_amps(choiceBox.getItems().get(newValue.intValue()));
+								int i = 0;
+								for(float f : amps){
+									 Slider s = ((Slider)gridPane.getChildren().get(i++));
+									 s.setValue(f);
+								}
+
+								// Activate preset
+								logic.equalizer_set_amps(amps);
 							}
 						});
-						
-						allSlider.put(i, slider);
-						gridPane.add(slider, i, 0);
-						i++;
 					}
-					
-					// Create for each preset one choicebox entry
-					@SuppressWarnings("unchecked")
-					final ChoiceBox<String> choiceBox = (ChoiceBox<String>) root.lookup("#equalizerPresetsChoiceBox");
-					choiceBox.getItems().addAll(logic.equalizer_presets());
-					choiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
 
-						@Override
-						public void changed(ObservableValue<? extends Number> arg0, Number oldValue, Number newValue) {
-							// Set preset amps on view
-							float[] amps = logic.equalizer_amps(choiceBox.getItems().get(newValue.intValue()));
-							int i = 0;
-							for(float f : amps){
-								 Slider s = ((Slider)gridPane.getChildren().get(i++));
-								 s.setValue(f);
-							}
-							
-							// Activate preset
-							logic.equalizer_set_amps(amps);
-						}
-					});
-				}
-				
-				equalizerStage.show();
-			};
-		});
+					equalizerStage.show();
+				};
+			});
+		}
 	}
 
 	public void setPlaybackMode(final PlayBackMode mode) {
@@ -1041,8 +1049,8 @@ public class ViewController implements Initializable, ViewInterface {
 
 		/**
 		 * Constructor for playlist
-		 * 
-		 * 
+		 *
+		 *
 		 * @param atomicId
 		 * @param logic
 		 */
