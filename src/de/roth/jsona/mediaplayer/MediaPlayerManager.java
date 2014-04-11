@@ -28,9 +28,9 @@ import de.roth.jsona.util.FileUtil;
 
 /**
  * MediaPlayerManager controls the vlcj mediaplayer
- *
+ * 
  * @author Frank Roth
- *
+ * 
  */
 public class MediaPlayerManager {
 
@@ -38,7 +38,6 @@ public class MediaPlayerManager {
 	private List<AudioOutput> audioOutputs;
 	private EmbeddedMediaPlayer mediaPlayer;
 	private Map<String, Equalizer> allEqualizer;
-	private Equalizer equalizer;
 	private List<ModuleDescription> audioFilters;
 	private MusicListItem currentItem;
 	private BlockingQueue<Runnable> worksQueue;
@@ -54,24 +53,13 @@ public class MediaPlayerManager {
 		this.executor.allowCoreThreadTimeOut(false);
 		this.state = PlayerState.PAUSED;
 		this.mediaPlayer = factory.newEmbeddedMediaPlayer();
-		
-		
+
 		// Equalizer
-		if(this.factory.isEqualizerAvailable()){
-			this.equalizer = this.factory.newEqualizer("Rock");
-			this.mediaPlayer.setEqualizer(this.equalizer);
+		if (this.factory.isEqualizerAvailable()) {
 			this.allEqualizer = this.factory.getAllPresetEqualizers();
-			
-			System.out.println(this.equalizer.getBandCount());
-			
-			int i = 0;
-			
-			for(String s : factory.getEqualizerPresetNames()){
-				System.out.println(s);
-			}
-			
-			for(Float f : this.equalizer.getAmps()){
-				System.out.println(i++ + ": " + f);
+
+			if (Config.getInstance().EQUALIZER_ACTIVE) {
+				this.mediaPlayer.setEqualizer(this.factory.newEqualizer());
 			}
 		}
 
@@ -87,7 +75,7 @@ public class MediaPlayerManager {
 
 	/**
 	 * Register media player event listener
-	 *
+	 * 
 	 * @param listener
 	 */
 	public void addActionListener(uk.co.caprica.vlcj.player.MediaPlayerEventListener listener) {
@@ -96,7 +84,7 @@ public class MediaPlayerManager {
 
 	/**
 	 * Remove the media player event listener
-	 *
+	 * 
 	 * @param listener
 	 */
 	public void removeActionListener(uk.co.caprica.vlcj.player.MediaPlayerEventListener listener) {
@@ -105,7 +93,7 @@ public class MediaPlayerManager {
 
 	/**
 	 * Plays a music item in a new thread
-	 *
+	 * 
 	 * @param item
 	 */
 	public void play(MusicListItem item) {
@@ -148,7 +136,7 @@ public class MediaPlayerManager {
 
 	/**
 	 * Set the volume of the media player
-	 *
+	 * 
 	 * @param volume
 	 */
 	public void setVolume(int volume) {
@@ -157,23 +145,24 @@ public class MediaPlayerManager {
 
 	/**
 	 * Set the current play back time of the media player in ms.
-	 *
+	 * 
 	 * @param time
 	 */
 	public void setTime(int time) {
 		mediaPlayer.setTime(time);
 	}
-	
-	public long getTime(){
+
+	public long getTime() {
 		return mediaPlayer.getTime();
 	}
-	
-	public long getLength(){
+
+	public long getLength() {
 		return mediaPlayer.getLength();
 	}
 
 	/**
 	 * Set audio output
+	 * 
 	 * @param audioOutputName
 	 * @param audioDeviceId
 	 */
@@ -194,7 +183,7 @@ public class MediaPlayerManager {
 
 	/**
 	 * Get the current item of the media player that is played pause or stopped
-	 *
+	 * 
 	 * @return
 	 */
 	public MusicListItem getItem() {
@@ -203,54 +192,80 @@ public class MediaPlayerManager {
 
 	/**
 	 * Get current state of the media player
+	 * 
 	 * @return
 	 */
 	public PlayerState getState() {
 		return state;
 	}
-	
+
 	/**
 	 * Return all vlc predefined equalizer
+	 * 
 	 * @return
 	 */
-	public List<String> getEqualizerPresetNames(){
-		if (this.equalizer == null){
-			return null;
+	public List<String> getEqualizerPresetNames() {
+		if (this.factory.isEqualizerAvailable()) {
+			return this.factory.getEqualizerPresetNames();
 		}
-		
-		return this.factory.getEqualizerPresetNames();
+		return null;
 	}
-	
-	public float getEqualizerMaxGain(){
+
+	public float getEqualizerMaxGain() {
 		return LibVlcConst.MAX_GAIN;
 	}
-	
-	public float getEqualizerMinGain(){
+
+	public float getEqualizerMinGain() {
 		return LibVlcConst.MIN_GAIN;
 	}
-	
-	public int getEqualizerAmpsAmount(){
-		return this.equalizer.getAmps().length;
+
+	public int getEqualizerAmpsAmount() {
+		if (this.factory.isEqualizerAvailable()) {
+			if (this.mediaPlayer.getEqualizer() == null) {
+				return this.factory.newEqualizer().getAmps().length;
+			}
+		}
+		return 0;
 	}
-	
-	public float[] getEqualizerPreset(String name){
-		return this.allEqualizer.get(name).getAmps();
+
+	public float[] getEqualizerPreset(String name) {
+		if (this.factory.isEqualizerAvailable()) {
+			return this.allEqualizer.get(name).getAmps();
+		}
+		return null;
 	}
-	
-	public void setEqualizerAmps(float[] amps){
-		this.equalizer.setAmps(amps);
+
+	public void setEqualizerAmps(float[] amps) {
+		if (this.factory.isEqualizerAvailable()) {
+			if (this.mediaPlayer.getEqualizer() == null) {
+				this.mediaPlayer.setEqualizer(this.factory.newEqualizer());
+			}
+			this.mediaPlayer.getEqualizer().setAmps(amps);
+		}
 	}
-	
-	public void setEqualizerAmp(int index, int newAmp){
-		this.equalizer.setAmp(index, newAmp);
+
+	public void setEqualizerAmp(int index, float newAmp) {
+		if (this.factory.isEqualizerAvailable()) {
+			if (this.mediaPlayer.getEqualizer() != null) {
+				this.mediaPlayer.getEqualizer().setAmp(index, newAmp);
+			}
+		}
+	}
+
+	public boolean isEqualizerAvailable() {
+		return this.factory.isEqualizerAvailable();
+	}
+
+	public void disableEqualizer() {
+		this.mediaPlayer.setEqualizer(null);
 	}
 
 	/**
 	 * Bugfix media player listener to play the empty.wav file at startup, this
 	 * will workaround the volume bug from the vlc core.
-	 *
+	 * 
 	 * @author Frank Roth
-	 *
+	 * 
 	 */
 	public class VlcjVolumeBugfixListener implements uk.co.caprica.vlcj.player.MediaPlayerEventListener {
 		public VlcjVolumeBugfixListener() {

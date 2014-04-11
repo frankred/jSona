@@ -62,6 +62,8 @@ public class Config {
 	@Expose public int DURATION_ARROW_KEYS_SKIP_TIME;
 	@Expose public int DURATION_SCROLL_SKIP_TIME;
 	
+	@Expose public boolean EQUALIZER_ACTIVE;
+	
 
 	public Config() {
 		// default values
@@ -80,6 +82,7 @@ public class Config {
 		this.VOLUME_SCROLL_UP_DOWN_AMOUNT = 5;
 		this.DURATION_ARROW_KEYS_SKIP_TIME = 10;
 		this.DURATION_SCROLL_SKIP_TIME = 10;
+		this.EQUALIZER_ACTIVE = false;
 	}
 
 	/**

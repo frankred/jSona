@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.ResourceBundle;
 
@@ -28,6 +29,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
@@ -72,6 +74,7 @@ import com.sun.media.jfxmedia.events.PlayerStateEvent.PlayerState;
 
 import de.roth.jsona.artist.JSonaArtist;
 import de.roth.jsona.config.Config;
+import de.roth.jsona.config.Global;
 import de.roth.jsona.javafx.draghandler.ListItemDragHandler;
 import de.roth.jsona.javafx.util.BrowserUtil;
 import de.roth.jsona.javafx.util.DialogUtil;
@@ -243,7 +246,13 @@ public class ViewController implements Initializable, ViewInterface {
 		this.prevButtonImage.setImage(new Image(themePath + "/" + "prev.png"));
 		this.shuffleToggleButtonImage.setImage(new Image(themePath + "/" + "shuffle.png"));
 		this.artistImage.setImage(new Image(themePath + "/" + "icon.png"));
-		this.equalizerIcon.setImage(new Image(themePath + "/" + "equalizer.png"));
+
+		if (logic.equalizer_available()) {
+			this.equalizerIcon.setImage(new Image(themePath + "/" + "equalizer.png"));
+		} else {
+			this.equalizerIcon.setImage(null);
+			this.equalizerIcon.setDisable(true);
+		}
 
 		// Application keys
 		getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN), new Runnable() {
@@ -479,38 +488,43 @@ public class ViewController implements Initializable, ViewInterface {
 					equalizerStage = DialogUtil.createDialog(stage, getClass().getResource("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "layout_equalizer.fxml"), false);
 					Pane root = (Pane) equalizerStage.getScene().getRoot();
 					final GridPane gridPane = (GridPane) root.lookup("#equalizerSliderGridPane");
+					final CheckBox equalizerOnOffCheckbox = (CheckBox) root.lookup("#equalizerOnOffCheckbox");
 					Slider patternSlider = (Slider) gridPane.getChildren().get(0);
 					gridPane.getChildren().clear();
-					
+
 					// Create for each amp one slider
 					final Map<Integer, Slider> allSlider = new HashMap<Integer, Slider>();
 					int i = 0;
-					while(i < logic.equalizer_amps_amount()){
+					while (i < logic.equalizer_amps_amount()) {
 						Slider slider = new Slider();
 						slider.setMax(logic.equalizer_max_gain());
 						slider.setMin(logic.equalizer_min_gain());
 						slider.setValue(0);
-						
+
 						// Clone attributes from the pattern slider
 						slider.setOrientation(patternSlider.getOrientation());
 						slider.setShowTickMarks(patternSlider.isShowTickMarks());
 						slider.setShowTickLabels(patternSlider.isShowTickLabels());
 						slider.setMajorTickUnit(patternSlider.getMajorTickUnit());
 						slider.setMinorTickCount(patternSlider.getMinorTickCount());
-						
+
 						final int x = i;
-						
+
 						slider.valueProperty().addListener(new ChangeListener<Number>() {
 							@Override
 							public void changed(ObservableValue<? extends Number> arg0, Number oldValue, Number newValue) {
-								logic.equalizer_set_amp(x, newValue.intValue());
+								logic.equalizer_set_amp(x, newValue.floatValue());
 							}
 						});
-						
+
 						allSlider.put(i, slider);
 						gridPane.add(slider, i, 0);
 						i++;
 					}
+
+					/*
+					 * REFACTOR DEN MURKS FRANK!!!!!!!!!
+					 */
 					
 					// Create for each preset one choicebox entry
 					@SuppressWarnings("unchecked")
@@ -520,20 +534,54 @@ public class ViewController implements Initializable, ViewInterface {
 
 						@Override
 						public void changed(ObservableValue<? extends Number> arg0, Number oldValue, Number newValue) {
-							// Set preset amps on view
-							float[] amps = logic.equalizer_amps(choiceBox.getItems().get(newValue.intValue()));
-							int i = 0;
-							for(float f : amps){
-								 Slider s = ((Slider)gridPane.getChildren().get(i++));
-								 s.setValue(f);
+							if (Config.getInstance().EQUALIZER_ACTIVE) {
+								// Set preset amps on view
+								float[] amps = logic.equalizer_amps(choiceBox.getItems().get(newValue.intValue()));
+								int i = 0;
+								for (float f : amps) {
+									Slider s = ((Slider) gridPane.getChildren().get(i++));
+									s.setValue(f);
+								}
+
+								// Activate preset
+								logic.equalizer_set_amps(amps);
 							}
-							
-							// Activate preset
-							logic.equalizer_set_amps(amps);
 						}
 					});
+					choiceBox.getSelectionModel().select(0);
+
+					// Equalizer on/off button
+					equalizerOnOffCheckbox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+						@Override
+						public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldValue, Boolean newValue) {
+							if (newValue) {
+								Config.getInstance().EQUALIZER_ACTIVE = true;
+								equalizerOnOffCheckbox.setText(Global.EQUALIZER_ON);
+								gridPane.setDisable(false);
+								choiceBox.setDisable(false);
+								int i = 0;
+								for (Entry<Integer, Slider> s : allSlider.entrySet()) {
+									logic.equalizer_set_amp(i++, s.getValue().valueProperty().floatValue());
+								}
+							} else {
+								Config.getInstance().EQUALIZER_ACTIVE = false;
+								equalizerOnOffCheckbox.setText(Global.EQUALIZER_OFF);
+								gridPane.setDisable(true);
+								choiceBox.setDisable(true);
+								logic.equalizer_disable();
+							}
+						}
+					});
+					if (Config.getInstance().EQUALIZER_ACTIVE) {
+						// Provoke a change event
+						equalizerOnOffCheckbox.selectedProperty().set(false);
+						equalizerOnOffCheckbox.selectedProperty().set(true);
+					} else {
+						equalizerOnOffCheckbox.selectedProperty().set(true);
+						equalizerOnOffCheckbox.selectedProperty().set(false);
+					}
 				}
-				
+
 				equalizerStage.show();
 			};
 		});

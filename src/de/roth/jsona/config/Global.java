@@ -69,6 +69,10 @@ public class Global {
 	public static final String PLAYBACK_STATUS_STOPPED = "Stopped";
 	public static final String PLAYBACK_STATUS_PLAYING = "Playing:";
 	public static final String PLAYBACK_STATUS_PAUSED = "Paused:";
+	
+	// Equalizer
+	public static final String EQUALIZER_ON = "ON";
+	public static final String EQUALIZER_OFF = "OFF";
 
 	// SysTray
 	public static final String SYSTRAY_TOOLTIP = "jSona";

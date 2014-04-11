@@ -873,24 +873,35 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 	@Override
 	public void equalizer_set_amps(float[] amps) {
 		StringBuffer ampsOut = new StringBuffer();
-		
+
 		ampsOut.append("{");
-		
-		for(int i = 0; i < amps.length;i++){
+
+		for (int i = 0; i < amps.length; i++) {
 			ampsOut.append(i);
 			ampsOut.append(": ");
 			ampsOut.append(amps[i]);
 			ampsOut.append(", ");
 		}
-		
-		ampsOut.append("{");
-		
+
+		ampsOut.append("}");
+
 		Logger.get().log(Level.FINE, "Equalizer change to " + ampsOut + ".");
 		this.mediaPlayerManager.setEqualizerAmps(amps);
 	}
 
 	@Override
-	public void equalizer_set_amp(int index, int value) {
+	public void equalizer_set_amp(int index, float value) {
+		Logger.get().log(Level.FINE, "Equalizer " + index + " changed to " + value + ".");
 		this.mediaPlayerManager.setEqualizerAmp(index, value);
+	}
+
+	@Override
+	public void equalizer_disable() {
+		this.mediaPlayerManager.disableEqualizer();
+	}
+
+	@Override
+	public boolean equalizer_available() {
+		return this.mediaPlayerManager.isEqualizerAvailable();
 	}
 }

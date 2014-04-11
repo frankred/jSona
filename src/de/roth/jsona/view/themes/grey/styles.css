@@ -183,3 +183,8 @@
 	-fx-cursor: hand;
 	-fx-opacity: 0.5;
 }
+
+/* Shuffle Button */
+#shuffleToggleButton{
+	-fx-background-radius: 80 80 80 80;
+}

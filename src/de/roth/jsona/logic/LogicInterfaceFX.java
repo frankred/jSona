@@ -45,5 +45,7 @@ public interface LogicInterfaceFX {
 	public int equalizer_amps_amount();
 	public float[] equalizer_amps(String preset);
 	public void equalizer_set_amps(float[] amps);
-	public void equalizer_set_amp(int index, int value);
+	public void equalizer_set_amp(int index, float value);
+	public void equalizer_disable();
+	public boolean equalizer_available();
 }
