@@ -229,6 +229,9 @@ public class ViewController implements Initializable, ViewInterface {
 
 				// Remove from musicLists
 				musicFolderListViews.get(item.getRootFolder().getAbsolutePath()).getItems().remove(item);
+				
+				// Remove from new
+				musicFolderListViews.get(Global.NEW_FOLDER_NAME).getItems().remove(item);
 
 				// Remove from searchList
 				searchResultsListView.getItems().remove(item);
@@ -522,13 +525,16 @@ public class ViewController implements Initializable, ViewInterface {
 						i++;
 					}
 
-					/*
-					 * REFACTOR DEN MURKS FRANK!!!!!!!!!
-					 */
-					
 					// Create for each preset one choicebox entry
 					@SuppressWarnings("unchecked")
 					final ChoiceBox<String> choiceBox = (ChoiceBox<String>) root.lookup("#equalizerPresetsChoiceBox");
+					choiceBox.getItems().add("Custom 1");
+					choiceBox.getItems().add("Custom 2");
+					choiceBox.getItems().add("Custom 3");
+					choiceBox.getItems().add("Custom 4");
+					choiceBox.getItems().add("Custom 5");
+					choiceBox.getItems().add("Custom 6");
+					choiceBox.getItems().add("Custom 7");
 					choiceBox.getItems().addAll(logic.equalizer_presets());
 					choiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
 

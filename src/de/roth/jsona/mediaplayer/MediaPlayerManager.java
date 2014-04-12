@@ -224,12 +224,18 @@ public class MediaPlayerManager {
 			if (this.mediaPlayer.getEqualizer() == null) {
 				return this.factory.newEqualizer().getAmps().length;
 			}
+			return this.mediaPlayer.getEqualizer().getAmps().length;
 		}
 		return 0;
 	}
 
 	public float[] getEqualizerPreset(String name) {
 		if (this.factory.isEqualizerAvailable()) {
+			if (this.allEqualizer.get(name) == null) {
+				// No preset found for that name -> create one
+				this.allEqualizer.put(name, this.factory.newEqualizer());
+
+			}
 			return this.allEqualizer.get(name).getAmps();
 		}
 		return null;
