@@ -36,7 +36,7 @@
                 <Font size="18.0" />
               </font>
             </Label>
-            <Label fx:id="artistBio" alignment="TOP_LEFT" contentDisplay="LEFT" prefHeight="88.0" prefWidth="543.0" text="Version 1.0.3" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="86.0" />
+            <Label fx:id="artistBio" alignment="TOP_LEFT" contentDisplay="LEFT" prefHeight="88.0" prefWidth="543.0" text="Version 1.0.4" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="86.0" />
             <AnchorPane minHeight="20.0" prefHeight="20.0" prefWidth="543.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="196.0">
               <children>
                 <Pane prefHeight="200.0" prefWidth="200.0" styleClass="root" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
@@ -127,7 +127,7 @@
         <Font size="11.0" />
       </font>
     </Label>
-    <ImageView fx:id="equalizerIcon" blendMode="SRC_OVER" cache="false" disable="false" fitHeight="16.0" fitWidth="16.0" focusTraversable="false" layoutX="317.0" layoutY="555.0" mouseTransparent="false" opacity="0.3" pickOnBounds="true" preserveRatio="true">
+    <ImageView fx:id="equalizerIcon" blendMode="SRC_OVER" cache="false" disable="false" fitHeight="16.0" fitWidth="16.0" focusTraversable="false" layoutX="319.0" mouseTransparent="false" opacity="0.3" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="27.0">
       <image>
         <Image url="@equalizer.png" />
       </image>
