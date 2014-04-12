@@ -17,18 +17,19 @@
 
 package com.tulskiy.keymaster.common;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.Level;
+
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+
 import com.sun.jna.Platform;
 import com.tulskiy.keymaster.osx.CarbonProvider;
 import com.tulskiy.keymaster.windows.WindowsProvider;
 import com.tulskiy.keymaster.x11.X11Provider;
 
 import de.roth.jsona.util.Logger;
-
-import javax.swing.*;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.logging.Level;
 
 /**
  * Main interface to global hotkey providers

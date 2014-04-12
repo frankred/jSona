@@ -4,9 +4,6 @@ import insidefx.undecorator.Undecorator;
 
 import java.io.IOException;
 
-import de.roth.jsona.config.Config;
-import de.roth.jsona.javafx.close.CloseEventHandler;
-import de.roth.jsona.logic.LogicManagerFX;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,6 +13,9 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import de.roth.jsona.config.Config;
+import de.roth.jsona.javafx.close.CloseEventHandler;
+import de.roth.jsona.logic.LogicManagerFX;
 
 public class ViewManagerFX {
 

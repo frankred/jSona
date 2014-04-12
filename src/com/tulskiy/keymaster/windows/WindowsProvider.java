@@ -17,14 +17,11 @@
 
 package com.tulskiy.keymaster.windows;
 
-import com.tulskiy.keymaster.common.HotKey;
-import com.tulskiy.keymaster.common.HotKeyListener;
-import com.tulskiy.keymaster.common.MediaKey;
-import com.tulskiy.keymaster.common.Provider;
-
-import de.roth.jsona.util.Logger;
-
-import javax.swing.*;
+import static com.tulskiy.keymaster.windows.User32.PM_REMOVE;
+import static com.tulskiy.keymaster.windows.User32.PeekMessage;
+import static com.tulskiy.keymaster.windows.User32.RegisterHotKey;
+import static com.tulskiy.keymaster.windows.User32.UnregisterHotKey;
+import static com.tulskiy.keymaster.windows.User32.WM_HOTKEY;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -32,7 +29,15 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.logging.Level;
 
-import static com.tulskiy.keymaster.windows.User32.*;
+import javax.swing.KeyStroke;
+
+import com.tulskiy.keymaster.common.HotKey;
+import com.tulskiy.keymaster.common.HotKeyListener;
+import com.tulskiy.keymaster.common.MediaKey;
+import com.tulskiy.keymaster.common.Provider;
+import com.tulskiy.keymaster.windows.User32.MSG;
+
+import de.roth.jsona.util.Logger;
 
 /**
  * Author: Denis Tulskiy Date: 6/12/11

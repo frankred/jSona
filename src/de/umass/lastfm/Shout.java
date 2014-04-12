@@ -26,13 +26,13 @@
 
 package de.umass.lastfm;
 
-import de.umass.xml.DomElement;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import de.umass.xml.DomElement;
 
 public class Shout {
 

@@ -17,7 +17,7 @@
 
 package com.tulskiy.keymaster.common;
 
-import javax.swing.*;
+import javax.swing.KeyStroke;
 
 /**
  * Internal representation of a hotkey. Either keyStroke or mediaKey should be set.

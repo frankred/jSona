@@ -17,16 +17,7 @@
 
 package com.tulskiy.keymaster.osx;
 
-import com.sun.jna.Pointer;
-import com.sun.jna.ptr.PointerByReference;
-import com.tulskiy.keymaster.common.HotKey;
-import com.tulskiy.keymaster.common.HotKeyListener;
-import com.tulskiy.keymaster.common.MediaKey;
-import com.tulskiy.keymaster.common.Provider;
-
-import de.roth.jsona.util.Logger;
-
-import javax.swing.*;
+import static com.tulskiy.keymaster.osx.Carbon.Lib;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -34,7 +25,19 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.logging.Level;
 
-import static com.tulskiy.keymaster.osx.Carbon.*;
+import javax.swing.KeyStroke;
+
+import com.sun.jna.Pointer;
+import com.sun.jna.ptr.PointerByReference;
+import com.tulskiy.keymaster.common.HotKey;
+import com.tulskiy.keymaster.common.HotKeyListener;
+import com.tulskiy.keymaster.common.MediaKey;
+import com.tulskiy.keymaster.common.Provider;
+import com.tulskiy.keymaster.osx.Carbon.EventHandlerProcPtr;
+import com.tulskiy.keymaster.osx.Carbon.EventHotKeyID;
+import com.tulskiy.keymaster.osx.Carbon.EventTypeSpec;
+
+import de.roth.jsona.util.Logger;
 
 /**
  * Author: Denis Tulskiy Date: 6/17/11

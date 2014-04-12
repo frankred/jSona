@@ -17,17 +17,33 @@
 
 package com.tulskiy.keymaster.windows;
 
-import com.tulskiy.keymaster.common.HotKey;
+import static com.tulskiy.keymaster.windows.User32.MOD_ALT;
+import static com.tulskiy.keymaster.windows.User32.MOD_CONTROL;
+import static com.tulskiy.keymaster.windows.User32.MOD_NOREPEAT;
+import static com.tulskiy.keymaster.windows.User32.MOD_SHIFT;
+import static com.tulskiy.keymaster.windows.User32.MOD_WIN;
+import static com.tulskiy.keymaster.windows.User32.VK_MEDIA_NEXT_TRACK;
+import static com.tulskiy.keymaster.windows.User32.VK_MEDIA_PLAY_PAUSE;
+import static com.tulskiy.keymaster.windows.User32.VK_MEDIA_PREV_TRACK;
+import static com.tulskiy.keymaster.windows.User32.VK_MEDIA_STOP;
+import static java.awt.event.KeyEvent.VK_COMMA;
+import static java.awt.event.KeyEvent.VK_DELETE;
+import static java.awt.event.KeyEvent.VK_ENTER;
+import static java.awt.event.KeyEvent.VK_INSERT;
+import static java.awt.event.KeyEvent.VK_MINUS;
+import static java.awt.event.KeyEvent.VK_PERIOD;
+import static java.awt.event.KeyEvent.VK_PLUS;
+import static java.awt.event.KeyEvent.VK_PRINTSCREEN;
+import static java.awt.event.KeyEvent.VK_SEMICOLON;
+import static java.awt.event.KeyEvent.VK_SLASH;
 
-import javax.swing.*;
 import java.awt.event.InputEvent;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.tulskiy.keymaster.windows.User32.*;
-import static java.awt.event.KeyEvent.*;
-import static java.awt.event.KeyEvent.VK_SEMICOLON;
-import static java.awt.event.KeyEvent.VK_SLASH;
+import javax.swing.KeyStroke;
+
+import com.tulskiy.keymaster.common.HotKey;
 
 /**
  * Author: Denis Tulskiy

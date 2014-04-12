@@ -26,16 +26,16 @@
 
 package de.umass.lastfm;
 
+import static de.umass.util.StringUtilities.isMD5;
+import static de.umass.util.StringUtilities.map;
+import static de.umass.util.StringUtilities.md5;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import de.umass.xml.DomElement;
-
-import static de.umass.util.StringUtilities.isMD5;
-import static de.umass.util.StringUtilities.map;
-import static de.umass.util.StringUtilities.md5;
 
 /**
  * Provides bindings for the authentication methods of the last.fm API.

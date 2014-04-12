@@ -26,7 +26,11 @@
 
 package de.umass.lastfm;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import de.umass.xml.DomElement;
 

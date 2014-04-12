@@ -17,16 +17,17 @@
 
 package com.tulskiy.keymaster.x11;
 
-import com.sun.jna.NativeLong;
-import com.sun.jna.Pointer;
-import com.tulskiy.keymaster.common.HotKey;
-import com.tulskiy.keymaster.common.HotKeyListener;
-import com.tulskiy.keymaster.common.MediaKey;
-import com.tulskiy.keymaster.common.Provider;
-
-import de.roth.jsona.util.Logger;
-
-import javax.swing.*;
+import static com.tulskiy.keymaster.x11.X11.ControlMask;
+import static com.tulskiy.keymaster.x11.X11.GrabModeAsync;
+import static com.tulskiy.keymaster.x11.X11.KeyPress;
+import static com.tulskiy.keymaster.x11.X11.Lib;
+import static com.tulskiy.keymaster.x11.X11.LockMask;
+import static com.tulskiy.keymaster.x11.X11.Mod1Mask;
+import static com.tulskiy.keymaster.x11.X11.Mod2Mask;
+import static com.tulskiy.keymaster.x11.X11.Mod3Mask;
+import static com.tulskiy.keymaster.x11.X11.Mod4Mask;
+import static com.tulskiy.keymaster.x11.X11.Mod5Mask;
+import static com.tulskiy.keymaster.x11.X11.ShiftMask;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -34,7 +35,20 @@ import java.util.List;
 import java.util.Queue;
 import java.util.logging.Level;
 
-import static com.tulskiy.keymaster.x11.X11.*;
+import javax.swing.KeyStroke;
+
+import com.sun.jna.NativeLong;
+import com.sun.jna.Pointer;
+import com.tulskiy.keymaster.common.HotKey;
+import com.tulskiy.keymaster.common.HotKeyListener;
+import com.tulskiy.keymaster.common.MediaKey;
+import com.tulskiy.keymaster.common.Provider;
+import com.tulskiy.keymaster.x11.X11.XErrorEvent;
+import com.tulskiy.keymaster.x11.X11.XErrorHandler;
+import com.tulskiy.keymaster.x11.X11.XEvent;
+import com.tulskiy.keymaster.x11.X11.XKeyEvent;
+
+import de.roth.jsona.util.Logger;
 
 /**
  * Author: Denis Tulskiy Date: 6/13/11

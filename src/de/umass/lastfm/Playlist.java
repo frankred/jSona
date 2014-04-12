@@ -26,10 +26,10 @@
 
 package de.umass.lastfm;
 
-import de.umass.xml.DomElement;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import de.umass.xml.DomElement;
 
 /**
  * Bean for music playlists. Contains the {@link #fetch(String, String) fetch} method and various <code>fetchXXX</code>

@@ -1,6 +1,7 @@
 package insidefx.undecorator;
 
 import java.util.logging.Level;
+
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;

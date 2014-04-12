@@ -3,13 +3,13 @@ package de.roth.jsona;
 import java.util.Locale;
 import java.util.logging.Level;
 
+import javafx.application.Application;
+import javafx.stage.Stage;
 import de.roth.jsona.config.Config;
 import de.roth.jsona.config.Global;
 import de.roth.jsona.javafx.ViewManagerFX;
 import de.roth.jsona.logic.LogicManagerFX;
 import de.roth.jsona.util.Logger;
-import javafx.application.Application;
-import javafx.stage.Stage;
 
 /**
  * This is where all begins...

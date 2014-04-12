@@ -1,9 +1,9 @@
 package de.roth.jsona.javafx.close;
 
-import de.roth.jsona.logic.LogicManagerFX;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.stage.WindowEvent;
+import de.roth.jsona.logic.LogicManagerFX;
 
 public class CloseEventHandler implements EventHandler<WindowEvent> {
 	

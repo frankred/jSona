@@ -17,16 +17,28 @@
 
 package com.tulskiy.keymaster;
 
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+
 import com.tulskiy.keymaster.common.HotKey;
 import com.tulskiy.keymaster.common.HotKeyListener;
 import com.tulskiy.keymaster.common.MediaKey;
 import com.tulskiy.keymaster.common.Provider;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Author: Denis Tulskiy

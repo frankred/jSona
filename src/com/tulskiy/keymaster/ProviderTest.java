@@ -17,11 +17,11 @@
 
 package com.tulskiy.keymaster;
 
+import javax.swing.KeyStroke;
+
 import com.tulskiy.keymaster.common.HotKey;
 import com.tulskiy.keymaster.common.HotKeyListener;
 import com.tulskiy.keymaster.common.Provider;
-
-import javax.swing.*;
 
 /**
  * Author: Denis Tulskiy

@@ -17,12 +17,16 @@
 
 package com.tulskiy.keymaster.osx;
 
-import com.sun.jna.*;
-import com.sun.jna.ptr.PointerByReference;
-
 import java.nio.IntBuffer;
 import java.util.Arrays;
 import java.util.List;
+
+import com.sun.jna.Callback;
+import com.sun.jna.Library;
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
+import com.sun.jna.Structure;
+import com.sun.jna.ptr.PointerByReference;
 
 /**
  * Author: Denis Tulskiy

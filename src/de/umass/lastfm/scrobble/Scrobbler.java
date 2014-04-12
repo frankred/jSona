@@ -26,6 +26,9 @@
 
 package de.umass.lastfm.scrobble;
 
+import static de.umass.util.StringUtilities.encode;
+import static de.umass.util.StringUtilities.md5;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -34,15 +37,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.Proxy;
 import java.util.Collection;
 import java.util.Collections;
 
 import de.umass.lastfm.Caller;
 import de.umass.lastfm.Session;
-
-import static de.umass.util.StringUtilities.encode;
-import static de.umass.util.StringUtilities.md5;
 
 /**
  * This class manages communication with the server for scrobbling songs. You can retrieve an instance of this class by calling

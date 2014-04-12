@@ -26,7 +26,12 @@
 
 package de.umass.lastfm;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import de.umass.util.MapUtilities;
 import de.umass.util.StringUtilities;
