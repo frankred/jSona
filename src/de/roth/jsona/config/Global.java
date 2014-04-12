@@ -30,6 +30,7 @@ public class Global {
 	public static final String CACHE_FOLDER = "cache";
 	public static final String FILES_CACHE = CACHE_FOLDER + File.separator + "files.cache";
 	public static final String ARTISTS_JSON = CACHE_FOLDER + File.separator + "artists.cache";
+	public static final String FOLDER_CACHE = CACHE_FOLDER + File.separator + "folder.cache";
 	public static final String IMAGE_FOLDER = CACHE_FOLDER + File.separator + "img";
 	public static final String ARTIST_IMAGE_FOLDER = IMAGE_FOLDER + File.separator + "artists";
 

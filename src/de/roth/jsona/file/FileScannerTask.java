@@ -15,17 +15,19 @@ public class FileScannerTask extends Task<Void> {
 	private File rootFolder;
 	private int index;
 	private ArrayList<MusicListItem> recentlyAdded;
-	
+
 	private Calendar now = Calendar.getInstance();
 	private Calendar untilPast = Calendar.getInstance();
 	private Date nowDate;
-	
+
 	private FileTaggerListener ftl;
 	private FileScannerListener fsl;
-	
+
 	private String target;
-	
-	public FileScannerTask(File file, int index, FileTaggerListener ftl, FileScannerListener fsl, String target) {
+
+	private boolean createRecentlyAddedList;
+
+	public FileScannerTask(File file, int index, FileTaggerListener ftl, FileScannerListener fsl, String target, boolean createRecentlyAddedList) {
 		this.rootFolder = file;
 		this.index = index;
 		if (this.index < 0) {
@@ -34,17 +36,23 @@ public class FileScannerTask extends Task<Void> {
 		this.recentlyAdded = new ArrayList<MusicListItem>();
 		this.nowDate = now.getTime();
 		this.untilPast.add(Calendar.DATE, Config.getInstance().RECENTLY_ADDED_UNITL_TIME_IN_DAYS);
-		
+
 		this.ftl = ftl;
 		this.fsl = fsl;
 		this.target = target;
+
+		this.createRecentlyAddedList = createRecentlyAddedList;
 	}
 
 	@Override
 	protected Void call() throws Exception {
 		File[] files = { this.rootFolder };
 		LinkedList<File> items = FileScanner.scan(files, index, true, this.fsl, target);
-		FileTagger.tagFiles(this.rootFolder, items, this.recentlyAdded, this.nowDate, this.untilPast.getTime(), this.ftl);
+		if (this.createRecentlyAddedList) {
+			FileTagger.tagFiles(this.rootFolder, items, this.recentlyAdded, this.nowDate, this.untilPast.getTime(), this.ftl);
+		} else {
+			FileTagger.tagFiles(this.rootFolder, items, this.nowDate, this.untilPast.getTime(), this.ftl);
+		}
 		return null;
 	}
 }

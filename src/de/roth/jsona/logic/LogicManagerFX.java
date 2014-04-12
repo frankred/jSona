@@ -22,7 +22,6 @@ import javafx.concurrent.Task;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -63,6 +62,7 @@ import de.roth.jsona.model.PlayList;
 import de.roth.jsona.tag.detection.DetectorRulesManager;
 import de.roth.jsona.tag.detection.FieldResult;
 import de.roth.jsona.util.Logger;
+import de.roth.jsona.util.NumberUtil;
 import de.roth.jsona.util.SerializeManager;
 import de.roth.jsona.util.TimeFormatter;
 
@@ -148,6 +148,11 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 
 		// Music folders
 		ArrayList<File> folders = Config.asFileArrayList(Config.getInstance().FOLDERS);
+		ArrayList<File> oldFolders = (ArrayList<File>) SerializeManager.load(Global.FOLDER_CACHE);
+		SerializeManager.save(Global.FOLDER_CACHE, folders);
+		if (oldFolders == null) {
+			oldFolders = new ArrayList<File>();
+		}
 
 		// Create view music folders
 		for (int i = folders.size() - 1; i >= 0; i--) {
@@ -167,11 +172,29 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 				e.printStackTrace();
 			}
 
+			// start loading animation
 			ViewManagerFX.getInstance().getController().updateMusicFolderLoading(-1, 0, null, f.getAbsolutePath());
 
-			// tag entries
-			Task<Void> fileScannerTask = new FileScannerTask(f, 0, this, this, f.getAbsolutePath());
-			importTaggingExecutor.execute(fileScannerTask);
+			// Check for new folders
+			boolean newFolder = true;
+			for (File of : oldFolders) {
+				if (f.getAbsolutePath().equals(of.getAbsolutePath())) {
+					newFolder = false;
+				}
+			}
+
+			// New folder found (in comparison with previous start)
+			if (newFolder) {
+				// Because the folder is completely new it would make no sense
+				// to add all files to the "recentlyAdded (New)" tab.
+				// tag entries
+				Task<Void> fileScannerTask = new FileScannerTask(f, 0, this, this, f.getAbsolutePath(), false);
+				importTaggingExecutor.execute(fileScannerTask);
+			} else {
+				// tag entries
+				Task<Void> fileScannerTask = new FileScannerTask(f, 0, this, this, f.getAbsolutePath(), true);
+				importTaggingExecutor.execute(fileScannerTask);
+			}
 		}
 
 		// loading artists informations
@@ -295,9 +318,8 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 		// Show folder
 		ViewManagerFX.getInstance().getController().setMusicFolder(this, rootFile.getAbsolutePath(), rootFile.getAbsolutePath(), 0, items);
 
-		// If all are new, dont add them to the "new" tab
-		if (items.size() != recentlyAddedItems.size()) {
-			// Add new
+		// Add new
+		if (recentlyAddedItems != null) {
 			this.newList.addAll(recentlyAddedItems);
 		}
 
@@ -480,11 +502,14 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 			return;
 		}
 
-		MusicListItem item = DataManager.getInstance().add(f, pathToWatch.toFile());
+		MusicListItem item = DataManager.getInstance().add(f, rootFolder);
 		DataManager.getInstance().commit();
 
 		// Add to folder tab
 		ViewManagerFX.getInstance().getController().addMusicListItem(rootFolder.getAbsolutePath(), rootFolder.getAbsolutePath(), item);
+
+		// Add to new tab
+		ViewManagerFX.getInstance().getController().addMusicListItem(Global.NEW_FOLDER_NAME, null, item);
 	}
 
 	@Override
@@ -710,8 +735,12 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 
 	@Override
 	public void event_player_volume(int newValue, int oldValue) {
+		if (newValue == oldValue) {
+			return; // no changes
+		}
 		mediaPlayerManager.setVolume(newValue);
 		Config.getInstance().VOLUME = newValue;
+
 	}
 
 	@Override
@@ -798,11 +827,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 
 	public void action_player_volume_up(int stepSize) {
 		Config.getInstance().VOLUME += stepSize;
-		if (Config.getInstance().VOLUME >= 100) {
-			Config.getInstance().VOLUME = 100;
-		} else if (Config.getInstance().VOLUME < 0) {
-			Config.getInstance().VOLUME = 0;
-		}
+		Config.getInstance().VOLUME = NumberUtil.keepInRange(0, 100, Config.getInstance().VOLUME);
 		Logger.get().log(Level.INFO, "Set volume to '" + Config.getInstance().VOLUME + "'.");
 		ViewManagerFX.getInstance().getController().setVolume(Config.getInstance().VOLUME);
 		mediaPlayerManager.setVolume(Config.getInstance().VOLUME);
@@ -815,11 +840,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 
 	public void action_player_volume_down(int stepSize) {
 		Config.getInstance().VOLUME -= stepSize;
-		if (Config.getInstance().VOLUME >= 100) {
-			Config.getInstance().VOLUME = 100;
-		} else if (Config.getInstance().VOLUME < 0) {
-			Config.getInstance().VOLUME = 0;
-		}
+		Config.getInstance().VOLUME = NumberUtil.keepInRange(0, 100, Config.getInstance().VOLUME);
 		Logger.get().log(Level.INFO, "Set volume to '" + Config.getInstance().VOLUME + "'.");
 		ViewManagerFX.getInstance().getController().setVolume(Config.getInstance().VOLUME);
 		mediaPlayerManager.setVolume(Config.getInstance().VOLUME);
