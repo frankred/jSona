@@ -10,6 +10,11 @@ import javafx.concurrent.Task;
 import de.roth.jsona.config.Config;
 import de.roth.jsona.model.MusicListItem;
 
+/**
+ * Task to scan and tag the over given files and create a for "recently added" items.
+ * @author Frank Roth
+ *
+ */
 public class FileScannerTask extends Task<Void> {
 
 	private File rootFolder;
