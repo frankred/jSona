@@ -19,6 +19,8 @@ import de.roth.jsona.util.Logger;
  */
 public class MainFX extends Application {
 
+	public static final String VERSION = "1.0.4";
+	
 	@Override
 	public void start(final Stage stage) throws Exception {
 		// Set default language
@@ -28,7 +30,7 @@ public class MainFX extends Application {
 		Logger.get().setLevel(Level.ALL);
 		
 		// Print out the logo
-		Logger.get().log(Level.INFO, "Starting jSona..." + System.lineSeparator() + getLogo());
+		Logger.get().log(Level.INFO, "Starting jSona..." + System.lineSeparator() + getLogo(VERSION));
 
 		// Load configuration
 		Config.load(Global.CONFIG_JSON);
@@ -50,7 +52,7 @@ public class MainFX extends Application {
 		launch(args);
 	}
 
-	public static String getLogo() {
+	public static String getLogo(String version) {
 		return System.lineSeparator() + System.lineSeparator() +
 			"   _  _____                   " + System.lineSeparator() +
 			"  (_)/ ____|                  " + System.lineSeparator() +
@@ -59,7 +61,7 @@ public class MainFX extends Application {
 			"  | |____) | (_) | | | | (_| |" + System.lineSeparator() +
 			"  | |_____/ \\___/|_| |_|\\__,_|" + System.lineSeparator() +
 			" _/ |                   " + System.lineSeparator() +
-			"|__/    1.0.0           " + System.lineSeparator() + System.lineSeparator() +
+			"|__/    " + version + "           " + System.lineSeparator() + System.lineSeparator() +
 			"vlcj version: 3.0.1" + System.lineSeparator() +
 			"lucene version: 4.7.0" + System.lineSeparator() +
 			"javafx: " + com.sun.javafx.runtime.VersionInfo.getRuntimeVersion() + 
