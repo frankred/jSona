@@ -72,6 +72,7 @@ import org.jsoup.Jsoup;
 
 import com.sun.media.jfxmedia.events.PlayerStateEvent.PlayerState;
 
+import de.roth.jsona.MainFX;
 import de.roth.jsona.artist.JSonaArtist;
 import de.roth.jsona.config.Config;
 import de.roth.jsona.config.Global;
@@ -229,7 +230,7 @@ public class ViewController implements Initializable, ViewInterface {
 
 				// Remove from musicLists
 				musicFolderListViews.get(item.getRootFolder().getAbsolutePath()).getItems().remove(item);
-				
+
 				// Remove from new
 				musicFolderListViews.get(Global.NEW_FOLDER_NAME).getItems().remove(item);
 
@@ -453,7 +454,7 @@ public class ViewController implements Initializable, ViewInterface {
 		searchText.setPromptText("Search word...");
 		searchResultsListView.setCellFactory(new Callback<ListView<MusicListItem>, ListCell<MusicListItem>>() {
 			@Override
-			public ListCell<MusicListItem> call(ListView<MusicListItem> item) {
+			public ListCell<MusicListItem> call(ListView<MusicListItem> listView) {
 				// http://docs.oracle.com/javafx/2/ui_controls/list-view.htm
 				return new ListItemCell(logic);
 			}
@@ -591,6 +592,9 @@ public class ViewController implements Initializable, ViewInterface {
 				equalizerStage.show();
 			};
 		});
+		
+		// Set version
+		artistBio.setText(MainFX.VERSION);
 	}
 
 	public void setPlaybackMode(final PlayBackMode mode) {
@@ -818,7 +822,11 @@ public class ViewController implements Initializable, ViewInterface {
 	private ListView<MusicListItem> prepareMusicListPane(final LogicInterfaceFX logic, final String id, final ArrayList<MusicListItem> items, AnchorPane listPane) {
 		@SuppressWarnings("unchecked")
 		final ListView<MusicListItem> listView = (ListView<MusicListItem>) listPane.getChildren().get(0);
-		listView.setItems(FXCollections.observableList(items));
+		
+		ObservableList<MusicListItem> list = FXCollections.observableList(items);
+		
+		listView.setItems(list);
+		
 		listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		listView.setId(id);
 
@@ -1062,11 +1070,12 @@ public class ViewController implements Initializable, ViewInterface {
 		}
 	}
 
-	public static class ListItemCell extends ListCell<MusicListItem> {
+	public static class ListItemCell extends ListCell<MusicListItem>{
 
 		public final String[] styleClasses = { "cell", "indexed-cell", "list-cell" };
 		public final String defaultCellClass = "listitem";
 		public final String defaultTextClass = "listtext";
+		public final String playingClass = "playing";
 
 		private AnchorPane listItem;
 		private ImageView playback_icon;
@@ -1152,9 +1161,8 @@ public class ViewController implements Initializable, ViewInterface {
 			super.updateItem(item, empty);
 
 			if (!empty && item != null) {
-
 				// Duration
-				this.duration.setText(item.getDuration());
+				// this.duration.setText(item.getDuration());
 
 				// Artist / Title
 				if (item.getArtist() != null) {
@@ -1168,13 +1176,11 @@ public class ViewController implements Initializable, ViewInterface {
 				// Playing / None
 				switch (item.getTmp_status()) {
 				case SET_PLAYING:
-					if (item.getArtist() != null) {
-						this.artist.setText(" »   ".concat(this.artist.getText()));
-					} else {
-						this.title.setText(" »   ".concat(this.title.getText()));
-					}
+					this.getStyleClass().add(playingClass);
+					
 					break;
 				case SET_NONE:
+					this.getStyleClass().remove(playingClass);
 					break;
 				default:
 					break;
@@ -1182,7 +1188,7 @@ public class ViewController implements Initializable, ViewInterface {
 			} else {
 				this.artist.setText("");
 				this.title.setText("");
-				this.duration.setText("");
+				// this.duration.setText("");
 			}
 
 		}
@@ -1322,7 +1328,6 @@ public class ViewController implements Initializable, ViewInterface {
 	}
 
 	public static class ListItemManager {
-
 		private Random random;
 		private int currentItemIndexGuess;
 		private MusicListItem currentItem;
@@ -1375,6 +1380,7 @@ public class ViewController implements Initializable, ViewInterface {
 					repaint(currentListView);
 					currentListView.getSelectionModel().clearSelection();
 					currentListView.getSelectionModel().select(nextIndex);
+					currentListView.getFocusModel().focus(nextIndex);
 
 				}
 			});
@@ -1418,6 +1424,7 @@ public class ViewController implements Initializable, ViewInterface {
 
 					currentListView.getSelectionModel().clearSelection();
 					currentListView.getSelectionModel().select(prevIndex);
+					currentListView.getFocusModel().focus(prevIndex);
 				}
 			});
 
@@ -1460,6 +1467,7 @@ public class ViewController implements Initializable, ViewInterface {
 
 					playMeListView.getSelectionModel().clearSelection();
 					playMeListView.getSelectionModel().select(index);
+					currentListView.getFocusModel().focus(index);
 				}
 			});
 			logic.event_player_next(oldItem, playMe);

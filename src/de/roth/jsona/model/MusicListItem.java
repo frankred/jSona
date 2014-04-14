@@ -2,9 +2,21 @@ package de.roth.jsona.model;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 
-public class MusicListItem implements Serializable {
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
+/**
+ * Core music item of jsona.
+ * 
+ * @author Frank Roth
+ * 
+ */
+public class MusicListItem implements Serializable, Observable {
 
 	private static final long serialVersionUID = -3582887378286675733L;
 	private String id;
@@ -21,6 +33,7 @@ public class MusicListItem implements Serializable {
 	private Date creationDate;
 	private long lastFileModification;
 	private int colorClass;
+	private ArrayList<InvalidationListener> listeners;
 
 	public enum Status {
 		SET_NONE, SET_PLAYING, SET_PAUSED
@@ -40,13 +53,14 @@ public class MusicListItem implements Serializable {
 		this.lastFileModification = file.lastModified();
 		this.file = file;
 		this.rootFolder = rootFolder;
-		this.duration = new String();
 		this.tmp_status = Status.SET_NONE;
+		this.listeners = new ArrayList<InvalidationListener>();
 	}
 
 	public MusicListItem() {
 		this.tmp_status = Status.SET_NONE;
 		this.genre = -1;
+		this.listeners = new ArrayList<InvalidationListener>();
 	}
 
 	public File getFile() {
@@ -71,6 +85,7 @@ public class MusicListItem implements Serializable {
 
 	public void setDuration(String duration) {
 		this.duration = duration;
+		invalidate();
 	}
 
 	public String getArtist() {
@@ -236,5 +251,21 @@ public class MusicListItem implements Serializable {
 
 	public void setRootFolder(File rootFolder) {
 		this.rootFolder = rootFolder;
+	}
+
+	@Override
+	public void addListener(InvalidationListener listener) {
+		this.listeners.add(listener);
+	}
+
+	@Override
+	public void removeListener(InvalidationListener listener) {
+		this.listeners.remove(listener);
+	}
+
+	private void invalidate() {
+		for (InvalidationListener l : this.listeners) {
+			l.invalidated(this);
+		}
 	}
 }

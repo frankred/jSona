@@ -22,7 +22,7 @@
 }
 
 .volumeProgress{
-	-fx-background-radius: 10;
+	-fx-background-radius: 10.0;
 }
 
 .durationProgress{
@@ -101,7 +101,7 @@
 }
 
 .list-view:focused .list-cell:focused:odd {
-    -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, derive(-fx-control-inner-background,-5.0%);
+    -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-control-inner-background;
     -fx-background-insets: 0.0, 0.0, 0.0;
 }
 
@@ -126,9 +126,14 @@
     -fx-text-fill: -fx-selection-bar-text;
 }
 
+.list-view:focused .list-cell:filled:focused:hover {
+    -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-cell-hover-color;
+    -fx-background-insets: 0.0, 0.0, 0.0;
+    -fx-text-fill: -fx-text-inner-color;
+}
+
 /* When the ListView is _not_ focused, we show alternate selection colors */
 .list-cell:filled:selected:focused, .list-cell:filled:selected, .list-view:horizontal .list-cell:filled:selected {
-    -fx-background-color: lightgray;
     -fx-text-fill: -fx-selection-bar-text;
 }
 
@@ -141,14 +146,10 @@
     -fx-text-fill: -fx-text-inner-color;
 }
 
-.list-view:focused .list-cell:filled:focused:hover {
-    -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-cell-hover-color;
-    -fx-background-insets: 0.0, 0.0, 0.0;
-    -fx-text-fill: -fx-text-inner-color;
-}
-
-.list-view:horizontal .list-cell:filled:selected, .list-view:horizontal .list-cell:filled:selected:hover {
-    -fx-background-color: linear-gradient(to right, derive(-fx-accent,-7.0%), derive(-fx-accent,-25.0%));
+.list-view .playing{
+	-fx-text-fill: -fx-text-inner-color;
+	-fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-cell-hover-color; 
+  	-fx-background-insets: 0.0, 1.0 0.0 1.0 0.0;
 }
 
 .hyperlink {
@@ -186,5 +187,5 @@
 
 /* Shuffle Button */
 #shuffleToggleButton{
-	-fx-background-radius: 80 80 80 80;
+	-fx-background-radius: 80.0 80.0 80.0 80.0;
 }

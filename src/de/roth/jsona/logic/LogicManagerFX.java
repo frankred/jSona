@@ -53,6 +53,7 @@ import de.roth.jsona.folderwatch.DirWatcher;
 import de.roth.jsona.folderwatch.WatchDirListener;
 import de.roth.jsona.http.ImageType;
 import de.roth.jsona.javafx.ViewManagerFX;
+import de.roth.jsona.javafx.ViewController.ListItemManager;
 import de.roth.jsona.keyevent.HotkeyConfig;
 import de.roth.jsona.mediaplayer.MediaPlayerManager;
 import de.roth.jsona.mediaplayer.PlayBackMode;
@@ -133,7 +134,6 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 	 * Start jSona, scan the folder, start watching the folder for changes and
 	 * loading the playlists.
 	 */
-	@SuppressWarnings("unchecked")
 	public void start() {
 		// Init
 		ViewManagerFX.getInstance().getController().init(this, Config.getInstance().THEME);
@@ -299,7 +299,6 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 				Logger.get().log(Level.FINE, "+cache +lucene '" + item.getFile().getAbsolutePath() + "'.");
 				return;
 			}
-
 			if (addedToLucene) {
 				Logger.get().log(Level.FINE, "+lucene '" + item.getFile().getAbsolutePath() + "'.");
 			}
