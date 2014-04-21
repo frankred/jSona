@@ -52,7 +52,7 @@ Here is an example of the default configuration file. You have to setup your **V
 And here an explanation of all possible attributes:
 
 #####PATH_TO_VLCJ
-Path to your VLC root directory where the libvlc or libvlccore library is. (In windows the files are called libvlc.dll and libvlccore.dll).
+Path to your VLC root directory where the libvlc or libvlccore library is. (In windows the files are called libvlc.dll and libvlccore.dll). On a unix system, e.g. fedora the vlc libraries are under '/usr/lib64'.
 
 #####MAX_SEARCH_RESULT_AMOUNT
 Maximum search results of the lucene engine (smaller is faster)
