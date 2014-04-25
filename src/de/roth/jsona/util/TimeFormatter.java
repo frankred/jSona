@@ -43,13 +43,18 @@ public class TimeFormatter {
 			ss = String.valueOf("0" + ints[2]);
 		}
 		
+		// hours?
 		if(ints[0] != 0){
 			outputString.append(hh + ":");
 			outputString.append(mm + ":");
 			outputString.append(ss);
 			return outputString.toString();
 		}
-
+		
+		if(mm.startsWith("0")){
+			mm = mm.substring(1);
+		}
+		
 		outputString.append(mm + ":");
 		outputString.append(ss);
 		return outputString.toString();
