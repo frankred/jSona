@@ -162,8 +162,12 @@ public class ExternalInformations {
 			}
 
 			// load top tracks
-			Collection<Track> topTracks = Artist.getTopTracks(jsonaArtist.getArtist().getName(), Global.LASTFM_API_KEY);
-			jsonaArtist.setTopTracks(topTracks);
+			try {
+				Collection<Track> topTracks = Artist.getTopTracks(jsonaArtist.getArtist().getName(), Global.LASTFM_API_KEY);
+				jsonaArtist.setTopTracks(topTracks);
+			} catch (Exception e) {
+				Logger.get().log(Level.INFO, "Error during LastFM.artist.getTopTracks('" + jsonaArtist.getArtist().getName() + "'), maybe API out of date or no internet connection.");
+			}
 			l.artistInformationsReady(item, jsonaArtist);
 
 			// Save cache to file
