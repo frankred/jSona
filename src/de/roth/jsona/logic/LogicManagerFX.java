@@ -541,6 +541,10 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 
 		// Add to new tab
 		ViewManagerFX.getInstance().getController().addMusicListItem(Global.NEW_FOLDER_NAME, null, item);
+		
+		// Recreate search
+		event_search_music(ViewManagerFX.getInstance().getController().getSearchText());
+		
 	}
 
 	@Override
@@ -563,6 +567,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 
 	@Override
 	public void fileModified(Path pathModified, Path pathToWatch) {
+		// TODO: Retag item...
 	}
 
 	@Override
