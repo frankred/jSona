@@ -17,6 +17,8 @@ import java.util.Random;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -592,7 +594,7 @@ public class ViewController implements Initializable, ViewInterface {
 				equalizerStage.show();
 			};
 		});
-		
+
 		// Set version
 		artistBio.setText(MainFX.VERSION);
 	}
@@ -608,10 +610,6 @@ public class ViewController implements Initializable, ViewInterface {
 				ListItemManager.getInstance().setPlayBackMode(mode);
 			}
 		});
-	}
-
-	public void setCurrentItem(MusicListItem item) {
-		ListItemManager.getInstance().load(item);
 	}
 
 	public void setVolume(final int vol) {
@@ -757,26 +755,30 @@ public class ViewController implements Initializable, ViewInterface {
 		});
 	}
 
-	public void createLoadingMusicFolder(final String tabLabel, final String id, int pos) {
-		Tab tab = new Tab();
-		tab.setText(tabLabel);
-		tab.setId(id);
-		AnchorPane loadingPane = null;
-		try {
-			loadingPane = (AnchorPane) FXMLLoader.load(getClass().getResource("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "layout_music_folder_loading.fxml"));
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
+	public void createLoadingMusicFolder(final String tabLabel, final String id, final int pos) {
+		Platform.runLater(new Runnable() {
+			public void run() {
+				Tab tab = new Tab();
+				tab.setText(tabLabel);
+				tab.setId(id);
+				AnchorPane loadingPane = null;
+				try {
+					loadingPane = (AnchorPane) FXMLLoader.load(getClass().getResource("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "layout_music_folder_loading.fxml"));
+				} catch (IOException e) {
+					e.printStackTrace();
+					return;
+				}
 
-		VBox vbox = (VBox) loadingPane.getChildren().get(0);
-		ProgressIndicator indicator = (ProgressIndicator) vbox.getChildren().get(0);
-		tab.setContent(loadingPane);
+				VBox vbox = (VBox) loadingPane.getChildren().get(0);
+				ProgressIndicator indicator = (ProgressIndicator) vbox.getChildren().get(0);
+				tab.setContent(loadingPane);
 
-		this.musicFolderTabs.put(id, tab);
-		this.musicFolderListLoadingViews.put(id, indicator);
-		this.musicTabs.getTabs().add(pos, tab);
-		this.musicTabs.getSelectionModel().select(0);
+				musicFolderTabs.put(id, tab);
+				musicFolderListLoadingViews.put(id, indicator);
+				musicTabs.getTabs().add(pos, tab);
+				musicTabs.getSelectionModel().select(0);	
+			}
+		});
 	}
 
 	public void createMusicFolder(final LogicInterfaceFX logic, final String tabLabel, final String id, final int pos, final ArrayList<MusicListItem> items) {
@@ -822,11 +824,11 @@ public class ViewController implements Initializable, ViewInterface {
 	private ListView<MusicListItem> prepareMusicListPane(final LogicInterfaceFX logic, final String id, final ArrayList<MusicListItem> items, AnchorPane listPane) {
 		@SuppressWarnings("unchecked")
 		final ListView<MusicListItem> listView = (ListView<MusicListItem>) listPane.getChildren().get(0);
-		
+
 		ObservableList<MusicListItem> list = FXCollections.observableList(items);
-		
+
 		listView.setItems(list);
-		
+
 		listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		listView.setId(id);
 
@@ -1070,36 +1072,23 @@ public class ViewController implements Initializable, ViewInterface {
 		}
 	}
 
-	public static class ListItemCell extends ListCell<MusicListItem>{
+	public static class ListItemCell extends ListCell<MusicListItem> implements InvalidationListener {
 
 		public final String[] styleClasses = { "cell", "indexed-cell", "list-cell" };
 		public final String defaultCellClass = "listitem";
-		public final String defaultTextClass = "listtext";
-		public final String playingClass = "playing";
+		public final static String PLAYING_CLASS = "playing";
 
 		private AnchorPane listItem;
-		private ImageView playback_icon;
+		private BorderPane titleAndArtist;
 		private Label artist;
 		private Label title;
 		private Label duration;
-		private BorderPane borderPane;
-		private FlowPane flowPane;
-		private boolean playSymbol;
 
 		/**
 		 * Constructor for musiclist
 		 */
 		public ListItemCell() {
-			this.playSymbol = false;
 			initCellLayout();
-		}
-
-		public boolean isPlaySymbol() {
-			return playSymbol;
-		}
-
-		public void setPlaySymbol(boolean playSymbol) {
-			this.playSymbol = playSymbol;
 		}
 
 		/**
@@ -1133,64 +1122,80 @@ public class ViewController implements Initializable, ViewInterface {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
-			this.borderPane = (BorderPane) listItem.getChildren().get(0);
-			this.flowPane = (FlowPane) borderPane.getLeft();
-			this.playback_icon = new ImageView(new Image("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "item_playing.png"));
-			this.artist = (Label) flowPane.getChildren().get(0);
-			this.artist.getStyleClass().add(defaultTextClass);
-
-			this.title = (Label) flowPane.getChildren().get(1);
-			this.title.getStyleClass().add(defaultTextClass);
-
-			this.duration = (Label) borderPane.getRight();
-			this.duration.getStyleClass().add(defaultTextClass);
-
-			this.playback_icon.setManaged(false);
+			this.artist = (Label) this.listItem.lookup("#artist");
+			this.artist.setWrapText(true);
+			this.title = (Label) this.listItem.lookup("#title");
+			this.title.setWrapText(true);
+			this.duration = (Label) this.listItem.lookup("#duration");
 
 			// Create icon and hide
-			this.flowPane.getChildren().add(0, this.playback_icon);
-			this.playback_icon.setManaged(false);
-			this.playback_icon.setVisible(false);
-
 			this.setGraphic(listItem);
 		}
 
 		@Override
 		public void updateItem(MusicListItem item, boolean empty) {
+			MusicListItem oldItem = getItem();
+
+			// If old item is not null remove listener because we dont need it
+			// anymore
+			if (oldItem != null) {
+				oldItem.removeListener(this);
+			}
 			super.updateItem(item, empty);
 
 			if (!empty && item != null) {
-				// Duration
-				// this.duration.setText(item.getDuration());
+				repaint(item);
+				item.addListener(this);
+			}
+		}
 
-				// Artist / Title
-				if (item.getArtist() != null) {
-					this.artist.setText(item.getArtist());
-					this.title.setText(" - " + item.getTitle());
-				} else {
-					this.artist.setText("");
-					this.title.setText(item.getFile().getName());
-				}
+		@Override
+		public void invalidated(Observable arg0) {
+			repaint(getItem());
+		}
 
-				// Playing / None
+		private void repaint(MusicListItem item) {
+			if (item.getTmp_status() == null) {
+				item.setTmp_status(Status.SET_NONE);
+			}
+
+			this.duration.setText(item.getDuration());
+
+			// artist / title
+			if (item.getArtist() != null) {
+				this.artist.setManaged(true);
 				switch (item.getTmp_status()) {
 				case SET_PLAYING:
-					this.getStyleClass().add(playingClass);
-					
+					this.artist.setText(item.getArtist());
+					this.title.setText(" - " + item.getTitle());
+					this.getStyleClass().add(PLAYING_CLASS);
 					break;
 				case SET_NONE:
-					this.getStyleClass().remove(playingClass);
+					this.getStyleClass().remove(PLAYING_CLASS);
+					this.artist.setText(item.getArtist());
+					this.title.setText(" - " + item.getTitle());
 					break;
 				default:
 					break;
 				}
-			} else {
-				this.artist.setText("");
-				this.title.setText("");
-				// this.duration.setText("");
 			}
-
+			// filename
+			else {
+				this.artist.setText("");
+				this.artist.setManaged(false);
+				switch (item.getTmp_status()) {
+				case SET_PLAYING:
+					this.title.setText(item.getFile().getName());
+					this.getStyleClass().add(PLAYING_CLASS);
+					break;
+				case SET_NONE:
+					this.getStyleClass().remove(PLAYING_CLASS);
+					this.title.setText(item.getFile().getName());
+					break;
+				default:
+					break;
+				}
+			}
 		}
 	}
 
@@ -1344,12 +1349,17 @@ public class ViewController implements Initializable, ViewInterface {
 			final MusicListItem ci = this.currentItem;
 
 			// Fix: That the slider isn't toggling if length changed
-			Platform.runLater(new Runnable() {
-				public void run() {
-					ViewManagerFX.getInstance().getController().durationSlider.setValue(0);
-					ViewManagerFX.getInstance().getController().durationProgress.setProgress(0);
-				}
-			});
+			if (Platform.isFxApplicationThread()) {
+				ViewManagerFX.getInstance().getController().durationSlider.setValue(0);
+				ViewManagerFX.getInstance().getController().durationProgress.setProgress(0);
+			} else {
+				Platform.runLater(new Runnable() {
+					public void run() {
+						ViewManagerFX.getInstance().getController().durationSlider.setValue(0);
+						ViewManagerFX.getInstance().getController().durationProgress.setProgress(0);
+					}
+				});
+			}
 
 			if (clv == null) {
 				return; // fuck my life, do nothing
@@ -1368,22 +1378,16 @@ public class ViewController implements Initializable, ViewInterface {
 			final MusicListItem nextItem = currentListView.getItems().get(nextIndex);
 			final MusicListItem oldItem = currentItem;
 
-			Platform.runLater(new Runnable() {
-				public void run() {
-					// scrollTo is fuckin' slow, don't know how to workarround
-					// that
-					currentListView.scrollTo(nextIndex);
-					currentItem.setTmp_status(Status.SET_NONE);
-					nextItem.setTmp_status(Status.SET_PLAYING);
-					setCurrentItem(nextItem);
-					setCurrentListView(currentListView);
-					repaint(currentListView);
-					currentListView.getSelectionModel().clearSelection();
-					currentListView.getSelectionModel().select(nextIndex);
-					currentListView.getFocusModel().focus(nextIndex);
+			if (Platform.isFxApplicationThread()) {
+				switchTo(nextIndex, nextItem);
+			} else {
+				Platform.runLater(new Runnable() {
+					public void run() {
+						switchTo(nextIndex, nextItem);
+					}
+				});
+			}
 
-				}
-			});
 			logic.event_player_next(oldItem, nextItem);
 		}
 
@@ -1409,26 +1413,27 @@ public class ViewController implements Initializable, ViewInterface {
 			final MusicListItem nextItem = currentListView.getItems().get(prevIndex);
 			final MusicListItem oldItem = currentItem;
 
-			Platform.runLater(new Runnable() {
-				public void run() {
-					// scrollTo is fuckin' slow, don't know how to workarround
-					// that. Fixed in Java8!
-					currentListView.scrollTo(prevIndex);
-					currentItem.setTmp_status(Status.SET_NONE);
-
-					nextItem.setTmp_status(Status.SET_PLAYING);
-					setCurrentItem(nextItem);
-					setCurrentListView(currentListView);
-
-					repaint(currentListView);
-
-					currentListView.getSelectionModel().clearSelection();
-					currentListView.getSelectionModel().select(prevIndex);
-					currentListView.getFocusModel().focus(prevIndex);
-				}
-			});
+			if (Platform.isFxApplicationThread()) {
+				switchTo(prevIndex, nextItem);
+			} else {
+				Platform.runLater(new Runnable() {
+					public void run() {
+						switchTo(prevIndex, nextItem);
+					}
+				});
+			}
 
 			logic.event_player_previous(oldItem, nextItem);
+		}
+
+		private void switchTo(int newIndex, MusicListItem newItem) {
+			currentItem.setTmp_status(Status.SET_NONE);
+			currentListView.scrollTo(newIndex);
+			newItem.setTmp_status(Status.SET_PLAYING);
+
+			setCurrentItem(newItem);
+			setCurrentListView(currentListView);
+			currentListView.getFocusModel().focus(newIndex);
 		}
 
 		public void play(LogicInterfaceFX logic, final ListView<MusicListItem> playMeListView, final MusicListItem playMe) {
@@ -1444,14 +1449,6 @@ public class ViewController implements Initializable, ViewInterface {
 				if (oldItem != null) {
 					oldItem.setTmp_status(Status.SET_NONE);
 				}
-
-				// repaint quickfix, javafx is awesome, but some features are
-				// missing!
-				Platform.runLater(new Runnable() {
-					public void run() {
-						repaint(listViewOld);
-					}
-				});
 			}
 
 			final int index = playMeListView.getItems().indexOf(playMe);
@@ -1462,8 +1459,6 @@ public class ViewController implements Initializable, ViewInterface {
 				public void run() {
 					setCurrentListView(playMeListView);
 					setCurrentItem(playMe);
-
-					repaint(playMeListView);
 
 					playMeListView.getSelectionModel().clearSelection();
 					playMeListView.getSelectionModel().select(index);
@@ -1493,34 +1488,12 @@ public class ViewController implements Initializable, ViewInterface {
 			return nextIndex;
 		}
 
-		private void repaint(final ListView<MusicListItem> listView) {
-			ObservableList<MusicListItem> items = listView.getItems();
-			listView.setItems(null);
-			listView.setItems(items);
-		}
-
 		public static ListItemManager getInstance() {
 			return instance;
 		}
 
 		public MusicListItem getCurrentItem() {
 			return this.currentItem;
-		}
-
-		public void load(final MusicListItem item) {
-			currentItem = item;
-
-			Platform.runLater(new Runnable() {
-				public void run() {
-					int index = currentListView.getItems().indexOf(item);
-					currentListView.getSelectionModel().clearSelection();
-					currentListView.getSelectionModel().select(index);
-					// scrollTo is fuckin' slow, don't know how to workarround
-					// that
-					currentListView.scrollTo(index);
-				}
-			});
-
 		}
 
 		public void setCurrentItem(MusicListItem item) {

@@ -5,10 +5,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
 /**
  * Core music item of jsona.
@@ -32,20 +31,24 @@ public class MusicListItem implements Serializable, Observable {
 	private String summary;
 	private Date creationDate;
 	private long lastFileModification;
-	private int colorClass;
-	private ArrayList<InvalidationListener> listeners;
 
 	public enum Status {
 		SET_NONE, SET_PLAYING, SET_PAUSED
 	}
 
-	private Status tmp_status; // this breaks MVC, but fuck my life, JavaFX does
-								// not support the access to the cell in the
-								// listView, so this property is set if the
-								// listCell changes it state and has to be
-								// repainted.
-	private boolean tmp_view_insertBeforeMe = false;
-	private boolean tmp_keep_in_cache = false;
+	// do not serialize
+	private transient int colorClass;
+	private transient ArrayList<InvalidationListener> listeners;
+	private String invalidateionListenerCause;
+
+	// this breaks MVC, but fuck my life, JavaFX does
+	// not support the access to the cell in the
+	// listView, so this property is set if the
+	// listCell changes it state and has to be
+	// repainted.
+	private transient Status tmp_status;
+	private transient boolean tmp_view_insertBeforeMe = false;
+	private transient boolean tmp_keep_in_cache = false;
 
 	public MusicListItem(File file, File rootFolder, String id) {
 		this.id = id;
@@ -61,6 +64,15 @@ public class MusicListItem implements Serializable, Observable {
 		this.tmp_status = Status.SET_NONE;
 		this.genre = -1;
 		this.listeners = new ArrayList<InvalidationListener>();
+	}
+
+	public void postSerialisationProcess() {
+		this.tmp_status = MusicListItem.Status.SET_NONE;
+		this.tmp_view_insertBeforeMe = false;
+
+		if (this.listeners == null) {
+			this.listeners = new ArrayList<InvalidationListener>();
+		}
 	}
 
 	public File getFile() {
@@ -85,6 +97,7 @@ public class MusicListItem implements Serializable, Observable {
 
 	public void setDuration(String duration) {
 		this.duration = duration;
+		invalidateionListenerCause = "duration";
 		invalidate();
 	}
 
@@ -195,6 +208,8 @@ public class MusicListItem implements Serializable, Observable {
 
 	public void setTmp_status(Status tmp_status) {
 		this.tmp_status = tmp_status;
+		invalidateionListenerCause = "status";
+		invalidate();
 	}
 
 	public long getLastFileModification() {
@@ -255,6 +270,9 @@ public class MusicListItem implements Serializable, Observable {
 
 	@Override
 	public void addListener(InvalidationListener listener) {
+		if(this.listeners == null){
+			postSerialisationProcess();
+		}
 		this.listeners.add(listener);
 	}
 
@@ -264,8 +282,20 @@ public class MusicListItem implements Serializable, Observable {
 	}
 
 	private void invalidate() {
-		for (InvalidationListener l : this.listeners) {
-			l.invalidated(this);
+		final MusicListItem item = this;
+		if (this.listeners != null && this.listeners.size() > 0) {
+			// Need to be run
+			Platform.runLater(new Runnable() {
+				public void run() {
+					for (InvalidationListener l : listeners) {
+						l.invalidated(item);
+					}
+				}
+			});
 		}
+	}
+
+	public String getInvalidateionListenerCause() {
+		return invalidateionListenerCause;
 	}
 }
