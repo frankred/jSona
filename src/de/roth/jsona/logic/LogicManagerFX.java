@@ -53,7 +53,6 @@ import de.roth.jsona.folderwatch.DirWatcher;
 import de.roth.jsona.folderwatch.WatchDirListener;
 import de.roth.jsona.http.ImageType;
 import de.roth.jsona.javafx.ViewManagerFX;
-import de.roth.jsona.javafx.ViewController.ListItemManager;
 import de.roth.jsona.keyevent.HotkeyConfig;
 import de.roth.jsona.mediaplayer.MediaPlayerManager;
 import de.roth.jsona.mediaplayer.PlayBackMode;
@@ -135,113 +134,146 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 	 * loading the playlists.
 	 */
 	public void start() {
-		// Init
+
+		// Init View
 		ViewManagerFX.getInstance().getController().init(this, Config.getInstance().THEME);
 		ViewManagerFX.getInstance().getController().setVolume(Config.getInstance().VOLUME);
 		ViewManagerFX.getInstance().getController().setPlaybackMode(Config.getInstance().PLAYBACK_MODE);
-		checkInitFolder();
 
-		// Register global hotkeys
-		for (HotkeyConfig c : Config.getInstance().HOTKEYS) {
-			this.hotkeysProvider.register(c.getKeyStroke(), this);
-		}
+		final LogicInterfaceFX logicInterface = this;
+		final HotKeyListener hotKeyListener = this;
+		final WatchDirListener watchDirListener = this;
+		final FileTaggerListener fileTaggerListener = this;
+		final FileScannerListener fileScannerListener = this;
 
-		// Music folders
-		ArrayList<File> folders = Config.asFileArrayList(Config.getInstance().FOLDERS);
-		ArrayList<File> oldFolders = (ArrayList<File>) SerializeManager.load(Global.FOLDER_CACHE);
-		SerializeManager.save(Global.FOLDER_CACHE, folders);
-		if (oldFolders == null) {
-			oldFolders = new ArrayList<File>();
-		}
+		// Register hotkeys and create some folders...
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// Check required folders and files
+				checkInitFolder();
 
-		// Create view music folders
-		for (int i = folders.size() - 1; i >= 0; i--) {
-			ViewManagerFX.getInstance().getController().createLoadingMusicFolder(folders.get(i).getAbsolutePath(), folders.get(i).getAbsolutePath(), 0);
-		}
-
-		this.folderTaggedAmount = 0;
-		for (File f : folders) {
-			// add cache
-			Logger.get().log(Level.INFO, "Folder '" + f.getAbsolutePath() + "' declared.");
-
-			// watch folder changes
-			try {
-				Logger.get().log(Level.INFO, "Start watching '" + f.getAbsolutePath() + "'.");
-				this.folderWatcher.watch(f, this);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			// start loading animation
-			ViewManagerFX.getInstance().getController().updateMusicFolderLoading(-1, 0, null, f.getAbsolutePath());
-
-			// Check for new folders
-			boolean newFolder = true;
-			for (File of : oldFolders) {
-				if (f.getAbsolutePath().equals(of.getAbsolutePath())) {
-					newFolder = false;
+				// Register global hotkeys
+				for (HotkeyConfig c : Config.getInstance().HOTKEYS) {
+					hotkeysProvider.register(c.getKeyStroke(), hotKeyListener);
 				}
 			}
+		}).start();
 
-			// New folder found (in comparison with previous start)
-			if (newFolder) {
-				// Because the folder is completely new it would make no sense
-				// to add all files to the "recentlyAdded (New)" tab.
-				// tag entries
-				Task<Void> fileScannerTask = new FileScannerTask(f, 0, this, this, f.getAbsolutePath(), false);
-				importTaggingExecutor.execute(fileScannerTask);
-			} else {
-				// tag entries
-				Task<Void> fileScannerTask = new FileScannerTask(f, 0, this, this, f.getAbsolutePath(), true);
-				importTaggingExecutor.execute(fileScannerTask);
-			}
-		}
+		// All music folder depended operations: Scanning, Tagging etc...
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// Music folders
+				ArrayList<File> folders = Config.asFileArrayList(Config.getInstance().FOLDERS);
+				ArrayList<File> oldFolders = (ArrayList<File>) SerializeManager.load(Global.FOLDER_CACHE);
+				SerializeManager.save(Global.FOLDER_CACHE, folders);
+				if (oldFolders == null) {
+					oldFolders = new ArrayList<File>();
+				}
 
-		// loading artists informations
-		File artistsJson = new File(Global.ARTISTS_JSON);
-		if (artistsJson.exists()) {
-			Gson gson = new Gson();
-			try {
-				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(artistsJson)));
-				this.artistsCache = gson.fromJson(reader, new TypeToken<HashMap<String, JSonaArtist>>() {
-				}.getType());
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			}
-		} else {
-			// no jsona cache file found, create new cache
-			this.artistsCache = new HashMap<String, JSonaArtist>();
-		}
+				// Create view music folders
+				for (int i = folders.size() - 1; i >= 0; i--) {
+					// createLoadingMusicFolder -> Platform.run
+					ViewManagerFX.getInstance().getController().createLoadingMusicFolder(folders.get(i).getAbsolutePath(), folders.get(i).getAbsolutePath(), 0);
+				}
 
-		// loading playlists
-		this.playLists = (ArrayList<PlayList>) SerializeManager.load(Global.PLAYLIST_LIST_DATA);
-		int activeIndex = 0;
-		if (this.playLists != null) {
-			int i = 0;
+				folderTaggedAmount = 0;
+				for (File f : folders) {
+					// add cache
+					Logger.get().log(Level.INFO, "Folder '" + f.getAbsolutePath() + "' declared.");
 
-			// find active playlist
-			for (PlayList p : this.playLists) {
+					// watch folder changes
+					try {
+						Logger.get().log(Level.INFO, "Start watching '" + f.getAbsolutePath() + "'.");
+						folderWatcher.watch(f, watchDirListener);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 
-				// start from 0 again, every start
-				p.setAtomicId("paylist_" + atomicInt.incrementAndGet());
+					// start loading animation -> Platform.run
+					ViewManagerFX.getInstance().getController().updateMusicFolderLoading(-1, 0, null, f.getAbsolutePath());
 
-				// was active
-				for (MusicListItem item : p.getItems()) {
-					if (item.getTmp_status() == Status.SET_PAUSED || item.getTmp_status() == Status.SET_PLAYING) {
-						item.setTmp_status(Status.SET_NONE);
-						activeIndex = i;
+					// Check for new folders
+					boolean newFolder = true;
+					for (File of : oldFolders) {
+						if (f.getAbsolutePath().equals(of.getAbsolutePath())) {
+							newFolder = false;
+						}
+					}
+
+					// New folder found (in comparison with previous start)
+					if (newFolder) {
+						// Because the folder is completely new it would make no
+						// sense
+						// to add all files to the "recentlyAdded (New)" tab.
+						// tag entries
+						Task<Void> fileScannerTask = new FileScannerTask(f, 0, fileTaggerListener, fileScannerListener, f.getAbsolutePath(), false);
+						importTaggingExecutor.execute(fileScannerTask);
+					} else {
+						// tag entries
+						Task<Void> fileScannerTask = new FileScannerTask(f, 0, fileTaggerListener, fileScannerListener, f.getAbsolutePath(), true);
+						importTaggingExecutor.execute(fileScannerTask);
 					}
 				}
-				i++;
 			}
-		} else {
-			// create one default playlist
-			PlayList p = new PlayList("paylist_" + atomicInt.incrementAndGet(), Global.DEFAULT_PLAYLIST_NAME);
-			this.playLists = new ArrayList<PlayList>(1);
-			this.playLists.add(p);
-		}
+		}).start();
 
-		ViewManagerFX.getInstance().getController().initPlaylists(this, this.playLists, activeIndex);
+		// Loading artist cache
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// loading artists informations
+				File artistsJson = new File(Global.ARTISTS_JSON);
+				if (artistsJson.exists()) {
+					Gson gson = new Gson();
+					try {
+						BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(artistsJson)));
+						artistsCache = gson.fromJson(reader, new TypeToken<HashMap<String, JSonaArtist>>() {
+						}.getType());
+					} catch (FileNotFoundException e1) {
+						e1.printStackTrace();
+					}
+				} else {
+					// no jsona cache file found, create new cache
+					artistsCache = new HashMap<String, JSonaArtist>();
+				}
+			}
+		}).start();
+
+		// Loading playlists
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				playLists = (ArrayList<PlayList>) SerializeManager.load(Global.PLAYLIST_LIST_DATA);
+				int activeIndex = 0;
+				if (playLists != null) {
+					int i = 0;
+
+					// find active playlist
+					for (PlayList p : playLists) {
+
+						// start from 0 again, every start
+						p.setAtomicId("paylist_" + atomicInt.incrementAndGet());
+
+						// was active
+						for (MusicListItem item : p.getItems()) {
+							if (item.getTmp_status() == Status.SET_PAUSED || item.getTmp_status() == Status.SET_PLAYING) {
+								item.setTmp_status(Status.SET_NONE);
+								activeIndex = i;
+							}
+						}
+						i++;
+					}
+				} else {
+					// create one default playlist
+					PlayList p = new PlayList("paylist_" + atomicInt.incrementAndGet(), Global.DEFAULT_PLAYLIST_NAME);
+					playLists = new ArrayList<PlayList>(1);
+					playLists.add(p);
+				}
+				ViewManagerFX.getInstance().getController().initPlaylists(logicInterface, playLists, activeIndex);
+			}
+		}).start();
 	}
 
 	/**
