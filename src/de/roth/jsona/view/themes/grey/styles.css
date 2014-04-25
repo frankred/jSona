@@ -49,12 +49,6 @@
 	-fx-background-color: #CCFF99;
 }
 
-.playing{
-	-fx-fill: white;
-    -fx-stroke: black;
-    -fx-stroke-width: 1.0;
-}
-
 /* List-Item color classes */
 .c0 {-fx-background-color: #FFEBF1;}
 .c1 {-fx-background-color: #EBFFF7;}
@@ -74,7 +68,7 @@
     -fx-background-color: -fx-control-inner-background;
     -fx-padding: 0.25em; /* 3 */
     -fx-text-fill: -fx-text-inner-color;
-    -fx-opacity: 1.0;
+    -fx-cell-size: 20;
 }
 
 
@@ -149,7 +143,6 @@
 .list-view .playing{
 	-fx-text-fill: -fx-text-inner-color;
 	-fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-cell-hover-color; 
-  	-fx-background-insets: 0.0, 1.0 0.0 1.0 0.0;
 }
 
 .hyperlink {

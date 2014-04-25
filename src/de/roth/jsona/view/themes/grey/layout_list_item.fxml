@@ -9,32 +9,39 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+<AnchorPane fx:id="item_container" prefHeight="18.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
   <children>
-    <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-      <left>
-        <FlowPane alignment="CENTER" orientation="VERTICAL" prefWrapLength="0.0">
-          <children>
-            <Label fx:id="Artist">
-              <font>
-                <Font name="System Bold" size="13.0" />
-              </font>
-            </Label>
-            <Label fx:id="Song">
+    <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <children>
+        <BorderPane prefHeight="-1.0" prefWidth="-1.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+          <center>
+            <Label fx:id="title" alignment="CENTER_LEFT" contentDisplay="LEFT" prefHeight="-1.0" text="" wrapText="false" BorderPane.alignment="CENTER_LEFT">
               <font>
                 <Font size="11.0" />
               </font>
             </Label>
-          </children>
-        </FlowPane>
-      </left>
-      <right>
-        <Label BorderPane.alignment="CENTER">
+          </center>
+          <left>
+            <Label fx:id="artist" contentDisplay="LEFT" prefHeight="-1.0" prefWidth="-1.0" text="" wrapText="false" BorderPane.alignment="CENTER_LEFT">
+              <font>
+                <Font name="System Bold" size="13.0" />
+              </font>
+            </Label>
+          </left>
+        </BorderPane>
+        <Label fx:id="duration" prefHeight="-1.0" text="" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER" GridPane.rowIndex="0">
           <font>
             <Font size="10.0" />
           </font>
         </Label>
-      </right>
-    </BorderPane>
+      </children>
+      <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="10.0" prefWidth="-1.0" />
+      </columnConstraints>
+      <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      </rowConstraints>
+    </GridPane>
   </children>
 </AnchorPane>

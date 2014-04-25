@@ -54,7 +54,7 @@
         </AnchorPane>
       </left>
     </BorderPane>
-    <SplitPane dividerPositions="0.5006045949214026" focusTraversable="true" prefHeight="303.0" prefWidth="829.0" style="" styleClass="splitPane" AnchorPane.bottomAnchor="66.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="229.0">
+    <SplitPane dividerPositions="0.5" focusTraversable="true" prefHeight="303.0" prefWidth="829.0" style="" styleClass="splitPane" AnchorPane.bottomAnchor="66.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="229.0">
       <items>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
           <children>
