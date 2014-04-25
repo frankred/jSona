@@ -234,7 +234,6 @@ public class MediaPlayerManager {
 			if (this.allEqualizer.get(name) == null) {
 				// No preset found for that name -> create one
 				this.allEqualizer.put(name, this.factory.newEqualizer());
-
 			}
 			return this.allEqualizer.get(name).getAmps();
 		}

@@ -531,13 +531,6 @@ public class ViewController implements Initializable, ViewInterface {
 					// Create for each preset one choicebox entry
 					@SuppressWarnings("unchecked")
 					final ChoiceBox<String> choiceBox = (ChoiceBox<String>) root.lookup("#equalizerPresetsChoiceBox");
-					choiceBox.getItems().add("Custom 1");
-					choiceBox.getItems().add("Custom 2");
-					choiceBox.getItems().add("Custom 3");
-					choiceBox.getItems().add("Custom 4");
-					choiceBox.getItems().add("Custom 5");
-					choiceBox.getItems().add("Custom 6");
-					choiceBox.getItems().add("Custom 7");
 					choiceBox.getItems().addAll(logic.equalizer_presets());
 					choiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
 
@@ -563,16 +556,20 @@ public class ViewController implements Initializable, ViewInterface {
 					equalizerOnOffCheckbox.selectedProperty().addListener(new ChangeListener<Boolean>() {
 						@Override
 						public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldValue, Boolean newValue) {
+							// ON
 							if (newValue) {
 								Config.getInstance().EQUALIZER_ACTIVE = true;
 								equalizerOnOffCheckbox.setText(Global.EQUALIZER_ON);
 								gridPane.setDisable(false);
 								choiceBox.setDisable(false);
-								int i = 0;
-								for (Entry<Integer, Slider> s : allSlider.entrySet()) {
-									logic.equalizer_set_amp(i++, s.getValue().valueProperty().floatValue());
+								float[] amps = new float[logic.equalizer_amps_amount()];
+								for (int i = 0; i < amps.length; i++) {
+									amps[i] = allSlider.get(i).valueProperty().floatValue();
 								}
-							} else {
+								logic.equalizer_set_amps(amps);
+							}
+							// OFF
+							else {
 								Config.getInstance().EQUALIZER_ACTIVE = false;
 								equalizerOnOffCheckbox.setText(Global.EQUALIZER_OFF);
 								gridPane.setDisable(true);
@@ -776,7 +773,7 @@ public class ViewController implements Initializable, ViewInterface {
 				musicFolderTabs.put(id, tab);
 				musicFolderListLoadingViews.put(id, indicator);
 				musicTabs.getTabs().add(pos, tab);
-				musicTabs.getSelectionModel().select(0);	
+				musicTabs.getSelectionModel().select(0);
 			}
 		});
 	}
@@ -1211,18 +1208,27 @@ public class ViewController implements Initializable, ViewInterface {
 
 	@Override
 	public void showSearchResults(final ArrayList<MusicListItem> searchResult, final int counter) {
+		if (Platform.isFxApplicationThread()) {
+			createSearchResults(searchResult, counter);
+			return;
+		}
+
 		// Just show it if it's not out of date
 		Platform.runLater(new Runnable() {
 			public void run() {
-				if (counter > searchResultCounter) {
-					searchResultCounter = counter;
-					searchResultsListView.getItems().clear();
-					if (searchResult != null && searchResult.size() > 0) {
-						searchResultsListView.getItems().addAll(searchResult);
-					}
-				}
+				createSearchResults(searchResult, counter);
 			}
 		});
+	}
+
+	private void createSearchResults(final ArrayList<MusicListItem> searchResult, final int counter) {
+		if (counter > searchResultCounter) {
+			searchResultCounter = counter;
+			searchResultsListView.getItems().clear();
+			if (searchResult != null && searchResult.size() > 0) {
+				searchResultsListView.getItems().addAll(searchResult);
+			}
+		}
 	}
 
 	public void showInformations(final JSonaArtist artist, final MusicListItem item) {
@@ -1433,7 +1439,8 @@ public class ViewController implements Initializable, ViewInterface {
 
 			setCurrentItem(newItem);
 			setCurrentListView(currentListView);
-			currentListView.getFocusModel().focus(newIndex);
+			currentListView.getSelectionModel().clearSelection();
+			currentListView.getSelectionModel().select(newIndex);
 		}
 
 		public void play(LogicInterfaceFX logic, final ListView<MusicListItem> playMeListView, final MusicListItem playMe) {
@@ -1515,5 +1522,9 @@ public class ViewController implements Initializable, ViewInterface {
 		public void setPlayBackMode(PlayBackMode playBackMode) {
 			this.playBackMode = playBackMode;
 		}
+	}
+
+	public String getSearchText() {
+		return this.searchText.getText();
 	}
 }
