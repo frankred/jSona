@@ -66,6 +66,10 @@ public class FileTagger {
 
 			// old file -> check modification
 			else {
+				// Item came from file, so we first have to create and init some
+				// fields because not every field is serialized
+				item.postSerialisationProcess();
+
 				// Found in cache, it's needed again so keep file in cache
 				item.setTmp_keep_in_cache(true);
 
@@ -103,13 +107,11 @@ public class FileTagger {
 				colorClassCounter = (colorClassCounter + 1) % 12;
 			}
 			item.setColorClass(colorClassCounter);
-			currentParentFolder = f.getParentFile();
-
-			item.setTmp_status(MusicListItem.Status.SET_NONE);
 
 			// Add
 			items.add(item);
 			++progress;
+			currentParentFolder = f.getParentFile();
 		}
 
 		if (somethingChanged) {
