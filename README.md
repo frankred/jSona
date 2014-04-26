@@ -26,6 +26,9 @@ You want **new features**? On the following page you can vote for and submit new
 * [Version 1.0.1](https://dl.dropboxusercontent.com/u/3669658/github/jsona/binary/jSona-1.0.1.zip)
 * [Version 1.0.0](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.0.zip)
 
+##Developpement Information
+If you want to develop under a linux system you need to [recompile the OpenJDK](http://stackoverflow.com/questions/18547362/javafx-and-openjdk) beacause JavaFX is not included, or you have to install Oracles JDK where JavaFX is included.
+
 ##Configuration file / config.json
 
 Here is an example of the default configuration file. You have to setup your **VLC path** correctly. If you use Java 32-bit/64-bit you also have to use VLC-32-bit/64-bit.
