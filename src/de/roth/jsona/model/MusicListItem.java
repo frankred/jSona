@@ -107,6 +107,7 @@ public class MusicListItem implements Serializable, Observable {
 
 	public void setArtist(String artist) {
 		this.artist = artist;
+		invalidate();
 	}
 
 	public String getTitle() {
@@ -115,6 +116,7 @@ public class MusicListItem implements Serializable, Observable {
 
 	public void setTitle(String titel) {
 		this.title = titel;
+		invalidate();
 	}
 
 	public String getTrackNo() {

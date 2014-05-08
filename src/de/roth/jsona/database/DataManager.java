@@ -191,4 +191,15 @@ public class DataManager {
 			e.printStackTrace();
 		}
 	}
+	
+	public void retag(MusicListItem item){
+		// Remove item from db
+		LuceneManager.getInstance().delete(item.getId());
+		
+		// Retag music file
+		MP3Tagger.tag(item);
+
+		// Add to db
+		addLuceneOnly(item);
+	}
 }

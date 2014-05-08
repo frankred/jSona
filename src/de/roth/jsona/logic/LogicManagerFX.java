@@ -567,7 +567,24 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 
 	@Override
 	public void fileModified(Path pathModified, Path pathToWatch) {
-		// TODO: Retag item...
+		File f = pathModified.toFile();
+		
+		// Read from cache
+		MusicListItem item = DataManager.getInstance().get(f);
+		
+		if (item == null) {
+			return;
+		}
+		
+		if (f.isDirectory()) {
+			return;
+		}
+		
+		DataManager.getInstance().retag(item);
+		DataManager.getInstance().commit();
+
+		// Recreate search
+		event_search_music(ViewManagerFX.getInstance().getController().getSearchText());
 	}
 
 	@Override
