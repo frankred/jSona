@@ -202,6 +202,11 @@ Currently only global hotkeys work. Supported application events are: {PLAYER_VO
 ```
 
 ##Changelog
+
+###1.0.4
+* Bugfixing {ListView, Title Information changed, ListView layout, fileCreated, fileModified}
+* Equalizer implemented (for testing only, unstable, unsavable)
+
 ###1.0.3
 * Loading animation for each folder added in frontend.
 
@@ -216,13 +221,13 @@ Currently only global hotkeys work. Supported application events are: {PLAYER_VO
 ##Installation and Start
 Download the current zip file and extract it. Then put in your correct VLC path into the config.json file and start jSona with the following command.
 ```
-java -jar jSona-1.0.3.jar
+java -jar jSona-1.0.4.jar
 ```
 jSona uses JavaFX so a current Java virtual machine with JavaFX support should be installed.
 
 If you want to run jSona without getting showed the console (only works on Windows) use the following command:
 ```
-start javaw -jar jSona-1.0.3.jar
+start javaw -jar jSona-1.0.4.jar
 ```
 
 ##Help / FAQ
