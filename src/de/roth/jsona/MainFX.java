@@ -34,6 +34,15 @@ public class MainFX extends Application {
 
 		// Load configuration
 		Config.load(Global.CONFIG_JSON);
+		
+		if(Config.getInstance().PATH_TO_VLCJ == null){
+			Logger.get().log(Level.INFO, "You have to set up your 'vlc folder' in the 'config.json'.");
+			Logger.get().log(Level.INFO, "jSona will exit now.");
+			// Create file with defaults
+			Config.getInstance().PATH_TO_VLCJ = "";
+			Config.getInstance().toFile(Global.CONFIG_JSON);
+			System.exit(0);
+		}
 
 		// Set vlcj path
 		System.setProperty("jna.library.path", Config.getInstance().PATH_TO_VLCJ);

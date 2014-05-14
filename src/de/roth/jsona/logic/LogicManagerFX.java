@@ -114,7 +114,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 		this.mediaPlayerManager = new MediaPlayerManager();
 		this.mediaPlayerManager.addActionListener(this);
 		this.importTaggingWorksQueue = new ArrayBlockingQueue<Runnable>(128);
-		this.importTaggingExecutor = new ThreadPoolExecutor(1, 1, Integer.MAX_VALUE, TimeUnit.SECONDS, importTaggingWorksQueue);
+		this.importTaggingExecutor = new ThreadPoolExecutor(2, 2, Integer.MAX_VALUE, TimeUnit.SECONDS, importTaggingWorksQueue);
 		this.importTaggingExecutor.allowCoreThreadTimeOut(false);
 
 		// Hotkeys

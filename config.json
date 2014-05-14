@@ -1,14 +1,14 @@
 {
   "PATH_TO_VLCJ": "D:/Program Files/VideoLAN/VLC",
   "MAX_SEARCH_RESULT_AMOUNT": 512,
-  "VOLUME": 40,
+  "VOLUME": 75,
   "FOLDERS": [
     "D:/media/musik"
   ],
   "PLAYBACK_MODE": "NORMAL",
   "RECENTLY_ADDED_UNITL_TIME_IN_DAYS": -7,
   "THEME": "grey",
-  "WINDOW_UNDECORATED": true,
+  "WINDOW_UNDECORATED": false,
   "TITLE": "jSona - open source project by Frank Roth",
   "MIN_HEIGHT": 600,
   "MIN_WIDTH": 720,
@@ -68,5 +68,5 @@
   "VOLUME_SCROLL_UP_DOWN_AMOUNT": 5,
   "DURATION_ARROW_KEYS_SKIP_TIME": 10,
   "DURATION_SCROLL_SKIP_TIME": 10,
-  "EQUALIZER_ACTIVE": true
+  "EQUALIZER_ACTIVE": false
 }

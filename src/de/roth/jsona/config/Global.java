@@ -82,7 +82,7 @@ public class Global {
 	public static final String SYSTRAY_ITEM_ABOUT = "About";
 
 	// FileFilter
-	public static final String[] IMPORT_FILE_FILTER = { "desktop.ini", "Thumbs.db", " Thumbs.db", ".DS_Store", ".png", ".txt", ".jpg", ".sfv", ".nfo", ".pdf", ".doc", ".docx", ".m3u", ".dll", ".zip", ".exe", ".glade", ".css", ".TMP" };
+	public static final String[] IMPORT_FILE_FILTER = { "desktop.ini", "Thumbs.db", " Thumbs.db", ".DS_Store", ".png", ".txt", ".jpg", ".sfv", ".nfo", ".pdf", ".doc", ".docx", ".m3u", ".dll", ".rar", ".zip", ".exe", ".glade", ".css", ".TMP" };
 
 	// Property names
 	public static final String PROPERTOES_ARTIST = "Artist";

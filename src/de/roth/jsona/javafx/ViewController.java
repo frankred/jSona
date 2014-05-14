@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.ResourceBundle;
 
@@ -66,6 +65,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -104,7 +104,7 @@ public class ViewController implements Initializable, ViewInterface {
 	boolean blockDurationProgress;
 
 	@FXML
-	private Label volumeLabel, durationLabel, artistLabel, titleLabel, artistBio;
+	private Label volumeLabel, durationLabel, artistLabel, artistLabelShadow, titleLabel, titleLabelShadow, artistBio;
 
 	@FXML
 	private TabPane musicTabs, playlistTabs;
@@ -157,12 +157,32 @@ public class ViewController implements Initializable, ViewInterface {
 		this.stage = stage;
 	}
 
+	private double xOffset = 0;
+	private double yOffset = 0;
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+
+		// Initialize view
 		this.playListViews = new ArrayList<ListView<MusicListItem>>();
 		this.musicFolderListViews = new HashMap<String, ListView<MusicListItem>>();
 		this.musicFolderTabs = new HashMap<String, Tab>();
 		this.musicFolderListLoadingViews = new HashMap<String, ProgressIndicator>();
+
+		this.applicationContainer.setOnMousePressed(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				xOffset = event.getSceneX();
+				yOffset = event.getSceneY();
+			}
+		});
+		this.applicationContainer.setOnMouseDragged(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				stage.setX(event.getScreenX() - xOffset);
+				stage.setY(event.getScreenY() - yOffset);
+			}
+		});
 	}
 
 	private void setVolumeFX(int value, boolean updateItself) {
@@ -245,6 +265,8 @@ public class ViewController implements Initializable, ViewInterface {
 	public void init(final LogicInterfaceFX logic, String theme) {
 		// Setup theme
 		String themePath = "/de/roth/jsona/view/themes/" + theme;
+
+		// Images
 		this.playImage = new Image(themePath + "/" + "play.png");
 		this.pauseImage = new Image(themePath + "/" + "pause.png");
 		this.playButtonImage.setImage(playImage);
@@ -260,6 +282,9 @@ public class ViewController implements Initializable, ViewInterface {
 			this.equalizerIcon.setDisable(true);
 		}
 
+		// Font
+		Font.loadFont(getClass().getResource("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "jsona.otf").toExternalForm(), 10);
+		
 		// Application keys
 		getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN), new Runnable() {
 			@Override
@@ -1238,6 +1263,10 @@ public class ViewController implements Initializable, ViewInterface {
 				artistLabel.setText("");
 				artistLabel.setManaged(false);
 				artistLabel.setVisible(false);
+				artistLabelShadow.setText("");
+				artistLabelShadow.setManaged(false);
+				artistLabelShadow.setVisible(false);
+
 				artistBio.setText("");
 				artistBio.setManaged(false);
 				artistBio.setVisible(false);
@@ -1250,21 +1279,37 @@ public class ViewController implements Initializable, ViewInterface {
 				titleLabel.setText("");
 				titleLabel.setVisible(false);
 				titleLabel.setManaged(false);
+				titleLabelShadow.setText("");
+				titleLabelShadow.setVisible(false);
+				titleLabelShadow.setManaged(false);
 
 				// no artist
 				if (item.getArtist() == null) {
 					artistLabel.setText(item.getFile().getName());
 					artistLabel.setManaged(true);
 					artistLabel.setVisible(true);
+
+					artistLabelShadow.setText(item.getFile().getName());
+					artistLabelShadow.setManaged(true);
+					artistLabelShadow.setVisible(true);
+
 					return;
 				}
 
 				artistLabel.setManaged(true);
 				artistLabel.setVisible(true);
 				artistLabel.setText(item.getArtist());
+
+				artistLabelShadow.setManaged(true);
+				artistLabelShadow.setVisible(true);
+				artistLabelShadow.setText(item.getArtist());
+
 				titleLabel.setText(item.getTitle());
 				titleLabel.setManaged(true);
 				titleLabel.setVisible(true);
+				titleLabelShadow.setText(item.getTitle());
+				titleLabelShadow.setManaged(true);
+				titleLabelShadow.setVisible(true);
 
 				// artist image found
 				if (artist != null && artist.getImageFilesystemPath() != null && !artist.getImageFilesystemPath().equals("")) {

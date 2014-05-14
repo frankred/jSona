@@ -28,6 +28,7 @@ public class ViewManagerFX {
 			// setting min windows size
 			stage.setMinHeight(Config.getInstance().MIN_HEIGHT);
 			stage.setMinWidth(Config.getInstance().MIN_WIDTH);
+			
 
 			// setting application properties
 			stage.getIcons().add(new Image("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "icon.png"));
@@ -43,8 +44,8 @@ public class ViewManagerFX {
 			this.root = (Parent) loader.load();
 
 			Scene scene = null;
-
-			if (undecorated) {
+			
+						if (undecorated) {
 				Undecorator undecorator = new Undecorator(stage, (Region) this.root);
 				undecorator.getStylesheets().add("insidefx/undecorator/undecorator.css");
 				scene = new Scene(undecorator);
@@ -54,6 +55,8 @@ public class ViewManagerFX {
 				scene = new Scene(root);
 				stage.initStyle(StageStyle.DECORATED);
 			}
+						
+			stage.initStyle(StageStyle.UNDECORATED);
 
 			this.controller.setScene(scene);
 
