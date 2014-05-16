@@ -40,6 +40,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Slider;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
@@ -65,6 +66,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -94,17 +96,23 @@ public class ViewController implements Initializable, ViewInterface {
 
 	// JavaFX UI-Components
 	@FXML
-	private AnchorPane applicationContainer, searchContent;
+	private AnchorPane applicationContainer, searchContent, controlPanel, outerContainer;
 
 	@FXML
 	private Slider volumeSlider, durationSlider;
+
+	@FXML
+	private BorderPane informationContainer;
+
+	@FXML
+	private SplitPane musicListsSplitPane;
 
 	@FXML
 	private ProgressBar volumeProgress, durationProgress;
 	boolean blockDurationProgress;
 
 	@FXML
-	private Label volumeLabel, durationLabel, artistLabel, artistLabelShadow, titleLabel, titleLabelShadow, artistBio;
+	private Label volumeLabel, volumeLabelShadow, durationLabel, artistLabel, titleLabel, artistBio;
 
 	@FXML
 	private TabPane musicTabs, playlistTabs;
@@ -122,7 +130,7 @@ public class ViewController implements Initializable, ViewInterface {
 	private Hyperlink removePlaylistButton;
 
 	@FXML
-	private ImageView playButtonImage, pauseButtonImage, nextButtonImage, prevButtonImage, shuffleToggleButtonImage, artistImage, addPlaylistImage, equalizerIcon;
+	private ImageView playButtonImage, pauseButtonImage, nextButtonImage, prevButtonImage, shuffleToggleButtonImage, artistImage, addPlaylistImage, equalizerIcon, resizer;
 
 	@FXML
 	private ToggleButton shuffleToggleButton;
@@ -157,32 +165,41 @@ public class ViewController implements Initializable, ViewInterface {
 		this.stage = stage;
 	}
 
+	// Moving
 	private double xOffset = 0;
 	private double yOffset = 0;
 
+	// Resizing
+	private static double initX = -1;
+	private static double initY = -1;
+	private static double newX;
+	private static double newY;
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
 		// Initialize view
 		this.playListViews = new ArrayList<ListView<MusicListItem>>();
 		this.musicFolderListViews = new HashMap<String, ListView<MusicListItem>>();
 		this.musicFolderTabs = new HashMap<String, Tab>();
 		this.musicFolderListLoadingViews = new HashMap<String, ProgressIndicator>();
 
-		this.applicationContainer.setOnMousePressed(new EventHandler<MouseEvent>() {
+		this.outerContainer.setOnMousePressed(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				xOffset = event.getSceneX();
 				yOffset = event.getSceneY();
 			}
 		});
-		this.applicationContainer.setOnMouseDragged(new EventHandler<MouseEvent>() {
+		this.outerContainer.setOnMouseDragged(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				stage.setX(event.getScreenX() - xOffset);
 				stage.setY(event.getScreenY() - yOffset);
 			}
 		});
+
+		// Clear dummy hyperlinks
+		topTracks.getChildren().clear();
 	}
 
 	private void setVolumeFX(int value, boolean updateItself) {
@@ -192,6 +209,7 @@ public class ViewController implements Initializable, ViewInterface {
 		}
 		volumeProgress.setProgress(value / 100d);
 		volumeLabel.setText(String.valueOf(value));
+		volumeLabelShadow.setText(String.valueOf(value));
 	}
 
 	private void setDurationFX(long ms, boolean updateItself) {
@@ -262,6 +280,24 @@ public class ViewController implements Initializable, ViewInterface {
 		});
 	}
 
+	boolean setStageWidth(Stage stage, double width) {
+		if (width >= stage.getMinWidth()) {
+			stage.setWidth(width);
+			initX = newX;
+			return true;
+		}
+		return false;
+	}
+
+	boolean setStageHeight(Stage stage, double height) {
+		if (height >= stage.getMinHeight()) {
+			stage.setHeight(height);
+			initY = newY;
+			return true;
+		}
+		return false;
+	}
+
 	public void init(final LogicInterfaceFX logic, String theme) {
 		// Setup theme
 		String themePath = "/de/roth/jsona/view/themes/" + theme;
@@ -284,7 +320,7 @@ public class ViewController implements Initializable, ViewInterface {
 
 		// Font
 		Font.loadFont(getClass().getResource("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "jsona.otf").toExternalForm(), 10);
-		
+
 		// Application keys
 		getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN), new Runnable() {
 			@Override
@@ -510,6 +546,51 @@ public class ViewController implements Initializable, ViewInterface {
 		});
 		searchResultsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		enableListViewDragItems(searchResultsListView, TransferMode.COPY);
+
+		// Resizer
+		this.resizer.setOnMousePressed(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+				initX = mouseEvent.getScreenX();
+				initY = mouseEvent.getScreenY();
+
+				musicListsSplitPane.setVisible(false);
+				controlPanel.setVisible(false);
+				informationContainer.setVisible(false);
+
+				mouseEvent.consume();
+			}
+		});
+		this.resizer.setOnMouseReleased(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+
+				controlPanel.setVisible(true);
+				musicListsSplitPane.setVisible(true);
+				informationContainer.setVisible(true);
+				mouseEvent.consume();
+			}
+		});
+
+		this.resizer.setOnMouseDragged(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+				newX = mouseEvent.getScreenX();
+				newY = mouseEvent.getScreenY();
+				double deltax = newX - initX;
+				double deltay = newY - initY;
+
+				setStageWidth(stage, stage.getWidth() + deltax);
+				setStageHeight(stage, stage.getHeight() + deltay);
+
+				Rectangle rect = new Rectangle(stage.getWidth(), stage.getHeight());
+				rect.setArcHeight(8.0);
+				rect.setArcWidth(8.0);
+				scene.getRoot().setClip(rect);
+
+				mouseEvent.consume();
+			}
+		});
 
 		// Equalizer
 		this.equalizerIcon.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
@@ -1263,9 +1344,6 @@ public class ViewController implements Initializable, ViewInterface {
 				artistLabel.setText("");
 				artistLabel.setManaged(false);
 				artistLabel.setVisible(false);
-				artistLabelShadow.setText("");
-				artistLabelShadow.setManaged(false);
-				artistLabelShadow.setVisible(false);
 
 				artistBio.setText("");
 				artistBio.setManaged(false);
@@ -1279,19 +1357,12 @@ public class ViewController implements Initializable, ViewInterface {
 				titleLabel.setText("");
 				titleLabel.setVisible(false);
 				titleLabel.setManaged(false);
-				titleLabelShadow.setText("");
-				titleLabelShadow.setVisible(false);
-				titleLabelShadow.setManaged(false);
 
 				// no artist
 				if (item.getArtist() == null) {
 					artistLabel.setText(item.getFile().getName());
 					artistLabel.setManaged(true);
 					artistLabel.setVisible(true);
-
-					artistLabelShadow.setText(item.getFile().getName());
-					artistLabelShadow.setManaged(true);
-					artistLabelShadow.setVisible(true);
 
 					return;
 				}
@@ -1300,16 +1371,9 @@ public class ViewController implements Initializable, ViewInterface {
 				artistLabel.setVisible(true);
 				artistLabel.setText(item.getArtist());
 
-				artistLabelShadow.setManaged(true);
-				artistLabelShadow.setVisible(true);
-				artistLabelShadow.setText(item.getArtist());
-
 				titleLabel.setText(item.getTitle());
 				titleLabel.setManaged(true);
 				titleLabel.setVisible(true);
-				titleLabelShadow.setText(item.getTitle());
-				titleLabelShadow.setManaged(true);
-				titleLabelShadow.setVisible(true);
 
 				// artist image found
 				if (artist != null && artist.getImageFilesystemPath() != null && !artist.getImageFilesystemPath().equals("")) {

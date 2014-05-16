@@ -7,147 +7,171 @@
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="applicationContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="598.0" prefWidth="857.0" style="" styleClass="root" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
-  <children>
-    <BorderPane fx:id="informationContainer" layoutY="14.0" minWidth="829.0" prefHeight="208.00009999999747" prefWidth="829.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0">
-      <center>
-        <AnchorPane minHeight="215.0" prefHeight="215.0">
+<AnchorPane fx:id="outerContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="598.0" prefWidth="857.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <AnchorPane fx:id="applicationContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="598.0" prefWidth="857.0" style="" styleClass="root" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <children>
+      <AnchorPane fx:id="controlPanel" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <Button fx:id="prevButton" layoutX="17.0" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" style="-fx-background-radius: 80 80 80 80;" text="" underline="false" wrapText="false" AnchorPane.bottomAnchor="20.0">
+          <graphic>
+            <ImageView fx:id="prevButtonImage" fitHeight="16.0" fitWidth="16.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="false" translateX="0.0" x="20.0" />
+          </graphic>
+        </Button>
+        <Button fx:id="playButton" layoutX="54.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-radius: 80 80 80 80;" text="" underline="false" wrapText="false" AnchorPane.bottomAnchor="15.0">
+          <graphic>
+            <ImageView fx:id="playButtonImage" fitHeight="32.0" fitWidth="32.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="false" translateX="2.0" x="20.0" />
+          </graphic>
+        </Button>
+        <Button fx:id="nextButton" layoutX="100.0" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" style="-fx-background-radius: 80 80 80 80;" text="" underline="false" wrapText="false" AnchorPane.bottomAnchor="19.0">
+          <graphic>
+            <ImageView fx:id="nextButtonImage" fitHeight="16.0" fitWidth="16.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="false" translateX="0.0" x="20.0" />
+          </graphic>
+        </Button>
+        <StackPane layoutX="148.0" prefHeight="24.0" prefWidth="125.0" styleClass="sliderProgress" AnchorPane.bottomAnchor="23.0">
           <children>
-            <FlowPane fx:id="topTracks" hgap="8.0" maxHeight="-1.0" minHeight="-1.0" prefHeight="-1.0" prefWidth="-1.0" visible="true" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="190.0" />
-            <StackPane minHeight="46.0" prefHeight="46.0" prefWidth="207.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <ProgressBar fx:id="volumeProgress" minHeight="14.0" minWidth="118.0" prefHeight="14.0" prefWidth="118.0" progress="0.0" styleClass="volumeProgress" StackPane.alignment="CENTER" />
+            <Slider id="volume" fx:id="volumeSlider" minHeight="18.0" minWidth="125.0" prefHeight="18.0" prefWidth="125.0" showTickLabels="false" showTickMarks="false" snapToTicks="false" StackPane.alignment="CENTER" />
+          </children>
+        </StackPane>
+        <StackPane layoutX="280.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="26.0">
+          <children>
+            <Label fx:id="volumeLabel" prefWidth="-1.0" text="100">
+              <effect>
+                <Shadow height="10.920634920634921" radius="4.9603174603174605" width="10.920634920634921" />
+              </effect>
+            </Label>
+            <Label fx:id="volumeLabelShadow" prefWidth="-1.0" text="100">
+              <textFill>
+                <Color blue="0.678" green="0.678" red="0.678" fx:id="x3" />
+              </textFill>
+            </Label>
+          </children>
+        </StackPane>
+        <StackPane prefHeight="24.0" prefWidth="378.0" styleClass="sliderProgress" AnchorPane.bottomAnchor="23.0" AnchorPane.leftAnchor="358.0" AnchorPane.rightAnchor="121.0">
+          <children>
+            <AnchorPane minHeight="24.0" minWidth="-1.0" prefHeight="24.0" prefWidth="378.0" StackPane.alignment="CENTER">
               <children>
-                <Label fx:id="artistLabelShadow" alignment="TOP_LEFT" contentDisplay="CENTER" disable="false" graphicTextGap="0.0" minHeight="-1.0" prefHeight="-1.0" prefWidth="-1.0" rotate="0.0" style="-fx-translate-y: -8px;" text="jSona" textAlignment="LEFT" textFill="WHITE" translateZ="0.0" underline="false" wrapText="false" StackPane.alignment="TOP_LEFT">
-                  <effect>
-                    <Shadow />
-                  </effect>
-                  <font>
-                    <Font size="36.0" fx:id="x1" />
-                  </font>
-                </Label>
-                <Label fx:id="artistLabel" alignment="TOP_LEFT" contentDisplay="CENTER" disable="false" focusTraversable="false" font="$x1" graphicTextGap="0.0" minHeight="-1.0" prefHeight="-1.0" prefWidth="-1.0" rotate="0.0" style="-fx-translate-y: -8px;" text="jSona" textAlignment="LEFT" textFill="WHITE" translateZ="0.0" underline="false" visible="true" wrapText="false" StackPane.alignment="TOP_LEFT" />
+                <ProgressBar fx:id="durationProgress" minHeight="10.0" minWidth="-1.0" prefHeight="10.0" prefWidth="378.0" progress="0.0" styleClass="durationProgress" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="7.0" />
               </children>
-            </StackPane>
-            <StackPane prefHeight="150.0" prefWidth="200.0" rotate="0.0" translateX="0.0" translateY="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="64.0">
-              <children>
-                <Label fx:id="titleLabel" alignment="CENTER_LEFT" opacity="1.0" prefWidth="-1.0" text="by Frank Roth" textAlignment="LEFT" translateZ="0.0" wrapText="false" StackPane.alignment="TOP_LEFT">
-                  <effect>
-                    <Shadow height="8.904761904761905" radius="3.9523809523809526" width="8.904761904761905" />
-                  </effect>
-                  <font>
-                    <Font size="18.0" fx:id="x2" />
-                  </font>
-                  <textFill>
-                    <Color blue="0.678" green="0.678" red="0.678" fx:id="x3" />
-                  </textFill>
-                </Label>
-                <Label fx:id="titleLabelShadow" alignment="CENTER_LEFT" font="$x2" prefWidth="-1.0" text="by Frank Roth" textFill="$x3" wrapText="false" StackPane.alignment="TOP_LEFT" />
-              </children>
-            </StackPane>
-            <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="102.0" />
-            <Label fx:id="artistBio" alignment="TOP_LEFT" contentDisplay="LEFT" ellipsisString="..." prefHeight="88.0" prefWidth="543.0" text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." textAlignment="JUSTIFY" textFill="WHITE" textOverrun="ELLIPSIS" wrapText="true" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="102.0" />
-            <Hyperlink fx:id="removePlaylistButton" text="x" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+            </AnchorPane>
+            <Slider fx:id="durationSlider" minHeight="24.0" minWidth="-1.0" prefHeight="24.0" prefWidth="378.0" showTickLabels="false" showTickMarks="false" snapToTicks="false" StackPane.alignment="CENTER" />
           </children>
-        </AnchorPane>
-      </center>
-      <left>
-        <AnchorPane fx:id="imageContainer" prefHeight="-1.0" prefWidth="-1.0">
-          <children>
-            <ImageView fx:id="artistImage" fitHeight="200.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true" rotate="0.0" smooth="true" style="-fx-effect: dropshadow( three-pass-box , rgba(0,0,0,1) , 6, 0.0 , 0 , 1 );" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="0.0" />
-          </children>
-        </AnchorPane>
-      </left>
-    </BorderPane>
-    <SplitPane dividerPositions="0.5006045949214026" focusTraversable="true" prefHeight="303.0" prefWidth="829.0" style="" styleClass="splitPane" AnchorPane.bottomAnchor="66.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="229.0">
-      <items>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-          <children>
-            <TabPane fx:id="musicTabs" prefHeight="329.0" prefWidth="363.0" style="&#9;-fx-border-style: none;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-              <tabs>
-                <Tab id="search" fx:id="searchTab" text="Search">
-                  <content>
-                    <AnchorPane fx:id="searchContent" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                      <children>
-                        <TextField fx:id="searchText" prefHeight="26.0" prefWidth="411.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0" />
-                        <ListView fx:id="searchResultsListView" prefHeight="243.99990000000253" prefWidth="411.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="28.0" />
-                      </children>
-                    </AnchorPane>
-                  </content>
-                </Tab>
-              </tabs>
-            </TabPane>
-          </children>
-        </AnchorPane>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-          <children>
-            <TabPane fx:id="playlistTabs" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-          </children>
-        </AnchorPane>
-      </items>
-    </SplitPane>
-    <Button fx:id="prevButton" layoutX="17.0" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" style="-fx-background-radius: 80 80 80 80;" text="" underline="false" wrapText="false" AnchorPane.bottomAnchor="20.0">
-      <graphic>
-        <ImageView fx:id="prevButtonImage" fitHeight="16.0" fitWidth="16.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="false" translateX="0.0" x="20.0" />
-      </graphic>
-    </Button>
-    <Button fx:id="playButton" layoutX="54.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-radius: 80 80 80 80;" text="" underline="false" wrapText="false" AnchorPane.bottomAnchor="15.0">
-      <graphic>
-        <ImageView fx:id="playButtonImage" fitHeight="32.0" fitWidth="32.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="false" translateX="2.0" x="20.0" />
-      </graphic>
-    </Button>
-    <Button fx:id="nextButton" layoutX="100.0" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" style="-fx-background-radius: 80 80 80 80;" text="" underline="false" wrapText="false" AnchorPane.bottomAnchor="19.0">
-      <graphic>
-        <ImageView fx:id="nextButtonImage" fitHeight="16.0" fitWidth="16.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="false" translateX="0.0" x="20.0" />
-      </graphic>
-    </Button>
-    <StackPane layoutX="148.0" prefHeight="24.0" prefWidth="125.0" styleClass="sliderProgress" AnchorPane.bottomAnchor="23.0">
-      <children>
-        <ProgressBar fx:id="volumeProgress" minHeight="14.0" minWidth="118.0" prefHeight="14.0" prefWidth="118.0" progress="0.0" styleClass="volumeProgress" StackPane.alignment="CENTER" />
-        <Slider id="volume" fx:id="volumeSlider" minHeight="18.0" minWidth="125.0" prefHeight="18.0" prefWidth="125.0" showTickLabels="false" showTickMarks="false" snapToTicks="false" StackPane.alignment="CENTER" />
-      </children>
-    </StackPane>
-    <StackPane layoutX="281.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="28.0">
-      <children>
-        <Label id="volumeLabel" prefWidth="-1.0" text="100">
+        </StackPane>
+        <ToggleButton fx:id="shuffleToggleButton" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" text="" AnchorPane.bottomAnchor="19.0" AnchorPane.rightAnchor="15.0">
+          <graphic>
+            <ImageView fx:id="shuffleToggleButtonImage" fitHeight="16.0" fitWidth="16.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="false" translateX="0.0" x="20.0" />
+          </graphic>
+        </ToggleButton>
+        <Label fx:id="durationLabel" prefWidth="63.0" style="" text="2:30" textFill="$x3" AnchorPane.bottomAnchor="26.0" AnchorPane.rightAnchor="58.0">
           <effect>
-            <Shadow height="10.920634920634921" radius="4.9603174603174605" width="10.920634920634921" />
+            <DropShadow height="4.8730158730158735" radius="1.9365079365079367" width="4.8730158730158735" />
           </effect>
           <font>
-            <Font name="System Bold" size="11.0" fx:id="x4" />
+            <Font size="11.0" fx:id="x4" />
           </font>
         </Label>
-        <Label fx:id="volumeLabel" font="$x4" prefWidth="-1.0" text="100" textFill="#adadad" />
-      </children>
-    </StackPane>
-    <StackPane prefHeight="24.0" prefWidth="378.0" styleClass="sliderProgress" AnchorPane.bottomAnchor="23.0" AnchorPane.leftAnchor="358.0" AnchorPane.rightAnchor="121.0">
-      <children>
-        <AnchorPane minHeight="24.0" minWidth="-1.0" prefHeight="24.0" prefWidth="378.0" StackPane.alignment="CENTER">
-          <children>
-            <ProgressBar fx:id="durationProgress" minHeight="10.0" minWidth="-1.0" prefHeight="10.0" prefWidth="378.0" progress="0.0" styleClass="durationProgress" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="7.0" />
-          </children>
-        </AnchorPane>
-        <Slider fx:id="durationSlider" minHeight="24.0" minWidth="-1.0" prefHeight="24.0" prefWidth="378.0" showTickLabels="false" showTickMarks="false" snapToTicks="false" StackPane.alignment="CENTER" />
-      </children>
-    </StackPane>
-    <ToggleButton fx:id="shuffleToggleButton" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" text="" AnchorPane.bottomAnchor="19.0" AnchorPane.rightAnchor="15.0">
-      <graphic>
-        <ImageView fx:id="shuffleToggleButtonImage" fitHeight="16.0" fitWidth="16.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="false" translateX="0.0" x="20.0" />
-      </graphic>
-    </ToggleButton>
-    <Label fx:id="durationLabel" prefWidth="63.0" text="" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="48.0">
-      <font>
-        <Font size="11.0" />
-      </font>
-    </Label>
-    <ImageView fx:id="equalizerIcon" blendMode="LIGHTEN" cache="false" disable="false" fitHeight="16.0" fitWidth="16.0" focusTraversable="false" layoutX="319.0" mouseTransparent="false" opacity="0.3" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="27.0">
-      <image>
-        <Image url="@equalizer.png" />
-      </image>
-    </ImageView>
-  </children>
-  <stylesheets>
-    <URL value="@styles.css" />
-  </stylesheets>
+        <ImageView fx:id="equalizerIcon" blendMode="LIGHTEN" cache="false" disable="false" fitHeight="16.0" fitWidth="16.0" focusTraversable="false" layoutX="319.0" mouseTransparent="false" opacity="0.3" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="27.0">
+          <image>
+            <Image url="@equalizer.png" />
+          </image>
+        </ImageView>
+      </AnchorPane>
+      <BorderPane fx:id="informationContainer" minWidth="-1.0" prefHeight="208.00009999999747" prefWidth="-1.0" AnchorPane.bottomAnchor="388.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
+        <center>
+          <AnchorPane minHeight="215.0" prefHeight="215.0">
+            <children>
+              <FlowPane fx:id="topTracks" hgap="8.0" layoutY="182.0" maxHeight="18.0" minHeight="18.0" prefHeight="18.0" prefWidth="-1.0" visible="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                <children>
+                  <Hyperlink style="" text="Hyperlink" />
+                  <Hyperlink text="Hyperlink" />
+                  <Hyperlink text="Hyperlink" />
+                  <Hyperlink text="Hyperlink" />
+                  <Hyperlink text="Hyperlink" />
+                  <Hyperlink text="Hyperlink" />
+                  <Hyperlink text="Hyperlink" />
+                  <Hyperlink text="Hyperlink" />
+                  <Hyperlink text="Hyperlink" />
+                  <Hyperlink text="Hyperlink" />
+                  <Hyperlink text="Hyperlink" />
+                  <Hyperlink text="Hyperlink" />
+                  <Hyperlink text="Hyperlink" />
+                  <Hyperlink text="Hyperlink" />
+                  <Hyperlink text="Hyperlink" />
+                  <Hyperlink text="Hyperlink" />
+                </children>
+              </FlowPane>
+              <Label fx:id="artistLabel" alignment="TOP_LEFT" contentDisplay="CENTER" disable="false" focusTraversable="false" graphicTextGap="0.0" minHeight="-1.0" prefHeight="-1.0" prefWidth="-1.0" rotate="0.0" style="-fx-translate-y: -8px;" text="jSona" textAlignment="LEFT" textFill="WHITE" translateZ="0.0" underline="false" visible="true" wrapText="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <effect>
+                  <DropShadow color="#000000a6" height="7.031746031746032" offsetX="2.0" offsetY="2.0" radius="3.015873015873016" spread="0.11904761904761904" width="7.031746031746032" />
+                </effect>
+                <font>
+                  <Font size="36.0" fx:id="x1" />
+                </font>
+              </Label>
+              <Label fx:id="titleLabel" alignment="CENTER_LEFT" opacity="1.0" prefWidth="-1.0" text="by Frank Roth" textAlignment="LEFT" textFill="$x3" translateZ="0.0" wrapText="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="64.0">
+                <effect>
+                  <DropShadow height="8.351190476190476" offsetX="1.0" offsetY="1.0" radius="3.802083333333334" spread="0.2777777777777778" width="8.857142857142858" />
+                </effect>
+                <font>
+                  <Font size="18.0" fx:id="x2" />
+                </font>
+              </Label>
+              <Label fx:id="artistBio" alignment="TOP_LEFT" contentDisplay="LEFT" ellipsisString="..." font="$x4" prefHeight="76.0" prefWidth="415.0" text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." textAlignment="LEFT" textFill="WHITE" textOverrun="ELLIPSIS" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="102.0">
+                <effect>
+                  <DropShadow height="3.0" offsetX="1.0" offsetY="1.0" radius="1.0" spread="1.0" width="3.0" />
+                </effect>
+              </Label>
+              <Pane layoutY="197.0" prefHeight="41.999900000002526" prefWidth="415.0" styleClass="camouflage" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+              <Hyperlink fx:id="removePlaylistButton" prefWidth="9.0001220703125" text="x" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+            </children>
+          </AnchorPane>
+        </center>
+        <left>
+          <AnchorPane fx:id="imageContainer" prefHeight="-1.0" prefWidth="-1.0">
+            <children>
+              <ImageView fx:id="artistImage" fitHeight="200.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true" rotate="0.0" smooth="true" style="-fx-effect: dropshadow( three-pass-box , rgba(0,0,0,1) , 6, 0.0 , 0 , 1 );" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="0.0" />
+            </children>
+          </AnchorPane>
+        </left>
+      </BorderPane>
+      <SplitPane fx:id="musicListsSplitPane" dividerPositions="0.5006045949214026" focusTraversable="true" prefHeight="303.0" prefWidth="829.0" style="" styleClass="splitPane" AnchorPane.bottomAnchor="66.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="229.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+            <children>
+              <TabPane fx:id="musicTabs" prefHeight="329.0" prefWidth="363.0" style="&#9;-fx-border-style: none;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <tabs>
+                  <Tab id="search" fx:id="searchTab" text="Search">
+                    <content>
+                      <AnchorPane fx:id="searchContent" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        <children>
+                          <TextField fx:id="searchText" prefHeight="26.0" prefWidth="411.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0" />
+                          <ListView fx:id="searchResultsListView" prefHeight="243.99990000000253" prefWidth="411.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="28.0" />
+                        </children>
+                      </AnchorPane>
+                    </content>
+                  </Tab>
+                </tabs>
+              </TabPane>
+            </children>
+          </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+            <children>
+              <TabPane fx:id="playlistTabs" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            </children>
+          </AnchorPane>
+        </items>
+      </SplitPane>
+      <ImageView fx:id="resizer" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" scaleX="1.0" scaleY="1.0" scaleZ="1.0" AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="1.0">
+        <image>
+          <Image url="@resize.png" />
+        </image>
+      </ImageView>
+    </children>
+    <stylesheets>
+      <URL value="@styles.css" />
+    </stylesheets>
+  </AnchorPane>
 </AnchorPane>
