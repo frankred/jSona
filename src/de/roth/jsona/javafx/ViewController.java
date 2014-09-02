@@ -28,6 +28,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -69,6 +70,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -112,7 +114,7 @@ public class ViewController implements Initializable, ViewInterface {
 	boolean blockDurationProgress;
 
 	@FXML
-	private Label volumeLabel, volumeLabelShadow, durationLabel, artistLabel, titleLabel, artistBio;
+	private Label volumeLabel, durationLabel, artistLabel, titleLabel, artistBio;
 
 	@FXML
 	private TabPane musicTabs, playlistTabs;
@@ -130,13 +132,13 @@ public class ViewController implements Initializable, ViewInterface {
 	private Hyperlink removePlaylistButton;
 
 	@FXML
-	private ImageView playButtonImage, pauseButtonImage, nextButtonImage, prevButtonImage, shuffleToggleButtonImage, artistImage, addPlaylistImage, equalizerIcon, resizer;
+	private ImageView playButtonImage, pauseButtonImage, nextButtonImage, prevButtonImage, shuffleToggleButtonImage, artistImage, addPlaylistImage, equalizerIcon, resizer, closeWindowIcon, maximizeWindowIcon, minimizeWindowIcon;
 
 	@FXML
 	private ToggleButton shuffleToggleButton;
 
 	@FXML
-	private Image playImage, pauseImage;
+	private Image playImage, pauseImage, maximizeImage, reMaximizeImage;
 
 	@FXML
 	private AnchorPane imageContainer;
@@ -195,11 +197,70 @@ public class ViewController implements Initializable, ViewInterface {
 			public void handle(MouseEvent event) {
 				stage.setX(event.getScreenX() - xOffset);
 				stage.setY(event.getScreenY() - yOffset);
+				
+				if(maximizeWindowIcon.getImage().equals(maximizeImage)){
+					return;
+				}
+				maximizeWindowIcon.setImage(maximizeImage);
 			}
 		});
-
+		this.outerContainer.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+				if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+					if (mouseEvent.getClickCount() == 2) {
+						maximizeWindow();
+					}
+				}
+			}
+		});
+	
 		// Clear dummy hyperlinks
 		topTracks.getChildren().clear();
+	}
+	
+	private void minimizeWindow(){
+		stage.setIconified(true);
+	}
+
+	private boolean windowIsMaximized(){
+		ObservableList<Screen> screens = Screen.getScreensForRectangle(new Rectangle2D(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight()));
+		Rectangle2D bounds = screens.get(0).getVisualBounds();
+		
+		if(stage.getX() == bounds.getMinX() && stage.getY() == bounds.getMinY() && stage.getWidth() == bounds.getWidth() && stage.getHeight() == bounds.getHeight()){
+			return true;
+		}
+		
+		return false;
+	}
+	
+	private Rectangle2D preMaximizedPosition = null;
+	
+	private void maximizeWindow() {
+		if(windowIsMaximized()){
+			stage.setX(preMaximizedPosition.getMinX());
+			stage.setY(preMaximizedPosition.getMinY());
+			stage.setWidth(preMaximizedPosition.getWidth());
+			stage.setHeight(preMaximizedPosition.getHeight());
+			
+			this.maximizeWindowIcon.setImage(maximizeImage);
+
+		} else {
+			this.maximizeWindowIcon.setImage(reMaximizeImage);
+			
+			preMaximizedPosition = new Rectangle2D(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
+			ObservableList<Screen> screens = Screen.getScreensForRectangle(new Rectangle2D(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight()));
+			Rectangle2D bounds = screens.get(0).getVisualBounds();
+			stage.setX(bounds.getMinX());
+			stage.setY(bounds.getMinY());
+			stage.setWidth(bounds.getWidth());
+			stage.setHeight(bounds.getHeight());
+		}
+		
+		Rectangle rect = new Rectangle(stage.getWidth(), stage.getHeight());
+		rect.setArcHeight(8.0);
+		rect.setArcWidth(8.0);
+		scene.getRoot().setClip(rect);
 	}
 
 	private void setVolumeFX(int value, boolean updateItself) {
@@ -209,7 +270,6 @@ public class ViewController implements Initializable, ViewInterface {
 		}
 		volumeProgress.setProgress(value / 100d);
 		volumeLabel.setText(String.valueOf(value));
-		volumeLabelShadow.setText(String.valueOf(value));
 	}
 
 	private void setDurationFX(long ms, boolean updateItself) {
@@ -301,7 +361,7 @@ public class ViewController implements Initializable, ViewInterface {
 	public void init(final LogicInterfaceFX logic, String theme) {
 		// Setup theme
 		String themePath = "/de/roth/jsona/view/themes/" + theme;
-
+		
 		// Images
 		this.playImage = new Image(themePath + "/" + "play.png");
 		this.pauseImage = new Image(themePath + "/" + "pause.png");
@@ -310,6 +370,9 @@ public class ViewController implements Initializable, ViewInterface {
 		this.prevButtonImage.setImage(new Image(themePath + "/" + "prev.png"));
 		this.shuffleToggleButtonImage.setImage(new Image(themePath + "/" + "shuffle.png"));
 		this.artistImage.setImage(new Image(themePath + "/" + "icon.png"));
+		this.maximizeImage = new Image(themePath + "/" + "maximize_window.png");
+		this.reMaximizeImage = new Image(themePath + "/" + "remaximize_window.png");
+		
 
 		if (logic.equalizer_available()) {
 			this.equalizerIcon.setImage(new Image(themePath + "/" + "equalizer.png"));
@@ -319,7 +382,23 @@ public class ViewController implements Initializable, ViewInterface {
 		}
 
 		// Font
-		Font.loadFont(getClass().getResource("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "jsona.otf").toExternalForm(), 10);
+		if (new File(themePath + "/" + "jsona.otf").exists()) {
+			Font.loadFont(getClass().getResource("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "jsona.otf").toExternalForm(), 10);
+		}
+
+		this.maximizeWindowIcon.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+				maximizeWindow();
+			}
+		});
+		
+		this.minimizeWindowIcon.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+				minimizeWindow();
+			}
+		});
 
 		// Application keys
 		getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN), new Runnable() {
@@ -547,48 +626,54 @@ public class ViewController implements Initializable, ViewInterface {
 		searchResultsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		enableListViewDragItems(searchResultsListView, TransferMode.COPY);
 
-		// Resizer
-		this.resizer.setOnMousePressed(new EventHandler<MouseEvent>() {
+		// Resizer, if theme has a resizer pane
+		if (resizer != null) {
+			this.resizer.setOnMousePressed(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent mouseEvent) {
+					initX = mouseEvent.getScreenX();
+					initY = mouseEvent.getScreenY();
+					mouseEvent.consume();
+				}
+			});
+			this.resizer.setOnMouseReleased(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent mouseEvent) {
+					mouseEvent.consume();
+				}
+			});
+
+			this.resizer.setOnMouseDragged(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent mouseEvent) {
+					newX = mouseEvent.getScreenX();
+					newY = mouseEvent.getScreenY();
+					double deltax = newX - initX;
+					double deltay = newY - initY;
+
+					setStageWidth(stage, stage.getWidth() + deltax);
+					setStageHeight(stage, stage.getHeight() + deltay);
+
+					Rectangle rect = new Rectangle(stage.getWidth(), stage.getHeight());
+					rect.setArcHeight(8.0);
+					rect.setArcWidth(8.0);
+					scene.getRoot().setClip(rect);
+
+					mouseEvent.consume();
+					
+					if(maximizeWindowIcon.getImage().equals(maximizeImage)){
+						return;
+					}
+					maximizeWindowIcon.setImage(maximizeImage);
+				}
+			});
+		}
+
+		// Window icons
+		this.closeWindowIcon.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent mouseEvent) {
-				initX = mouseEvent.getScreenX();
-				initY = mouseEvent.getScreenY();
-
-				musicListsSplitPane.setVisible(false);
-				controlPanel.setVisible(false);
-				informationContainer.setVisible(false);
-
-				mouseEvent.consume();
-			}
-		});
-		this.resizer.setOnMouseReleased(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouseEvent) {
-
-				controlPanel.setVisible(true);
-				musicListsSplitPane.setVisible(true);
-				informationContainer.setVisible(true);
-				mouseEvent.consume();
-			}
-		});
-
-		this.resizer.setOnMouseDragged(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouseEvent) {
-				newX = mouseEvent.getScreenX();
-				newY = mouseEvent.getScreenY();
-				double deltax = newX - initX;
-				double deltay = newY - initY;
-
-				setStageWidth(stage, stage.getWidth() + deltax);
-				setStageHeight(stage, stage.getHeight() + deltay);
-
-				Rectangle rect = new Rectangle(stage.getWidth(), stage.getHeight());
-				rect.setArcHeight(8.0);
-				rect.setArcWidth(8.0);
-				scene.getRoot().setClip(rect);
-
-				mouseEvent.consume();
+				logic.close();
 			}
 		});
 
@@ -1272,11 +1357,25 @@ public class ViewController implements Initializable, ViewInterface {
 					this.artist.setText(item.getArtist());
 					this.title.setText(" - " + item.getTitle());
 					this.getStyleClass().add(PLAYING_CLASS);
+
+					if (Config.getInstance().THEME.equals("dark_green")) {
+						this.setStyle("-fx-text-fill: white; -fx-background-color: #b96946;");
+						this.artist.setStyle("-fx-text-fill: white; -fx-background-color: #b96946;");
+						this.title.setStyle("-fx-text-fill: white; -fx-background-color: #b96946;");
+						this.duration.setStyle("-fx-text-fill: white; -fx-background-color: #b96946;");
+					}
 					break;
 				case SET_NONE:
-					this.getStyleClass().remove(PLAYING_CLASS);
 					this.artist.setText(item.getArtist());
 					this.title.setText(" - " + item.getTitle());
+					this.getStyleClass().remove(PLAYING_CLASS);
+
+					if (Config.getInstance().THEME.equals("dark_green")) {
+						this.setStyle("");
+						this.artist.setStyle("");
+						this.title.setStyle("");
+						this.duration.setStyle("");
+					}
 					break;
 				default:
 					break;
@@ -1294,6 +1393,7 @@ public class ViewController implements Initializable, ViewInterface {
 				case SET_NONE:
 					this.getStyleClass().remove(PLAYING_CLASS);
 					this.title.setText(item.getFile().getName());
+					this.setStyle("");
 					break;
 				default:
 					break;

@@ -1,9 +1,9 @@
-.tab {
-	-fx-focus-color: transparent;
+.bg{
+	-fx-background-color: #f4f4f4;
 }
 
-.root{
-	-fx-background-color: #f4f4f4;
+.tab {
+	-fx-focus-color: transparent;
 }
 
 .sliderProgress .slider .track {
@@ -146,6 +146,7 @@
 }
 
 .hyperlink {
+	 -fx-font-size: 10px;
     -fx-text-fill: #757575;
     -fx-background-color: transparent;
     -fx-padding: 0.0;
@@ -154,8 +155,11 @@
 }
 
 .hyperlink:hover {
-    -fx-underline: true;
     -fx-border-color: transparent;
+    -fx-background-color: #757575;
+    -fx-background-radius: 4px;
+    -fx-text-fill: #f4f4f4;
+    -fx-underline: false;
 }
 
 .hyperlink:focused {
@@ -181,4 +185,37 @@
 /* Shuffle Button */
 #shuffleToggleButton{
 	-fx-background-radius: 80.0 80.0 80.0 80.0;
+}
+
+#artistLabel{
+	-fx-font-size: 36px;
+}
+
+#artistBio{
+	-fx-font-size: 10px;
+}
+
+#titleLabel{
+	-fx-font-size: 18px;
+}
+
+#volumeLabel{
+	-fx-font-size: 11px;
+}
+
+#durationLabel{
+	-fx-font-size: 11px;
+}
+
+#artistImage{
+	-fx-background-insets: 2px;
+	-fx-background-color: white;
+}
+
+#closeWindowIcon, #maximizeWindowIcon, #minimizeWindowIcon{
+	-fx-opacity: 0.2;
+}
+
+#closeWindowIcon:hover, #maximizeWindowIcon:hover, #minimizeWindowIcon:hover{
+	-fx-opacity: 0.7;
 }

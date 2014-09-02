@@ -6,8 +6,8 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.SceneAntialiasing;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -40,25 +40,27 @@ public class ViewManagerFX {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "layout.fxml"));
 			loader.setController(this.controller);
 
-/*
-			if (undecorated) {
-				Undecorator undecorator = new Undecorator(stage, (Region) this.root);
-				undecorator.getStylesheets().add("insidefx/undecorator/undecorator.css");
-				scene = new Scene(undecorator);
-				scene.setFill(Color.TRANSPARENT);
-				stage.initStyle(StageStyle.TRANSPARENT);
-			} else {
-				scene = new Scene(root, Color.TRANSPARENT);
-				stage.initStyle(StageStyle.DECORATED);
-			}
-*/
-			Scene scene = new Scene((Parent) loader.load(), 860, 600, true, SceneAntialiasing.BALANCED);
+			
+			Region x = (Region) loader.load();
+		
+			Scene scene = new Scene((Parent) x, 860, 600, true);
 			scene.setFill(Color.TRANSPARENT);
+			
+			
+//			if (undecorated) {
+//				Undecorator undecorator = new Undecorator(stage, x);
+//				undecorator.getStylesheets().add("insidefx/undecorator/undecorator.css");
+//				scene = new Scene(undecorator);
+//				scene.setFill(Color.TRANSPARENT);
+//				stage.initStyle(StageStyle.TRANSPARENT);
+//			} else {
+//				scene = new Scene(x, Color.TRANSPARENT);
+//				stage.initStyle(StageStyle.DECORATED);
+//			}
 			
 			Rectangle rect = new Rectangle(860,600);
 			rect.setArcHeight(8.0);
 			rect.setArcWidth(8.0);
-
 			scene.getRoot().setClip(rect);
 			
 			stage.initStyle(StageStyle.TRANSPARENT);
