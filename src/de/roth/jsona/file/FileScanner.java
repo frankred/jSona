@@ -3,6 +3,7 @@ package de.roth.jsona.file;
 import java.io.File;
 import java.util.LinkedList;
 
+import de.roth.jsona.config.Config;
 import de.roth.jsona.config.Global;
 
 /**
@@ -71,6 +72,15 @@ public class FileScanner {
 				return false;
 			}
 		}
+
+        final int extensionIDX = name.lastIndexOf('.');
+        if (extensionIDX == -1)
+            return false;
+        else if (!Config.getInstance().INCLUDE_EXTENSIONS.isEmpty()) {
+            final String extension = name.substring(extensionIDX);
+            if (!Config.getInstance().INCLUDE_EXTENSIONS.contains(extension))
+                return false;
+        }
 		return true;
 	}
 }
