@@ -126,19 +126,16 @@ public class ViewController implements Initializable, ViewInterface {
 	private FlowPane topTracks;
 
 	@FXML
-	private Button playButton, nextButton, prevButton;
+	private Button playButton, nextButton, prevButton, modeButton;
 
 	@FXML
 	private Hyperlink removePlaylistButton;
 
 	@FXML
-	private ImageView playButtonImage, pauseButtonImage, nextButtonImage, prevButtonImage, shuffleToggleButtonImage, artistImage, addPlaylistImage, equalizerIcon, resizer, closeWindowIcon, maximizeWindowIcon, minimizeWindowIcon;
+	private ImageView playButtonImage, pauseButtonImage, nextButtonImage, prevButtonImage, modeButtonImage, artistImage, addPlaylistImage, equalizerIcon, resizer, closeWindowIcon, maximizeWindowIcon, minimizeWindowIcon;
 
 	@FXML
-	private ToggleButton shuffleToggleButton;
-
-	@FXML
-	private Image playImage, pauseImage, maximizeImage, reMaximizeImage;
+	private Image playImage, pauseImage, maximizeImage, reMaximizeImage, modeNormalImage, modeShuffleImage, modeRepeatImage;
 
 	@FXML
 	private AnchorPane imageContainer;
@@ -280,13 +277,19 @@ public class ViewController implements Initializable, ViewInterface {
 		durationLabel.setText(TimeFormatter.formatMilliseconds(ms));
 	}
 
-	private void setShuffleFX(boolean shuffle) {
-		shuffleToggleButton.setSelected(shuffle);
-		if (shuffle) {
-			ListItemManager.getInstance().setPlayBackMode(PlayBackMode.SHUFFLE);
-		} else {
-			ListItemManager.getInstance().setPlayBackMode(PlayBackMode.NORMAL);
-		}
+	private void setPlayBackModeFX(PlayBackMode mode) {
+
+	    switch (mode) {
+	        case NORMAL:
+	            modeButtonImage.setImage(modeNormalImage);
+	            break;
+	        case SHUFFLE:
+	            modeButtonImage.setImage(modeShuffleImage);
+                break;
+	        case REPEAT:
+	            modeButtonImage.setImage(modeRepeatImage);
+                break;
+	    }
 	}
 
 	public Slider getDurationSlider() {
@@ -361,18 +364,21 @@ public class ViewController implements Initializable, ViewInterface {
 	public void init(final LogicInterfaceFX logic, String theme) {
 		// Setup theme
 		String themePath = "/de/roth/jsona/view/themes/" + theme;
-		
+
 		// Images
 		this.playImage = new Image(themePath + "/" + "play.png");
 		this.pauseImage = new Image(themePath + "/" + "pause.png");
 		this.playButtonImage.setImage(playImage);
 		this.nextButtonImage.setImage(new Image(themePath + "/" + "next.png"));
 		this.prevButtonImage.setImage(new Image(themePath + "/" + "prev.png"));
-		this.shuffleToggleButtonImage.setImage(new Image(themePath + "/" + "shuffle.png"));
 		this.artistImage.setImage(new Image(themePath + "/" + "icon.png"));
 		this.maximizeImage = new Image(themePath + "/" + "maximize_window.png");
 		this.reMaximizeImage = new Image(themePath + "/" + "remaximize_window.png");
-		
+		this.modeNormalImage = new Image(themePath + "/" + "mode_normal.png");
+		this.modeShuffleImage = new Image(themePath + "/" + "mode_shuffle.png");
+		this.modeRepeatImage = new Image(themePath + "/" + "mode_repeat.png");
+
+		this.modeButtonImage.setImage(modeNormalImage);
 
 		if (logic.equalizer_available()) {
 			this.equalizerIcon.setImage(new Image(themePath + "/" + "equalizer.png"));
@@ -489,17 +495,24 @@ public class ViewController implements Initializable, ViewInterface {
 		});
 		removePlaylistButton.setTooltip(new Tooltip("Remove selected playlist."));
 
-		// Toggle Buttons
-		shuffleToggleButton.setOnAction(new EventHandler<ActionEvent>() {
+		// Mode Button
+		modeButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				if (shuffleToggleButton.isSelected()) {
-					logic.event_playbackmode_shuffle();
-					ListItemManager.getInstance().setPlayBackMode(PlayBackMode.SHUFFLE);
-					return;
-				}
-				ListItemManager.getInstance().setPlayBackMode(PlayBackMode.NORMAL);
-				logic.event_playbackmode_normal();
+			    switch (ListItemManager.getInstance().getPlayBackMode()) {
+			        case NORMAL:
+                        setPlaybackMode(PlayBackMode.SHUFFLE);
+			            logic.event_playbackmode_shuffle();
+			            break;
+			        case SHUFFLE:
+			            setPlaybackMode(PlayBackMode.REPEAT);
+		                logic.event_playbackmode_repeat();
+                        break;
+			        case REPEAT:
+			            setPlaybackMode(PlayBackMode.NORMAL);;
+		                logic.event_playbackmode_normal();
+                        break;
+			    }
 			}
 		});
 
@@ -790,11 +803,7 @@ public class ViewController implements Initializable, ViewInterface {
 	public void setPlaybackMode(final PlayBackMode mode) {
 		Platform.runLater(new Runnable() {
 			public void run() {
-				if (mode == PlayBackMode.NORMAL) {
-					setShuffleFX(false);
-				} else if (mode == PlayBackMode.SHUFFLE) {
-					setShuffleFX(true);
-				}
+			    setPlayBackModeFX(mode);
 				ListItemManager.getInstance().setPlayBackMode(mode);
 			}
 		});
@@ -1700,6 +1709,9 @@ public class ViewController implements Initializable, ViewInterface {
 					nextIndex = (nextIndex + 1) % this.currentListView.getItems().size();
 				}
 				break;
+			case REPEAT:
+                nextIndex = oldIndex;
+                break;
 			}
 			return nextIndex;
 		}

@@ -60,11 +60,11 @@
             <Slider fx:id="durationSlider" minHeight="24.0" minWidth="-1.0" prefHeight="24.0" prefWidth="378.0" showTickLabels="false" showTickMarks="false" snapToTicks="false" StackPane.alignment="CENTER" />
           </children>
         </StackPane>
-        <ToggleButton fx:id="shuffleToggleButton" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" text="" AnchorPane.bottomAnchor="19.0" AnchorPane.rightAnchor="15.0">
+        <Button fx:id="modeButton" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" text="" AnchorPane.bottomAnchor="19.0" AnchorPane.rightAnchor="15.0">
           <graphic>
-            <ImageView fx:id="shuffleToggleButtonImage" fitHeight="16.0" fitWidth="16.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="false" translateX="0.0" x="20.0" />
+            <ImageView fx:id="modeButtonImage" fitHeight="16.0" fitWidth="16.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="false" translateX="0.0" x="20.0" />
           </graphic>
-        </ToggleButton>
+        </Button>
         <Label fx:id="durationLabel" prefWidth="63.0" style="" text="2:30" textFill="$x3" AnchorPane.bottomAnchor="26.0" AnchorPane.rightAnchor="58.0">
           <effect>
             <DropShadow height="4.8730158730158735" radius="1.9365079365079367" width="4.8730158730158735" />

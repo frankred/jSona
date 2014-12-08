@@ -691,6 +691,12 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 	}
 
 	@Override
+    public void event_playbackmode_repeat() {
+        Config.getInstance().PLAYBACK_MODE = PlayBackMode.REPEAT;
+        Logger.get().log(Level.INFO, "Playback mode set to repeat.");
+    }
+
+	@Override
 	public void event_search_music(final String query) {
 		this.searchResultCounter++;
 
