@@ -113,11 +113,11 @@
             <Slider fx:id="durationSlider" showTickLabels="false" showTickMarks="false" snapToTicks="false" StackPane.alignment="CENTER" />
           </children>
         </StackPane>
-        <ToggleButton fx:id="shuffleToggleButton" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" style="-fx-background-radius: 80 80 80 80;&#10;-fx-focus-color: transparent;" text="" AnchorPane.bottomAnchor="19.0" AnchorPane.rightAnchor="15.0">
+        <Button fx:id="modeButton" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" style="-fx-background-radius: 80 80 80 80;&#10;-fx-focus-color: transparent;" text="" AnchorPane.bottomAnchor="19.0" AnchorPane.rightAnchor="15.0">
           <graphic>
-            <ImageView fx:id="shuffleToggleButtonImage" fitHeight="16.0" fitWidth="16.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="false" translateX="0.0" x="20.0" />
+            <ImageView fx:id="modeButtonImage" fitHeight="16.0" fitWidth="16.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="false" translateX="0.0" x="20.0" />
           </graphic>
-        </ToggleButton>
+        </Button>
         <Label fx:id="durationLabel" prefWidth="63.0" text="" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="48.0" />
         <Label fx:id="volumeLabel" layoutX="281.0" prefWidth="63.0" text="100" AnchorPane.bottomAnchor="28.0" />
         <Hyperlink fx:id="removePlaylistButton" prefWidth="-1.0" text="x" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="214.0" />

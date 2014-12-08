@@ -183,7 +183,7 @@
 }
 
 /* Shuffle Button */
-#shuffleToggleButton{
+#modeButton{
 	-fx-background-radius: 80.0 80.0 80.0 80.0;
 }
 

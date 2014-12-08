@@ -26,7 +26,8 @@ public interface LogicInterfaceFX {
 
 	public void event_playbackmode_normal();
 	public void event_playbackmode_shuffle();
-	
+	public void event_playbackmode_repeat();
+
 	public void event_play_url(String url);
 
 	public void event_search_music(String query);
