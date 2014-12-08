@@ -44,6 +44,7 @@ public class Config {
 	@Expose public int MAX_SEARCH_RESULT_AMOUNT;
 	@Expose public int VOLUME;
 	@Expose public ArrayList<String> FOLDERS;
+	@Expose public ArrayList<String> INCLUDE_EXTENSIONS;
 	@Expose public PlayBackMode PLAYBACK_MODE;
 	@Expose public String SENT_TO_PATH;
 	@Expose public int RECENTLY_ADDED_UNITL_TIME_IN_DAYS;

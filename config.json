@@ -5,6 +5,13 @@
   "FOLDERS": [
     "D:/media/musik"
   ],
+  "INCLUDE_EXTENSIONS": [
+    ".mp3",
+    ".wav",
+    ".wma",
+    ".flc",
+    ".aac",
+  ],
   "PLAYBACK_MODE": "NORMAL",
   "RECENTLY_ADDED_UNITL_TIME_IN_DAYS": -7,
   "THEME": "grey",
