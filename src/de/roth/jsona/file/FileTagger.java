@@ -28,7 +28,7 @@ public class FileTagger {
 
 	private static void tagFiles(File rootFolder, LinkedList<File> files, ArrayList<MusicListItem> recentlyAdded, Date nowDate, Date recentlyAddedDeadline, FileTaggerListener listener, boolean fillRecentlyAddedList) {
 
-		ArrayList<MusicListItem> items = new ArrayList<>(files.size());
+		ArrayList<MusicListItem> items = new ArrayList<MusicListItem>(files.size());
 
 		listener.taggerStart(files.size());
 

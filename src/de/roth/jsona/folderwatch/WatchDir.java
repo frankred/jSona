@@ -197,18 +197,20 @@ public class WatchDir {
 	 */
 	private void callListener(WatchEvent<Path> event, Path path, Path parent) {
 		for (WatchDirListener fwl : this.listener) {
-			switch (event.kind().name()) {
-			case "ENTRY_MODIFY":
+
+			if(event.kind().name().equals("ENTRY_MODIFY")){
 				fwl.fileModified(path, parent);
-				break;
+				continue;
+			}
 
-			case "ENTRY_DELETE":
+			if(event.kind().name().equals("ENTRY_DELETE")){
 				fwl.fileDeleted(path, parent);
-				break;
+				continue;
+			}
 
-			case "ENTRY_CREATE":
+			if(event.kind().name().equals("ENTRY_CREATE")){
 				fwl.fileCreated(path, parent);
-				break;
+				continue;
 			}
 		}
 	}

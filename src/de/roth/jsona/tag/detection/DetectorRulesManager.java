@@ -91,11 +91,11 @@ public class DetectorRulesManager {
 			}
 
 			if (c.getParams().get("IGNORE_FILE_ENDING") != null) {
-				ignoreFileEnding = (boolean) c.getParams().get("IGNORE_FILE_ENDING");
+				ignoreFileEnding = ((Boolean) c.getParams().get("IGNORE_FILE_ENDING")).booleanValue();
 			}
 
 			if (c.getParams().get("REPLACE_UNDERSCORES_WITH_SPACES") != null) {
-				replaceUnderscoresWithSpaces = (boolean) c.getParams().get("REPLACE_UNDERSCORES_WITH_SPACES");
+				replaceUnderscoresWithSpaces = ((Boolean) c.getParams().get("REPLACE_UNDERSCORES_WITH_SPACES")).booleanValue();
 			}
 
 			switch (c.getRule()) {
@@ -104,7 +104,7 @@ public class DetectorRulesManager {
 				break;
 			case ROOT_SUBFOLDER_LEVEL_RULE:
 				if (c.getParams().get("FOLDER_LEVEL") != null) {
-					double level = (double) c.getParams().get("FOLDER_LEVEL");
+					double level = ((Double) c.getParams().get("FOLDER_LEVEL")).doubleValue();
 					this.rules.add(new RootSubfolderLevelDetectorRule((int) level, pattern, ignoreFileEnding, replaceUnderscoresWithSpaces));
 				}
 				break;
