@@ -9,11 +9,7 @@ jSona is a configuration file(JSON), [vlcj](https://github.com/caprica/vlcj) and
   - Fulltext search
 
 ##Screenhot
-###Java7
-![jSona screenshot](https://dl.dropboxusercontent.com/u/3669658/github/jSona/jsona_ui_1.0.4.png "Hey dude...")
-
-###Java8
-![jSona screenshot](https://dl.dropboxusercontent.com/u/3669658/github/jSona/jsona_ui_1.0.4_java8.png "Hey dude...")
+![jSona screenshot](https://dl.dropboxusercontent.com/u/3669658/github/jSona/jsona_ui_1.0.5_java7u8.png "Hey dude...")
 
 ##New features
 You want **new features**? On the following page you can vote for and submit new feature requests.
@@ -202,6 +198,10 @@ Currently only global hotkeys work. Supported application events are: {PLAYER_VO
 ```
 
 ##Changelog
+
+###1.0.5
+* Bugfixing {ListView, Layout}
+* Repeat mode added (THX [Naios](https://github.com/Naios))
 
 ###1.0.4
 * Bugfixing {ListView, Title Information changed, ListView layout, fileCreated, fileModified}
