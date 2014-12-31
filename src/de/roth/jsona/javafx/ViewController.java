@@ -1499,10 +1499,6 @@ public class ViewController implements Initializable, ViewInterface {
 							artistImage.setManaged(true);
 							Image img = new Image(new FileInputStream(f));
 							artistImage.setImage(img);
-
-							// Set live image
-							Image thumb = new Image(new FileInputStream(f), 0, 96, true, true);
-							item.setArtistImage(thumb);
 						} catch (FileNotFoundException e2) {
 							e2.printStackTrace();
 						}
