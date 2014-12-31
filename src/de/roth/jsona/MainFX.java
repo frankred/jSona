@@ -19,10 +19,13 @@ import de.roth.jsona.util.Logger;
  */
 public class MainFX extends Application {
 
-	public static final String VERSION = "1.0.4";
+	public static final String VERSION = "1.0.5";
 	
 	@Override
 	public void start(final Stage stage) throws Exception {
+		// JavaFX 2.0 default theme, it's much faster then the JavaFX 8.0 default theme
+		System.setProperty("javafx.userAgentStylesheetUrl", "caspian");
+		
 		// Set default language
 		Locale.setDefault(Locale.ENGLISH);
 
