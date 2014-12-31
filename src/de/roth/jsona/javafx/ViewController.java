@@ -1375,6 +1375,7 @@ public class ViewController implements Initializable, ViewInterface {
 			}
 
 			// Duration
+			this.duration.setVisible(true);
 			this.duration.setText(item.getDuration());
 
 			// Play icon
