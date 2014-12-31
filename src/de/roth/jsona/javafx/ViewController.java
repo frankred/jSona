@@ -45,7 +45,6 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -194,8 +193,8 @@ public class ViewController implements Initializable, ViewInterface {
 			public void handle(MouseEvent event) {
 				stage.setX(event.getScreenX() - xOffset);
 				stage.setY(event.getScreenY() - yOffset);
-				
-				if(maximizeWindowIcon.getImage().equals(maximizeImage)){
+
+				if (maximizeWindowIcon.getImage().equals(maximizeImage)) {
 					return;
 				}
 				maximizeWindowIcon.setImage(maximizeImage);
@@ -211,40 +210,40 @@ public class ViewController implements Initializable, ViewInterface {
 				}
 			}
 		});
-	
+
 		// Clear dummy hyperlinks
 		topTracks.getChildren().clear();
 	}
-	
-	private void minimizeWindow(){
+
+	private void minimizeWindow() {
 		stage.setIconified(true);
 	}
 
-	private boolean windowIsMaximized(){
+	private boolean windowIsMaximized() {
 		ObservableList<Screen> screens = Screen.getScreensForRectangle(new Rectangle2D(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight()));
 		Rectangle2D bounds = screens.get(0).getVisualBounds();
-		
-		if(stage.getX() == bounds.getMinX() && stage.getY() == bounds.getMinY() && stage.getWidth() == bounds.getWidth() && stage.getHeight() == bounds.getHeight()){
+
+		if (stage.getX() == bounds.getMinX() && stage.getY() == bounds.getMinY() && stage.getWidth() == bounds.getWidth() && stage.getHeight() == bounds.getHeight()) {
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	private Rectangle2D preMaximizedPosition = null;
-	
+
 	private void maximizeWindow() {
-		if(windowIsMaximized()){
+		if (windowIsMaximized()) {
 			stage.setX(preMaximizedPosition.getMinX());
 			stage.setY(preMaximizedPosition.getMinY());
 			stage.setWidth(preMaximizedPosition.getWidth());
 			stage.setHeight(preMaximizedPosition.getHeight());
-			
+
 			this.maximizeWindowIcon.setImage(maximizeImage);
 
 		} else {
 			this.maximizeWindowIcon.setImage(reMaximizeImage);
-			
+
 			preMaximizedPosition = new Rectangle2D(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
 			ObservableList<Screen> screens = Screen.getScreensForRectangle(new Rectangle2D(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight()));
 			Rectangle2D bounds = screens.get(0).getVisualBounds();
@@ -253,7 +252,7 @@ public class ViewController implements Initializable, ViewInterface {
 			stage.setWidth(bounds.getWidth());
 			stage.setHeight(bounds.getHeight());
 		}
-		
+
 		Rectangle rect = new Rectangle(stage.getWidth(), stage.getHeight());
 		rect.setArcHeight(8.0);
 		rect.setArcWidth(8.0);
@@ -279,17 +278,17 @@ public class ViewController implements Initializable, ViewInterface {
 
 	private void setPlayBackModeFX(PlayBackMode mode) {
 
-	    switch (mode) {
-	        case NORMAL:
-	            modeButtonImage.setImage(modeNormalImage);
-	            break;
-	        case SHUFFLE:
-	            modeButtonImage.setImage(modeShuffleImage);
-                break;
-	        case REPEAT:
-	            modeButtonImage.setImage(modeRepeatImage);
-                break;
-	    }
+		switch (mode) {
+		case NORMAL:
+			modeButtonImage.setImage(modeNormalImage);
+			break;
+		case SHUFFLE:
+			modeButtonImage.setImage(modeShuffleImage);
+			break;
+		case REPEAT:
+			modeButtonImage.setImage(modeRepeatImage);
+			break;
+		}
 	}
 
 	public Slider getDurationSlider() {
@@ -398,7 +397,7 @@ public class ViewController implements Initializable, ViewInterface {
 				maximizeWindow();
 			}
 		});
-		
+
 		this.minimizeWindowIcon.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent mouseEvent) {
@@ -499,20 +498,21 @@ public class ViewController implements Initializable, ViewInterface {
 		modeButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-			    switch (ListItemManager.getInstance().getPlayBackMode()) {
-			        case NORMAL:
-                        setPlaybackMode(PlayBackMode.SHUFFLE);
-			            logic.event_playbackmode_shuffle();
-			            break;
-			        case SHUFFLE:
-			            setPlaybackMode(PlayBackMode.REPEAT);
-		                logic.event_playbackmode_repeat();
-                        break;
-			        case REPEAT:
-			            setPlaybackMode(PlayBackMode.NORMAL);;
-		                logic.event_playbackmode_normal();
-                        break;
-			    }
+				switch (ListItemManager.getInstance().getPlayBackMode()) {
+				case NORMAL:
+					setPlaybackMode(PlayBackMode.SHUFFLE);
+					logic.event_playbackmode_shuffle();
+					break;
+				case SHUFFLE:
+					setPlaybackMode(PlayBackMode.REPEAT);
+					logic.event_playbackmode_repeat();
+					break;
+				case REPEAT:
+					setPlaybackMode(PlayBackMode.NORMAL);
+					;
+					logic.event_playbackmode_normal();
+					break;
+				}
 			}
 		});
 
@@ -673,8 +673,8 @@ public class ViewController implements Initializable, ViewInterface {
 					scene.getRoot().setClip(rect);
 
 					mouseEvent.consume();
-					
-					if(maximizeWindowIcon.getImage().equals(maximizeImage)){
+
+					if (maximizeWindowIcon.getImage().equals(maximizeImage)) {
 						return;
 					}
 					maximizeWindowIcon.setImage(maximizeImage);
@@ -803,7 +803,7 @@ public class ViewController implements Initializable, ViewInterface {
 	public void setPlaybackMode(final PlayBackMode mode) {
 		Platform.runLater(new Runnable() {
 			public void run() {
-			    setPlayBackModeFX(mode);
+				setPlayBackModeFX(mode);
 				ListItemManager.getInstance().setPlayBackMode(mode);
 			}
 		});
@@ -1097,6 +1097,7 @@ public class ViewController implements Initializable, ViewInterface {
 				return cell;
 			}
 		});
+
 		listView.setOnDragOver(new EventHandler<DragEvent>() {
 			@Override
 			public void handle(DragEvent event) {
@@ -1183,29 +1184,37 @@ public class ViewController implements Initializable, ViewInterface {
 		// keys
 		final EventHandler<KeyEvent> playlistKeyEventHandler = new EventHandler<KeyEvent>() {
 			public void handle(final KeyEvent keyEvent) {
+
 				switch (keyEvent.getCode()) {
 				case DELETE:
-					if (listView.getSelectionModel().getSelectedItems().size() == listView.getItems().size()) {
-						listView.getItems().clear();
-						keyEvent.consume();
-						logic.event_playlist_changed(playlist.getAtomicId(), listView.getItems());
-						return;
-					}
+					Platform.runLater(new Runnable() {
+						public void run() {
+							// Delete all
+							if (listView.getSelectionModel().getSelectedItems().size() == listView.getItems().size()) {
+								listView.getItems().clear();
+								keyEvent.consume();
+								logic.event_playlist_changed(playlist.getAtomicId(), listView.getItems());
+								return;
+							}
 
-					int firstIndex = listView.getSelectionModel().getSelectedIndex();
-					ObservableList<MusicListItem> delete = FXCollections.observableArrayList(listView.getSelectionModel().getSelectedItems());
-					listView.getItems().removeAll(delete);
-					listView.getSelectionModel().clearSelection();
+							// Delete by index
+							int firstIndex = listView.getSelectionModel().getSelectedIndex();
+							ObservableList<MusicListItem> delete = FXCollections.observableArrayList(listView.getSelectionModel().getSelectedItems());
+							listView.getItems().removeAll(delete);
+							listView.getSelectionModel().clearSelection();
 
-					// last item was removed, that isn't available
-					// anymore => Reset index
-					if (firstIndex >= listView.getItems().size()) {
-						firstIndex = listView.getItems().size() - 1;
-					}
-					listView.getSelectionModel().select(firstIndex);
+							// last item was removed, that isn't available
+							// anymore => Reset index
+							if (firstIndex >= listView.getItems().size()) {
+								firstIndex = listView.getItems().size() - 1;
+							}
+							listView.getSelectionModel().select(firstIndex);
 
-					keyEvent.consume();
-					logic.event_playlist_changed(playlist.getAtomicId(), listView.getItems());
+							keyEvent.consume();
+							logic.event_playlist_changed(playlist.getAtomicId(), listView.getItems());
+
+						}
+					});
 
 					break;
 
@@ -1215,6 +1224,7 @@ public class ViewController implements Initializable, ViewInterface {
 				default:
 					break;
 				}
+
 			}
 		};
 		listView.addEventHandler(KeyEvent.KEY_PRESSED, playlistKeyEventHandler);
@@ -1276,10 +1286,10 @@ public class ViewController implements Initializable, ViewInterface {
 		public final static String PLAYING_CLASS = "playing";
 
 		private AnchorPane listItem;
-		private BorderPane titleAndArtist;
 		private Label artist;
 		private Label title;
 		private Label duration;
+		private ImageView live;
 
 		/**
 		 * Constructor for musiclist
@@ -1324,6 +1334,8 @@ public class ViewController implements Initializable, ViewInterface {
 			this.title = (Label) this.listItem.lookup("#title");
 			this.title.setWrapText(true);
 			this.duration = (Label) this.listItem.lookup("#duration");
+			this.live = (ImageView) this.listItem.lookup("#live");
+			this.live.setVisible(false);
 
 			// Create icon and hide
 			this.setGraphic(listItem);
@@ -1331,19 +1343,24 @@ public class ViewController implements Initializable, ViewInterface {
 
 		@Override
 		public void updateItem(MusicListItem item, boolean empty) {
-			MusicListItem oldItem = getItem();
 
 			// If old item is not null remove listener because we dont need it
 			// anymore
-			if (oldItem != null) {
-				oldItem.removeListener(this);
+			if (getItem() != null) {
+				getItem().removeListener(this);
 			}
 			super.updateItem(item, empty);
 
-			if (!empty && item != null) {
-				repaint(item);
-				item.addListener(this);
+			if (empty || item == null) {
+				this.live.setVisible(false);
+				this.artist.setVisible(false);
+				this.duration.setVisible(false);
+				this.title.setVisible(false);
+				return;
 			}
+
+			repaint(item);
+			item.addListener(this);
 		}
 
 		@Override
@@ -1352,62 +1369,48 @@ public class ViewController implements Initializable, ViewInterface {
 		}
 
 		private void repaint(MusicListItem item) {
+
 			if (item.getTmp_status() == null) {
 				item.setTmp_status(Status.SET_NONE);
 			}
 
+			// Duration
 			this.duration.setText(item.getDuration());
 
-			// artist / title
-			if (item.getArtist() != null) {
-				this.artist.setManaged(true);
-				switch (item.getTmp_status()) {
-				case SET_PLAYING:
-					this.artist.setText(item.getArtist());
-					this.title.setText(" - " + item.getTitle());
-					this.getStyleClass().add(PLAYING_CLASS);
+			// Play icon
+			switch (item.getTmp_status()) {
+			case SET_PLAYING:
+				this.setStyle("-fx-background: -fx-accent; -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-selection-bar; -fx-background-insets: 0.0, 0.0, 0.0; -fx-text-fill: -fx-selection-bar-text;");
+				this.live.setVisible(true);
+				this.live.setManaged(true);
+				break;
 
-					if (Config.getInstance().THEME.equals("dark_green")) {
-						this.setStyle("-fx-text-fill: white; -fx-background-color: #b96946;");
-						this.artist.setStyle("-fx-text-fill: white; -fx-background-color: #b96946;");
-						this.title.setStyle("-fx-text-fill: white; -fx-background-color: #b96946;");
-						this.duration.setStyle("-fx-text-fill: white; -fx-background-color: #b96946;");
-					}
-					break;
-				case SET_NONE:
-					this.artist.setText(item.getArtist());
-					this.title.setText(" - " + item.getTitle());
-					this.getStyleClass().remove(PLAYING_CLASS);
-
-					if (Config.getInstance().THEME.equals("dark_green")) {
-						this.setStyle("");
-						this.artist.setStyle("");
-						this.title.setStyle("");
-						this.duration.setStyle("");
-					}
-					break;
-				default:
-					break;
-				}
+			case SET_NONE:
+				this.setStyle("");
+				this.live.setVisible(false);
+				this.live.setManaged(false);
+				break;
+			default:
+				break;
 			}
-			// filename
-			else {
-				this.artist.setText("");
+
+			// Filename
+			if (item.getArtist() == null) {
+				this.artist.setVisible(false);
 				this.artist.setManaged(false);
-				switch (item.getTmp_status()) {
-				case SET_PLAYING:
-					this.title.setText(item.getFile().getName());
-					this.getStyleClass().add(PLAYING_CLASS);
-					break;
-				case SET_NONE:
-					this.getStyleClass().remove(PLAYING_CLASS);
-					this.title.setText(item.getFile().getName());
-					this.setStyle("");
-					break;
-				default:
-					break;
-				}
+				
+				this.title.setText(item.getFile().getName());
+				this.title.setVisible(true);
+				return;
 			}
+
+			// Use artist
+			this.artist.setText(item.getArtist());
+			this.artist.setVisible(true);
+			this.artist.setManaged(true);
+			
+			this.title.setText(" - " + item.getTitle());
+			this.title.setVisible(true);
 		}
 	}
 
@@ -1494,10 +1497,16 @@ public class ViewController implements Initializable, ViewInterface {
 							imageContainer.setManaged(true);
 							artistImage.setVisible(true);
 							artistImage.setManaged(true);
-							artistImage.setImage(new Image(new FileInputStream(f)));
+							Image img = new Image(new FileInputStream(f));
+							artistImage.setImage(img);
+
+							// Set live image
+							Image thumb = new Image(new FileInputStream(f), 0, 96, true, true);
+							item.setArtistImage(thumb);
 						} catch (FileNotFoundException e2) {
 							e2.printStackTrace();
 						}
+
 					}
 				}
 
@@ -1519,24 +1528,28 @@ public class ViewController implements Initializable, ViewInterface {
 
 					for (final Track t : top) {
 						Hyperlink h = new Hyperlink(t.getName());
-						h.setOnAction(new EventHandler<ActionEvent>() {
-							@Override
-							public void handle(ActionEvent e) {
-								try {
+
+						try {
+							final String url = "http://www.youtube.com/results?search_query=" + URLEncoder.encode(artist.getArtist().getName() + " " + t.getName(), "UTF-8");
+							h.setTooltip(new Tooltip(url));
+
+							h.setOnAction(new EventHandler<ActionEvent>() {
+								@Override
+								public void handle(ActionEvent e) {
 									try {
-										BrowserUtil.openWebpage(new URL("http://www.youtube.com/results?search_query=" + URLEncoder.encode(artist.getArtist().getName() + " " + t.getName(), "UTF-8")));
-									} catch (UnsupportedEncodingException e1) {
+										BrowserUtil.openWebpage(new URL(url));
+									} catch (MalformedURLException e1) {
 										e1.printStackTrace();
 									}
-								} catch (MalformedURLException e1) {
-									e1.printStackTrace();
 								}
+							});
+							topTracks.getChildren().add(h);
+							++trackCounter;
+							if (trackCounter == 32) {
+								break;
 							}
-						});
-						topTracks.getChildren().add(h);
-						++trackCounter;
-						if (trackCounter == 32) {
-							break;
+						} catch (UnsupportedEncodingException e1) {
+							e1.printStackTrace();
 						}
 					}
 				}
@@ -1652,13 +1665,11 @@ public class ViewController implements Initializable, ViewInterface {
 
 		private void switchTo(int newIndex, MusicListItem newItem) {
 			currentItem.setTmp_status(Status.SET_NONE);
-			currentListView.scrollTo(newIndex);
+			currentListView.scrollTo(newIndex - 5 < 0 ? 0 : newIndex - 5);
 			newItem.setTmp_status(Status.SET_PLAYING);
 
 			setCurrentItem(newItem);
 			setCurrentListView(currentListView);
-			currentListView.getSelectionModel().clearSelection();
-			currentListView.getSelectionModel().select(newIndex);
 		}
 
 		public void play(LogicInterfaceFX logic, final ListView<MusicListItem> playMeListView, final MusicListItem playMe) {
@@ -1710,8 +1721,8 @@ public class ViewController implements Initializable, ViewInterface {
 				}
 				break;
 			case REPEAT:
-                nextIndex = oldIndex;
-                break;
+				nextIndex = oldIndex;
+				break;
 			}
 			return nextIndex;
 		}
