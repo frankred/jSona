@@ -9,7 +9,7 @@ jSona is a configuration file(JSON), [vlcj](https://github.com/caprica/vlcj) and
   - Fulltext search
 
 ##Screenhot
-![jSona screenshot](https://dl.dropboxusercontent.com/u/3669658/github/jSona/jsona_ui_1.0.5_javaa7u8.png "Hey dude...")
+![jSona screenshot](https://dl.dropboxusercontent.com/u/3669658/github/jSona/jsona_ui_1.0.5_java7u8.png "Hey dude...")
 
 ##New features
 You want **new features**? On the following page you can vote for and submit new feature requests.
