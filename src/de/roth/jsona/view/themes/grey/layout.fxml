@@ -17,12 +17,12 @@
   <children>
     <AnchorPane fx:id="applicationContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="598.0" prefWidth="857.0" style="" styleClass="bg" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="1.0">
       <children>
-        <BorderPane fx:id="informationContainer" layoutY="14.0" minWidth="829.0" prefHeight="208.00009999999747" prefWidth="829.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0">
+        <BorderPane fx:id="informationContainer" layoutY="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0">
           <center>
-            <AnchorPane minHeight="215.0" prefHeight="215.0">
+            <AnchorPane minHeight="215.0" prefHeight="-1.0">
               <children>
-                <FlowPane fx:id="topTracks" hgap="8.0" maxHeight="12.0" minHeight="12.0" prefHeight="12.0" prefWidth="415.0" visible="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="188.0" />
-                <Label fx:id="artistLabel" alignment="TOP_LEFT" contentDisplay="CENTER" disable="false" graphicTextGap="0.0" minHeight="46.0" prefHeight="52.0" prefWidth="415.0" rotate="0.0" style="-fx-translate-y: -8px;" text="jSona" textAlignment="LEFT" translateZ="0.0" underline="false" wrapText="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <FlowPane fx:id="topTracks" hgap="8.0" maxHeight="12.0" minHeight="12.0" prefHeight="12.0" visible="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="188.0" />
+                <Label fx:id="artistLabel" alignment="TOP_LEFT" contentDisplay="CENTER" disable="false" graphicTextGap="0.0" minHeight="46.0" prefHeight="52.0" rotate="0.0" style="-fx-translate-y: -8px;" text="jSona" textAlignment="LEFT" translateZ="0.0" underline="false" wrapText="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                   <effect>
                     <Lighting>
                       <bumpInput>
@@ -42,7 +42,7 @@
                     <Font size="18.0" />
                   </font>
                 </Label>
-                <Label fx:id="artistBio" alignment="TOP_LEFT" contentDisplay="LEFT" prefHeight="88.0" prefWidth="543.0" text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="86.0" />
+                <Label fx:id="artistBio" alignment="TOP_LEFT" contentDisplay="LEFT" prefHeight="88.0" prefWidth="-1.0" text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="86.0" />
               </children>
             </AnchorPane>
           </center>

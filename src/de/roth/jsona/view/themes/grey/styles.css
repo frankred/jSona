@@ -64,16 +64,21 @@
 .c11 {-fx-background-color: #FFEBFB;}
 
 .list-cell {
-    -fx-skin: "com.sun.javafx.scene.control.skin.ListCellSkin";
-    -fx-background-color: -fx-control-inner-background;
+    /* -fx-skin: "com.sun.javafx.scene.control.skin.ListCellSkin"; */
+    /* -fx-background-color: -fx-control-inner-background; */
+    -fx-background-color: #FFFFFF;
     -fx-padding: 0.25em; /* 3 */
-    -fx-text-fill: -fx-text-inner-color;
+    /* -fx-text-fill: -fx-text-inner-color; */
+    -fx-text-fill: #000000;
     -fx-cell-size: 20;
 }
 
 
 .list-cell:odd {
-    -fx-background-color: derive(-fx-control-inner-background,-5.0%);
+    /* -fx-background-color: derive(-fx-control-inner-background,-5.0%);-fx-alignment: */
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #000000;
+    
 }
 
 .c0, .c0:odd {-fx-background-color: #FFEBF1;}
@@ -155,11 +160,7 @@
 }
 
 .hyperlink:hover {
-    -fx-border-color: transparent;
-    -fx-background-color: #757575;
-    -fx-background-radius: 4px;
-    -fx-text-fill: #f4f4f4;
-    -fx-underline: false;
+    -fx-underline: true;
 }
 
 .hyperlink:focused {
