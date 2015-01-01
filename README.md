@@ -213,6 +213,7 @@ Currently only global hotkeys work. Supported application events are: {PLAYER_VO
 ###1.0.5
 * Bugfixing {ListView, Layout}
 * Repeat mode added (THX [Naios](https://github.com/Naios))
+* File extension whitelist mechanism added (THX [Naios](https://github.com/Naios))
 
 ###1.0.4
 * Bugfixing {ListView, Title Information changed, ListView layout, fileCreated, fileModified}
