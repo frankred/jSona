@@ -41,6 +41,13 @@ Here is an example of the default configuration file. You have to setup your **V
     "C:/downloads/music",
     "\\nas\share\music"
   ],
+  "INCLUDE_EXTENSIONS": [
+    ".mp3",
+    ".wav",
+    ".wma",
+    ".flc",
+    ".aac",
+  ],
   "PLAYBACK_MODE": "NORMAL",
   "RECENTLY_ADDED_UNITL_TIME_IN_DAYS": -7,
   "THEME": "grey",
@@ -67,6 +74,9 @@ Default startup volume. Will be overwritten by jSona (always save the recently c
 
 #####FOLDERS
 Your music folders. Care of JSON-Syntax and correct backslashes (/). jSona also supports the usage of the Uniform Naming Convention and folders in a network (e.g.: "\\\\servername\folder\path"). See example above... 
+
+#####INCLUDE_EXTENSIONS
+This array says what kind of files you want to add to jSona. If it is empty or this field is deleted then every file with every extension will be included to your playlists.
 
 #####PLAYBACK_MODE
 Playbackmode of jSona. Choose one of them: {NORMAL, SHUFFLE}. Will be overwritten by jSona (always save the recently changed playback mode).
