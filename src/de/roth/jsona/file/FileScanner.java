@@ -65,6 +65,8 @@ public class FileScanner {
 	 * @return file is valid
 	 */
 	public static boolean isValid(String name) {
+
+		// Ignore those files
 		for (String fileName : Global.IMPORT_FILE_FILTER) {
 			fileName = fileName.toLowerCase();
 			name = name.toLowerCase();
@@ -73,14 +75,30 @@ public class FileScanner {
 			}
 		}
 
-        final int extensionIDX = name.lastIndexOf('.');
-        if (extensionIDX == -1)
-            return false;
-        else if (!Config.getInstance().INCLUDE_EXTENSIONS.isEmpty()) {
-            final String extension = name.substring(extensionIDX);
-            if (!Config.getInstance().INCLUDE_EXTENSIONS.contains(extension))
-                return false;
-        }
+		// File has extension
+		final int hasFileExtension = name.lastIndexOf('.');
+		if (hasFileExtension == -1) {
+			// Has no extension => ignore
+			return false;
+		}
+
+		// Only add files listed in the INCLUDE_EXTENSIONS ArrayList if it's
+		// set.
+		if (Config.getInstance().INCLUDE_EXTENSIONS == null) {
+			return true;
+		}
+
+		// If no extension was defined than accept everything
+		if (Config.getInstance().INCLUDE_EXTENSIONS.isEmpty()) {
+			return true;
+		}
+
+		// If the extension is not in the array then ignore file
+		final String extension = name.substring(hasFileExtension);
+		if (!Config.getInstance().INCLUDE_EXTENSIONS.contains(extension)) {
+			return false;
+		}
+
 		return true;
 	}
 }
