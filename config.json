@@ -1,7 +1,7 @@
 {
   "PATH_TO_VLCJ": "D:/Program Files/VideoLAN/VLC",
   "MAX_SEARCH_RESULT_AMOUNT": 512,
-  "VOLUME": 86,
+  "VOLUME": 80,
   "FOLDERS": [
     "D:/media/musik"
   ],
@@ -10,8 +10,7 @@
     ".wav",
     ".wma",
     ".flc",
-    ".aac",
-    null
+    ".aac"
   ],
   "PLAYBACK_MODE": "NORMAL",
   "RECENTLY_ADDED_UNITL_TIME_IN_DAYS": -7,
