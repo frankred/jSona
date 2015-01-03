@@ -1382,14 +1382,14 @@ public class ViewController implements Initializable, ViewInterface {
 			switch (item.getTmp_status()) {
 			case SET_PLAYING:
 				this.setStyle("-fx-background: -fx-accent; -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-selection-bar; -fx-background-insets: 0.0, 0.0, 0.0; -fx-text-fill: -fx-selection-bar-text;");
-				this.live.setVisible(true);
 				this.live.setManaged(true);
+				this.live.setVisible(true);
 				break;
 
 			case SET_NONE:
 				this.setStyle("");
-				this.live.setVisible(false);
 				this.live.setManaged(false);
+				this.live.setVisible(false);
 				break;
 			default:
 				break;
@@ -1397,21 +1397,26 @@ public class ViewController implements Initializable, ViewInterface {
 
 			// Filename
 			if (item.getArtist() == null) {
-				this.artist.setVisible(false);
+				this.artist.setText("");	// visual layout bugfix only occurs in the caspain theme 
 				this.artist.setManaged(false);
+				this.artist.setVisible(false);
 				
 				this.title.setText(item.getFile().getName());
+				this.title.setManaged(true);
 				this.title.setVisible(true);
 				return;
 			}
 
 			// Use artist
 			this.artist.setText(item.getArtist());
-			this.artist.setVisible(true);
 			this.artist.setManaged(true);
+			this.artist.setVisible(true);
+			
 			
 			this.title.setText(" - " + item.getTitle());
+			this.title.setManaged(true);
 			this.title.setVisible(true);
+
 		}
 	}
 
