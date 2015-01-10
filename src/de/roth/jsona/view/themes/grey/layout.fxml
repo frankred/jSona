@@ -42,7 +42,7 @@
                     <Font size="18.0" />
                   </font>
                 </Label>
-                <Label fx:id="artistBio" alignment="TOP_LEFT" contentDisplay="LEFT" prefHeight="88.0" prefWidth="-1.0" text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="86.0" />
+                <Label fx:id="artistBio" alignment="TOP_LEFT" contentDisplay="LEFT" prefHeight="88.0" prefWidth="-1.0" text="Lorem" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="86.0" />
               </children>
             </AnchorPane>
           </center>
@@ -55,9 +55,9 @@
           </left>
         </BorderPane>
         <Pane prefHeight="376.0" prefWidth="858.0" styleClass="bg" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="218.0" />
-        <SplitPane dividerPositions="0.5" focusTraversable="true" prefHeight="303.0" prefWidth="829.0" style="" AnchorPane.bottomAnchor="66.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="229.0">
+        <SplitPane fx:id="musicListsAnchorContainer" dividerPositions="0.5" focusTraversable="true" prefHeight="303.0" prefWidth="829.0" style="" AnchorPane.bottomAnchor="66.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="229.0">
           <items>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+            <AnchorPane id="musicListsAnchorContainer" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
               <children>
                 <TabPane fx:id="musicTabs" prefHeight="329.0" prefWidth="363.0" style="&#9;-fx-border-style: none;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                   <tabs>
