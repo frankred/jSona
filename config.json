@@ -1,7 +1,8 @@
 {
+  "ALLOW_JSONA_TO_OVERWRITE_ME": false,
   "PATH_TO_VLCJ": "D:/Program Files/VideoLAN/VLC",
   "MAX_SEARCH_RESULT_AMOUNT": 512,
-  "VOLUME": 85,
+  "VOLUME": 72,
   "FOLDERS": [
     "D:/media/musik"
   ],
@@ -15,11 +16,22 @@
   "PLAYBACK_MODE": "NORMAL",
   "RECENTLY_ADDED_UNITL_TIME_IN_DAYS": -7,
   "THEME": "grey",
-  "WINDOW_UNDECORATED": false,
-  "TITLE": "jSona - open source project by Frank Roth",
+  "TITLE": "jSona 1.0.5 | OpenSource Hell Ya!",
+  "HEIGHT": 600,
+  "WIDTH": 860,
   "MIN_HEIGHT": 600,
   "MIN_WIDTH": 720,
   "COLORIZE_ITEMS": false,
+  "FILEPATH_BASED_MUSIC_INFORMATIONS": [
+    {
+      "rule": "ROOT_SUBFOLDER_LEVEL_RULE",
+      "params": {
+        "PATTERN": "%ARTIST%",
+        "REPLACE_UNDERSCORES_WITH_SPACES": false,
+        "FOLDER_LEVEL": 1.0
+      }
+    }
+  ],
   "SCANNER_AND_TAGGER_LOGGING_GRANULARITY": 128,
   "HOTKEYS": [
     {
@@ -71,6 +83,7 @@
       "global": true
     }
   ],
+  "WINDOW_OS_DECORATION": false,
   "VOLUME_UP_DOWN_AMOUNT": 20,
   "VOLUME_SCROLL_UP_DOWN_AMOUNT": 5,
   "DURATION_ARROW_KEYS_SKIP_TIME": 10,

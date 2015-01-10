@@ -32,6 +32,7 @@ If you want to develop under a linux system you need to [recompile the OpenJDK](
 Here is an example of the default configuration file. You have to setup your **VLC path** correctly. If you use Java 32-bit/64-bit you also have to use VLC-32-bit/64-bit.
 ```json
 {
+  "ALLOW_JSONA_TO_OVERWRITE_ME": true,
   "PATH_TO_VLCJ": "D:/Program Files/VideoLAN/VLC",
   "MAX_SEARCH_RESULT_AMOUNT": 512,
   "VOLUME": 100,
@@ -52,7 +53,7 @@ Here is an example of the default configuration file. You have to setup your **V
   "RECENTLY_ADDED_UNITL_TIME_IN_DAYS": -7,
   "THEME": "grey",
   "KEY_SKIP_TIME": 10,
-  "WINDOW_UNDECORATED": true,
+  "WINDOW_OS_DECORATION": true,
   "TITLE": "jSona - open source project by Frank Roth",
   "MIN_HEIGHT": 600,
   "MIN_WIDTH": 720,
@@ -62,6 +63,9 @@ Here is an example of the default configuration file. You have to setup your **V
 ```
 
 And here an explanation of all possible attributes:
+
+#####ALLOW_JSONA_TO_OVERWRITE_ME
+If you set this value to true then jsona will overwrite your config.json with the current jSona config. For example if you change the volume in the player then the **VOLUME** value gets overwritten. There only a few configuration attributes that can be change during runtime (e.g.: PLAYBACK_MODE).  
 
 #####PATH_TO_VLCJ
 Path to your VLC root directory where the libvlc or libvlccore library is. (In windows the files are called libvlc.dll and libvlccore.dll). On a unix system, e.g. fedora the vlc libraries are under '/usr/lib64'.
@@ -90,13 +94,19 @@ Currently there is only one theme available: {"grey"}.
 #####KEY_SKIP_TIME
 If you change the duration slider with the help of the arrow keys(left or right) or hotkeys the slider rewind or skips 10 seconds.
 
-#####WINDOW_UNDECORATED
-If you set the value on **false** the normal OS look and feel will be used. If you set the value on **true** [in-sideFX Undecorator](https://github.com/in-sideFX/Undecorator) will be used to make the jSona window beautiful.
+#####WINDOW_OS_DECORATION
+If you set the value on **false** the normal OS window decoration will be used. If you set the value on **true** it has no os window decoration. It will look a little bit more beautiful!
 
 ![jSona screenshot - undecorated: false](https://dl.dropboxusercontent.com/u/3669658/github/jSona/jsona_undecorated_2.png "undecorated: false")
 
 #####TITLE
 Window title of jSona. Will only be displayed if the **WINDOW_UNDECORATED** property is set to **false**.
+
+#####HEIGHT
+Height of the window in pixels.
+
+#####WIDTH
+Width of the window in pixels.
 
 #####MIN_HEIGHT
 Minimum window height.
