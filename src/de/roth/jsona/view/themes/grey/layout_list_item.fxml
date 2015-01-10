@@ -17,7 +17,7 @@
       <center>
         <BorderPane prefHeight="-1.0" prefWidth="-1.0">
           <center>
-            <Label fx:id="title" alignment="CENTER_LEFT" contentDisplay="LEFT" ellipsisString="" focusTraversable="false" minWidth="0.0" prefHeight="-1.0" prefWidth="-1.0" text="" underline="false" wrapText="true" BorderPane.alignment="CENTER_LEFT">
+            <Label fx:id="title" alignment="CENTER_LEFT" contentDisplay="LEFT" ellipsisString="" focusTraversable="false" minWidth="0.0" prefHeight="-1.0" prefWidth="-1.0" text="" underline="false" wrapText="false" BorderPane.alignment="CENTER_LEFT">
               <font>
                 <Font size="11.0" />
               </font>
