@@ -1,6 +1,5 @@
 package de.roth.jsona.javafx.util;
 
-import insidefx.undecorator.Undecorator;
 
 import java.io.IOException;
 import java.net.URL;
@@ -8,7 +7,6 @@ import java.net.URL;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -46,12 +44,9 @@ public class DialogUtil {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 			return null;
-		}
+		};
 
-		Undecorator undecorator = new Undecorator(dialog, (Region) root);
-		undecorator.getStylesheets().add("insidefx/undecorator/undecorator.css");
-
-		Scene s = new Scene(undecorator);
+		Scene s = new Scene(root);
 		s.setFill(Color.TRANSPARENT);
 		dialog.setScene(s);
 		AlignmentUtil.center(parent, dialog);
