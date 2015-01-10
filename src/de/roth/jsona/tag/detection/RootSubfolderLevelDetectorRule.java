@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * This class is able to detect music informations with the help of the music
+ * This class is able to detect music information with the help of the music
  * files root folder and sub folders. E.g.: file is: 'C:\music\Backstreet
  * Boys\This Is Us\02 Bigger.mp3' and root is: 'C:\music'. a) If you choose
  * 'folder level 1' and pattern '%ARTIST%' 'Backstreet Boys' as the first sub
