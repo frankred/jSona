@@ -6,10 +6,9 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.SceneAntialiasing;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import de.roth.jsona.config.Config;
@@ -21,7 +20,7 @@ public class ViewManagerFX {
 	private static ViewManagerFX instance = new ViewManagerFX();
 	private ViewController controller;
 
-	public void init(Stage stage, LogicManagerFX logic, boolean undecorated) {
+	public void init(Stage stage, LogicManagerFX logic) {
 		try {
 			// setting min windows size
 			stage.setMinHeight(Config.getInstance().MIN_HEIGHT);
@@ -30,8 +29,11 @@ public class ViewManagerFX {
 			// setting application properties
 			stage.getIcons().add(new Image("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "icon.png"));
 			stage.setTitle(Config.getInstance().TITLE);
-			stage.initStyle(StageStyle.UNDECORATED);
 			
+			if (Config.getInstance().WINDOW_OS_DECORATION == false) {
+				stage.initStyle(StageStyle.UNDECORATED);
+			}
+
 			Platform.setImplicitExit(false);
 
 			// setting controller
@@ -39,34 +41,14 @@ public class ViewManagerFX {
 
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/de/roth/jsona/view/themes/" + Config.getInstance().THEME + "/" + "layout.fxml"));
 			loader.setController(this.controller);
+			Region region = (Region) loader.load();
 
+			Scene scene = new Scene((Parent) region, Config.getInstance().WIDTH, Config.getInstance().HEIGHT, true, SceneAntialiasing.DISABLED);
 			
-			Region x = (Region) loader.load();
-		
-			Scene scene = new Scene((Parent) x, 860, 600, true);
-			scene.setFill(Color.TRANSPARENT);
-			
-			
-//			if (undecorated) {
-//				Undecorator undecorator = new Undecorator(stage, x);
-//				undecorator.getStylesheets().add("insidefx/undecorator/undecorator.css");
-//				scene = new Scene(undecorator);
-//				scene.setFill(Color.TRANSPARENT);
-//				stage.initStyle(StageStyle.TRANSPARENT);
-//			} else {
-//				scene = new Scene(x, Color.TRANSPARENT);
-//				stage.initStyle(StageStyle.DECORATED);
-//			}
-			
-			Rectangle rect = new Rectangle(860,600);
-			rect.setArcHeight(8.0);
-			rect.setArcWidth(8.0);
-			scene.getRoot().setClip(rect);
-			
-			stage.initStyle(StageStyle.TRANSPARENT);
 			controller.setScene(scene);
 			stage.setScene(scene);
 			stage.show();
+
 			stage.setOnCloseRequest(new CloseEventHandler(logic));
 		} catch (IOException e) {
 			e.printStackTrace();
