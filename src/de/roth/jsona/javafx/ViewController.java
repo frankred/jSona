@@ -29,6 +29,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -106,7 +107,7 @@ public class ViewController implements Initializable, ViewInterface {
 	private BorderPane informationContainer;
 
 	@FXML
-	private SplitPane musicListsSplitPane;
+	private SplitPane musicListsAnchorContainer;
 
 	@FXML
 	private ProgressBar volumeProgress, durationProgress;
@@ -172,9 +173,29 @@ public class ViewController implements Initializable, ViewInterface {
 	private static double initY = -1;
 	private static double newX;
 	private static double newY;
+	private static Rectangle stageDimension = new Rectangle();
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+
+		// os window decoration
+		if (Config.getInstance().WINDOW_OS_DECORATION == true) {
+
+			// remove window controlling icons
+			Node[] items = { closeWindowIcon, maximizeWindowIcon, minimizeWindowIcon, resizer };
+
+			for (Node n : items) {
+				n.setManaged(false);
+				n.setVisible(false);
+			}
+
+			outerContainer.setTopAnchor(applicationContainer, (double) 0);
+			outerContainer.setRightAnchor(applicationContainer, (double) 0);
+			outerContainer.setBottomAnchor(applicationContainer, (double) 0);
+			outerContainer.setLeftAnchor(applicationContainer, (double) 0);
+
+		}
+
 		// Initialize view
 		this.playListViews = new ArrayList<ListView<MusicListItem>>();
 		this.musicFolderListViews = new HashMap<String, ListView<MusicListItem>>();
@@ -238,25 +259,27 @@ public class ViewController implements Initializable, ViewInterface {
 			stage.setY(preMaximizedPosition.getMinY());
 			stage.setWidth(preMaximizedPosition.getWidth());
 			stage.setHeight(preMaximizedPosition.getHeight());
-
 			this.maximizeWindowIcon.setImage(maximizeImage);
 
 		} else {
 			this.maximizeWindowIcon.setImage(reMaximizeImage);
-
 			preMaximizedPosition = new Rectangle2D(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
 			ObservableList<Screen> screens = Screen.getScreensForRectangle(new Rectangle2D(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight()));
+
 			Rectangle2D bounds = screens.get(0).getVisualBounds();
 			stage.setX(bounds.getMinX());
 			stage.setY(bounds.getMinY());
 			stage.setWidth(bounds.getWidth());
 			stage.setHeight(bounds.getHeight());
-		}
 
-		Rectangle rect = new Rectangle(stage.getWidth(), stage.getHeight());
-		rect.setArcHeight(8.0);
-		rect.setArcWidth(8.0);
-		scene.getRoot().setClip(rect);
+			setStageWidth(stage, stage.getWidth());
+			setStageHeight(stage, stage.getHeight());
+
+			stageDimension.setWidth(stage.getWidth());
+			stageDimension.setHeight(stage.getHeight());
+
+			scene.getRoot().setClip(stageDimension);
+		}
 	}
 
 	private void setVolumeFX(int value, boolean updateItself) {
@@ -277,7 +300,6 @@ public class ViewController implements Initializable, ViewInterface {
 	}
 
 	private void setPlayBackModeFX(PlayBackMode mode) {
-
 		switch (mode) {
 		case NORMAL:
 			modeButtonImage.setImage(modeNormalImage);
@@ -376,7 +398,6 @@ public class ViewController implements Initializable, ViewInterface {
 		this.modeNormalImage = new Image(themePath + "/" + "mode_normal.png");
 		this.modeShuffleImage = new Image(themePath + "/" + "mode_shuffle.png");
 		this.modeRepeatImage = new Image(themePath + "/" + "mode_repeat.png");
-
 		this.modeButtonImage.setImage(modeNormalImage);
 
 		if (logic.equalizer_available()) {
@@ -646,13 +667,20 @@ public class ViewController implements Initializable, ViewInterface {
 				public void handle(MouseEvent mouseEvent) {
 					initX = mouseEvent.getScreenX();
 					initY = mouseEvent.getScreenY();
+
 					mouseEvent.consume();
+					musicListsAnchorContainer.setVisible(false);
+					musicListsAnchorContainer.setManaged(false);
 				}
 			});
 			this.resizer.setOnMouseReleased(new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent mouseEvent) {
+
 					mouseEvent.consume();
+					musicListsAnchorContainer.setManaged(true);
+					musicListsAnchorContainer.setVisible(true);
+
 				}
 			});
 
@@ -667,10 +695,10 @@ public class ViewController implements Initializable, ViewInterface {
 					setStageWidth(stage, stage.getWidth() + deltax);
 					setStageHeight(stage, stage.getHeight() + deltay);
 
-					Rectangle rect = new Rectangle(stage.getWidth(), stage.getHeight());
-					rect.setArcHeight(8.0);
-					rect.setArcWidth(8.0);
-					scene.getRoot().setClip(rect);
+					stageDimension.setWidth(stage.getWidth());
+					stageDimension.setHeight(stage.getHeight());
+
+					scene.getRoot().setClip(stageDimension);
 
 					mouseEvent.consume();
 
@@ -797,7 +825,8 @@ public class ViewController implements Initializable, ViewInterface {
 		});
 
 		// Set version
-		artistBio.setText(MainFX.VERSION);
+		titleLabel.setText(MainFX.VERSION);
+		artistBio.setText("Java: " + System.getProperty("java.version") + "\n" + "JavaFX: " + com.sun.javafx.runtime.VersionInfo.getRuntimeVersion());
 	}
 
 	public void setPlaybackMode(final PlayBackMode mode) {
@@ -1397,10 +1426,11 @@ public class ViewController implements Initializable, ViewInterface {
 
 			// Filename
 			if (item.getArtist() == null) {
-				this.artist.setText("");	// visual layout bugfix only occurs in the caspain theme 
+				this.artist.setText(""); // visual layout bugfix only occurs in
+											// the caspain theme
 				this.artist.setManaged(false);
 				this.artist.setVisible(false);
-				
+
 				this.title.setText(item.getFile().getName());
 				this.title.setManaged(true);
 				this.title.setVisible(true);
@@ -1411,8 +1441,14 @@ public class ViewController implements Initializable, ViewInterface {
 			this.artist.setText(item.getArtist());
 			this.artist.setManaged(true);
 			this.artist.setVisible(true);
-			
-			
+
+			if (item.getTitle() == null) {
+				this.title.setText(" - " + item.getFile().getName());
+				this.title.setManaged(true);
+				this.title.setVisible(true);
+				return;
+			}
+
 			this.title.setText(" - " + item.getTitle());
 			this.title.setManaged(true);
 			this.title.setVisible(true);
