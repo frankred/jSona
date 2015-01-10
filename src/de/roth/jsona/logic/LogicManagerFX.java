@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -38,6 +40,7 @@ import com.tulskiy.keymaster.common.HotKey;
 import com.tulskiy.keymaster.common.HotKeyListener;
 import com.tulskiy.keymaster.common.Provider;
 
+import de.roth.jsona.MainFX;
 import de.roth.jsona.artist.JSonaArtist;
 import de.roth.jsona.config.Config;
 import de.roth.jsona.config.Global;
@@ -117,10 +120,6 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 		this.importTaggingExecutor = new ThreadPoolExecutor(2, 2, Integer.MAX_VALUE, TimeUnit.SECONDS, importTaggingWorksQueue);
 		this.importTaggingExecutor.allowCoreThreadTimeOut(false);
 
-		// Hotkeys
-		this.hotkeysProvider = Provider.getCurrentProvider(false);
-		this.hotkeysProvider.reset();
-
 		// Caches
 		this.artistsCache = new HashMap<String, JSonaArtist>();
 
@@ -140,16 +139,23 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 		ViewManagerFX.getInstance().getController().setVolume(Config.getInstance().VOLUME);
 		ViewManagerFX.getInstance().getController().setPlaybackMode(Config.getInstance().PLAYBACK_MODE);
 
+		MainFX.uiLoadingTimewatch.stop();
+		Logger.get().log(Level.INFO, "GUI loading time: " + MainFX.uiLoadingTimewatch.getTime() / 1000d + "s");
+
 		final LogicInterfaceFX logicInterface = this;
 		final HotKeyListener hotKeyListener = this;
 		final WatchDirListener watchDirListener = this;
 		final FileTaggerListener fileTaggerListener = this;
 		final FileScannerListener fileScannerListener = this;
 
-		// Register hotkeys and create some folders...
-		new Thread(new Runnable() {
-			@Override
+		// Register hotkeys and create some folders...(4s delay)
+		Timer hotkeysTimer = new Timer(true);
+		hotkeysTimer.schedule(new TimerTask() {
 			public void run() {
+				// Hotkeys
+				hotkeysProvider = Provider.getCurrentProvider(false);
+				hotkeysProvider.reset();
+
 				// Check required folders and files
 				checkInitFolder();
 
@@ -158,11 +164,11 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 					hotkeysProvider.register(c.getKeyStroke(), hotKeyListener);
 				}
 			}
-		}).start();
+		}, 0);
 
 		// All music folder depended operations: Scanning, Tagging etc...
-		new Thread(new Runnable() {
-			@Override
+		Timer scanningTimer = new Timer(true);
+		scanningTimer.schedule(new TimerTask() {
 			public void run() {
 				// Music folders
 				ArrayList<File> folders = Config.asFileArrayList(Config.getInstance().FOLDERS);
@@ -217,11 +223,11 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 					}
 				}
 			}
-		}).start();
+		}, 0);
 
 		// Loading artist cache
-		new Thread(new Runnable() {
-			@Override
+		Timer artistCacheTimer = new Timer(true);
+		artistCacheTimer.schedule(new TimerTask() {
 			public void run() {
 				// loading artists informations
 				File artistsJson = new File(Global.ARTISTS_JSON);
@@ -239,11 +245,11 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 					artistsCache = new HashMap<String, JSonaArtist>();
 				}
 			}
-		}).start();
+		}, 0);
 
 		// Loading playlists
-		new Thread(new Runnable() {
-			@Override
+		Timer playlistTimer = new Timer(true);
+		playlistTimer.schedule(new TimerTask() {
 			public void run() {
 				playLists = (ArrayList<PlayList>) SerializeManager.load(Global.PLAYLIST_LIST_DATA);
 				int activeIndex = 0;
@@ -273,7 +279,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 				}
 				ViewManagerFX.getInstance().getController().initPlaylists(logicInterface, playLists, activeIndex);
 			}
-		}).start();
+		}, 0);
 	}
 
 	/**
@@ -298,10 +304,12 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 		this.hotkeysProvider.reset();
 		this.hotkeysProvider.stop();
 
-		Logger.get().log(Level.INFO, "Saving current configuration to '" + Global.CONFIG_JSON + "'...");
-		Config.getInstance().toFile(Global.CONFIG_JSON);
+		if (Config.getInstance().ALLOW_JSONA_TO_OVERWRITE_ME) {
+			Logger.get().log(Level.INFO, "Saving current configuration to '" + Global.CONFIG_JSON + "'...");
+			Config.getInstance().toFile(Global.CONFIG_JSON);
+		}
 
-		Logger.get().log(Level.INFO, "Close jSona now! Bye Bye thank you for using jSona =) - by Frank Roth");
+		Logger.get().log(Level.INFO, "Close jSona now! Bye Bye thank you for using jSona =)");
 		System.exit(0);
 	}
 
@@ -541,10 +549,10 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 
 		// Add to new tab
 		ViewManagerFX.getInstance().getController().addMusicListItem(Global.NEW_FOLDER_NAME, null, item);
-		
+
 		// Recreate search
 		event_search_music(ViewManagerFX.getInstance().getController().getSearchText());
-		
+
 	}
 
 	@Override
@@ -568,18 +576,18 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 	@Override
 	public void fileModified(Path pathModified, Path pathToWatch) {
 		File f = pathModified.toFile();
-		
+
 		// Read from cache
 		MusicListItem item = DataManager.getInstance().get(f);
-		
+
 		if (item == null) {
 			return;
 		}
-		
+
 		if (f.isDirectory()) {
 			return;
 		}
-		
+
 		DataManager.getInstance().retag(item);
 		DataManager.getInstance().commit();
 
@@ -627,6 +635,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 	private void loadExternalInformation(MusicListItem item) {
 		// if no id3 tagged on this file!
 		if (item.getArtist() == null || item.getTitle() == null) {
+
 			ArrayList<FieldResult> results = DetectorRulesManager.getInstance().detect(item.getRootFolder(), item.getFile());
 
 			// if there are any solutions for filepath tagging
@@ -691,10 +700,10 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 	}
 
 	@Override
-    public void event_playbackmode_repeat() {
-        Config.getInstance().PLAYBACK_MODE = PlayBackMode.REPEAT;
-        Logger.get().log(Level.INFO, "Playback mode set to repeat.");
-    }
+	public void event_playbackmode_repeat() {
+		Config.getInstance().PLAYBACK_MODE = PlayBackMode.REPEAT;
+		Logger.get().log(Level.INFO, "Playback mode set to repeat.");
+	}
 
 	@Override
 	public void event_search_music(final String query) {
