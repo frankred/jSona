@@ -50,9 +50,7 @@ public class MainFX extends Application {
 		}
 
 		// Set vlcj path
-		// System.setProperty("jna.library.path", Config.getInstance().PATH_TO_VLCJ);
-		System.setProperty("jna.library.path", "C:\\Program Files (x86)\\VideoLAN\\VLC");
-
+		System.setProperty("jna.library.path", Config.getInstance().PATH_TO_VLCJ);
 
 		// Create Logic
 		LogicManagerFX logic = new LogicManagerFX();
