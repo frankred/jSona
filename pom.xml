@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.rothf</groupId>
+    <artifactId>de.rothf.jsona</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <repositories>
+        <repository>
+            <id>snapshots-repo</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+    </repositories>
+
+    <build>
+
+        <plugins>
+            <plugin>
+                <groupId>com.zenjava</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>8.1.2</version>
+                <configuration>
+                    <vendor>Frank Roth</vendor>
+                    <mainClass>de.roth.jsona.MainFX</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include> **/*.*</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+
+    <dependencies>
+        <!-- Play media files -->
+        <dependency>
+            <groupId>uk.co.caprica</groupId>
+            <artifactId>vlcj</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
+        <!-- Live Search -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>4.10.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analyzers-common</artifactId>
+            <version>4.10.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-queryparser</artifactId>
+            <version>4.10.3</version>
+        </dependency>
+
+        <!-- String similarity -->
+        <dependency>
+            <groupId>net.ricecode</groupId>
+            <artifactId>string-similarity</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <!-- JSON Reader/Writer -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
+        <!-- Global Hotkeys -->
+        <dependency>
+            <groupId>com.github.tulskiy</groupId>
+            <artifactId>jkeymaster</artifactId>
+            <version>1.2-SNAPSHOT</version>
+        </dependency>
+
+        <!-- ID3 Tags -->
+        <dependency>
+            <groupId>net.sf.javamusictag</groupId>
+            <artifactId>jid3lib</artifactId>
+            <version>0.5.4</version>
+        </dependency>
+
+        <!-- Util -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.3.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.8.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
+
+    </dependencies>
+</project>

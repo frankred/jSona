@@ -1,89 +1,21 @@
 {
   "ALLOW_JSONA_TO_OVERWRITE_ME": false,
-  "PATH_TO_VLCJ": "D:/Program Files/VideoLAN/VLC",
+  "PATH_TO_VLCJ": "C:\\Program Files (x86)\\VideoLAN\\VLC",
   "MAX_SEARCH_RESULT_AMOUNT": 512,
-  "VOLUME": 72,
-  "FOLDERS": [
-    "D:/media/musik"
-  ],
-  "INCLUDE_EXTENSIONS": [
-    ".mp3",
-    ".wav",
-    ".wma",
-    ".flc",
-    ".aac"
-  ],
+  "VOLUME": 80,
+  "FOLDERS": ["C:\\Users\\frank\\Downloads"],
   "PLAYBACK_MODE": "NORMAL",
   "RECENTLY_ADDED_UNITL_TIME_IN_DAYS": -7,
   "THEME": "grey",
-  "TITLE": "jSona 1.0.5 | OpenSource Hell Ya!",
+  "TITLE": "jSona 1.0.6 | OpenSource Hell Ya!",
   "HEIGHT": 600,
   "WIDTH": 860,
-  "MIN_HEIGHT": 600,
-  "MIN_WIDTH": 720,
-  "COLORIZE_ITEMS": false,
-  "FILEPATH_BASED_MUSIC_INFORMATIONS": [
-    {
-      "rule": "ROOT_SUBFOLDER_LEVEL_RULE",
-      "params": {
-        "PATTERN": "%ARTIST%",
-        "REPLACE_UNDERSCORES_WITH_SPACES": false,
-        "FOLDER_LEVEL": 1.0
-      }
-    }
-  ],
-  "SCANNER_AND_TAGGER_LOGGING_GRANULARITY": 128,
-  "HOTKEYS": [
-    {
-      "key": 107,
-      "event": "PLAYER_VOLUME_UP",
-      "global": true
-    },
-    {
-      "key": 109,
-      "event": "PLAYER_VOLUME_DOWN",
-      "global": true
-    },
-    {
-      "key": 19,
-      "event": "PLAYER_PLAY_PAUSE",
-      "global": true
-    },
-    {
-      "key": 49,
-      "modifiers": [
-        128
-      ],
-      "event": "VIEW_HIDE_SHOW",
-      "global": true
-    },
-    {
-      "key": 101,
-      "event": "PLAYER_PLAY_PAUSE",
-      "global": true
-    },
-    {
-      "key": 102,
-      "event": "PLAYER_NEXT",
-      "global": true
-    },
-    {
-      "key": 100,
-      "event": "PLAYER_PREVIOUS",
-      "global": true
-    },
-    {
-      "key": 104,
-      "event": "PLAYER_TIME_UP",
-      "global": true
-    },
-    {
-      "key": 98,
-      "event": "PLAYER_TIME_DOWN",
-      "global": true
-    }
-  ],
-  "WINDOW_OS_DECORATION": false,
+  "MIN_HEIGHT": 400,
+  "MIN_WIDTH": 600,
+  "COLORIZE_ITEMS": true,
+  "SCANNER_AND_TAGGER_LOGGING_GRANULARITY": 1,
+  "HOTKEYS": [],
+  "WINDOW_OS_DECORATION": true,
   "VOLUME_UP_DOWN_AMOUNT": 20,
   "VOLUME_SCROLL_UP_DOWN_AMOUNT": 5,
   "DURATION_ARROW_KEYS_SKIP_TIME": 10,
