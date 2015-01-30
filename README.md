@@ -16,7 +16,7 @@ You want **new features**? On the following page you can vote for and submit new
 [http://jsona.idea.informer.com](http://jsona.idea.informer.com)
 
 ##Download
-jSona has a dependency to to vlc 3.X. Currently you need to install vlc 3.X, which can only be found here: [vlc 3.X](http://nightlies.videolan.org/build/).
+jSona has a dependency to vlc 3.X. Currently you need to install vlc 3.X, which can only be found here: [vlc 3.X](http://nightlies.videolan.org/build/).
 * [Current version](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.5.jar)
 * [Version 1.0.5](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.5.jar)
 * [Version 1.0.4](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.4.jar)
