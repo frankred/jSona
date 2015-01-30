@@ -16,7 +16,7 @@ You want **new features**? On the following page you can vote for and submit new
 [http://jsona.idea.informer.com](http://jsona.idea.informer.com)
 
 ##Download
-jSona has a dependency to vlc 3.X. Currently you need to install vlc 3.X, which can only be found here: [vlc 3.X](http://nightlies.videolan.org/build/).
+jSona has a dependency to VLC3, which only can be found here: [http://nightlies.videolan.org/build/](http://nightlies.videolan.org/build/).
 * [Current version](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.5.jar)
 * [Version 1.0.5](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.5.jar)
 * [Version 1.0.4](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.4.jar)
@@ -69,7 +69,7 @@ And here an explanation of all possible attributes:
 If you set this value to true then jsona will overwrite your config.json with the current jSona config. For example if you change the volume in the player then the **VOLUME** value gets overwritten. There only a few configuration attributes that can be change during runtime (e.g.: PLAYBACK_MODE).  
 
 #####PATH_TO_VLCJ
-Path to your VLC root directory where the libvlc or libvlccore library is. (In windows the files are called libvlc.dll and libvlccore.dll). On a unix system, e.g. fedora the vlc libraries are under '/usr/lib64'. Currently you need to install vlc 3.X, which can be found here: [vlc 3.X](http://nightlies.videolan.org/build/).
+Path to your VLC root directory where the libvlc or libvlccore library is. (In windows the files are called libvlc.dll and libvlccore.dll). On a unix system, e.g. fedora the vlc libraries are under '/usr/lib64'. jSona has a dependency to VLC3, which only can be found here: [http://nightlies.videolan.org/build/](http://nightlies.videolan.org/build/).
 
 #####MAX_SEARCH_RESULT_AMOUNT
 Maximum search results of the lucene engine (smaller is faster)
