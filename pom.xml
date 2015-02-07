@@ -70,13 +70,6 @@
             <version>4.10.3</version>
         </dependency>
 
-        <!-- String similarity -->
-        <dependency>
-            <groupId>net.ricecode</groupId>
-            <artifactId>string-similarity</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
         <!-- JSON Reader/Writer -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
