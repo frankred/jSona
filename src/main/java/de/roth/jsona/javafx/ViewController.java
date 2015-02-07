@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.ResourceBundle;
 
+import de.roth.jsona.util.Logger;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -74,6 +75,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 
 import com.sun.media.jfxmedia.events.PlayerStateEvent.PlayerState;
@@ -1497,7 +1499,11 @@ public class ViewController implements Initializable, ViewInterface {
         }
     }
 
-    public void showInformations(final JSonaArtist artist, final MusicListItem item) {
+    public void showInformations(final MusicListItem item) {
+        showInformations(null, null, null, item);
+    }
+
+    public void showInformations(final String artistImagePath, final String artistWiki, final Collection<Track> artistTopTracks, final MusicListItem item) {
         Platform.runLater(new Runnable() {
             public void run() {
                 // Reset view
@@ -1536,8 +1542,10 @@ public class ViewController implements Initializable, ViewInterface {
                 titleLabel.setVisible(true);
 
                 // artist image found
-                if (artist != null && artist.getImageFilesystemPath() != null && !artist.getImageFilesystemPath().equals("")) {
-                    File f = new File(artist.getImageFilesystemPath());
+                if (StringUtils.isNotBlank(artistImagePath)) {
+                    Logger.get().info("Artist image path: " + artistImagePath);
+                    File f = new File(artistImagePath);
+
                     // image exists
                     if (f.exists()) {
                         try {
@@ -1555,26 +1563,25 @@ public class ViewController implements Initializable, ViewInterface {
                 }
 
                 // artist bio
-                if (artist != null && artist.getArtist() != null && artist.getArtist().getWikiSummary() != null) {
-                    String text = Jsoup.parse(artist.getArtist().getWikiSummary()).text();
-
+                if (StringUtils.isNotBlank(artistWiki)) {
+                    String text = Jsoup.parse(artistWiki).text();
                     artistBio.setText(text);
                     artistBio.setVisible(true);
                     artistBio.setManaged(true);
                 }
 
                 // Top tracks
-                if (artist != null && artist.getTopTracks() != null) {
+                if (artistTopTracks != null) {
                     topTracks.setVisible(true);
 
-                    Collection<Track> top = artist.getTopTracks();
+                    Collection<Track> top = artistTopTracks;
                     int trackCounter = 0;
 
                     for (final Track t : top) {
                         Hyperlink h = new Hyperlink(t.getName());
 
                         try {
-                            final String url = "http://www.youtube.com/results?search_query=" + URLEncoder.encode(artist.getArtist().getName() + " " + t.getName(), "UTF-8");
+                            final String url = "http://www.youtube.com/results?search_query=" + URLEncoder.encode(item.getArtist() + " " + t.getName(), "UTF-8");
                             h.setTooltip(new Tooltip(url));
 
                             h.setOnAction(new EventHandler<ActionEvent>() {

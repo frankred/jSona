@@ -7,12 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -20,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
+import de.umass.lastfm.Track;
 import javafx.concurrent.Task;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -137,9 +133,6 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
         ViewManagerFX.getInstance().getController().init(this, Config.getInstance().THEME);
         ViewManagerFX.getInstance().getController().setVolume(Config.getInstance().VOLUME);
         ViewManagerFX.getInstance().getController().setPlaybackMode(Config.getInstance().PLAYBACK_MODE);
-
-        MainFX.TIME_KEEPER.stop();
-        Logger.get().log(Level.INFO, "GUI loading time: " + MainFX.TIME_KEEPER.getTime() / 1000d + "s");
 
         final LogicInterfaceFX logicInterface = this;
         final HotKeyListener hotKeyListener = this;
@@ -694,7 +687,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
         JSonaArtist artist = this.artistsCache.get(item.getArtist());
 
         // Show informations immediately
-        ViewManagerFX.getInstance().getController().showInformations(null, item);
+        ViewManagerFX.getInstance().getController().showInformations(null, null, null, item);
 
         // Load external informations for this artist
         if (artist == null) {
@@ -704,7 +697,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
             // check if image still exists
             File f = new File(artist.getImageFilesystemPath());
             if (f.exists()) {
-                ViewManagerFX.getInstance().getController().showInformations(artist, item);
+                ViewManagerFX.getInstance().getController().showInformations(artist.getImageFilesystemPath(), artist.getArtist().getWikiSummary(), artist.getTopTracks(), item);
             } else {
                 new Thread(new ExternalInformationsThread(httpClient, item, ImageType.ARTIST, this, artistsCache)).start();
             }
@@ -836,10 +829,17 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
     }
 
     @Override
-    public void artistInformationsReady(MusicListItem item, JSonaArtist artist) {
+    public void artistInformationsReady(MusicListItem item) {
+        if (this.mediaPlayerManager.getItem() == item) {
+            ViewManagerFX.getInstance().getController().showInformations(item);
+        }
+    }
+
+    @Override
+    public void artistInformationsReady(MusicListItem item, String artistImagePath, String artistWiki, Collection<Track> artistTopTracks) {
         // download is ready but is the song still the same?
         if (this.mediaPlayerManager.getItem() == item) {
-            ViewManagerFX.getInstance().getController().showInformations(artist, item);
+            ViewManagerFX.getInstance().getController().showInformations(artistImagePath, artistWiki, artistTopTracks, item);
         }
     }
 
@@ -1017,4 +1017,5 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
     public boolean equalizer_available() {
         return this.mediaPlayerManager.isEqualizerAvailable();
     }
+
 }

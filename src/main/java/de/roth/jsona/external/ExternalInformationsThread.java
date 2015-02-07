@@ -32,6 +32,6 @@ public class ExternalInformationsThread implements Runnable {
 
 	@Override
 	public void run() {
-		ExternalInformations.getInstance().collectArtistInformations(item, client, type, l, cachedArtists);
+		ExternalInformationFetcher.getInstance().collectArtistInformations(item, client, type, l, cachedArtists);
 	}
 }
