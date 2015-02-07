@@ -4,17 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.ResourceBundle;
+import java.util.*;
 
+import de.roth.jsona.information.Link;
 import de.roth.jsona.util.Logger;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -93,7 +87,6 @@ import de.roth.jsona.model.MusicListItem;
 import de.roth.jsona.model.MusicListItem.Status;
 import de.roth.jsona.model.PlayList;
 import de.roth.jsona.util.TimeFormatter;
-import de.umass.lastfm.Track;
 
 public class ViewController implements Initializable, ViewInterface {
 
@@ -1444,7 +1437,7 @@ public class ViewController implements Initializable, ViewInterface {
                 return;
             }
 
-            // Use artist
+            // Use information
             this.artist.setText(item.getArtist());
             this.artist.setManaged(true);
             this.artist.setVisible(true);
@@ -1498,11 +1491,11 @@ public class ViewController implements Initializable, ViewInterface {
         }
     }
 
-    public void showInformations(final MusicListItem item) {
-        showInformations(null, null, null, item);
+    public void showInformation(final MusicListItem item) {
+        showInformation(null, null, null, item);
     }
 
-    public void showInformations(final String artistImagePath, final String artistWiki, final Collection<Track> artistTopTracks, final MusicListItem item) {
+    public void showInformation(final String artistImagePath, final String artistWiki, final List<Link> links, final MusicListItem item) {
         Platform.runLater(new Runnable() {
             public void run() {
                 // Reset view
@@ -1523,7 +1516,7 @@ public class ViewController implements Initializable, ViewInterface {
                 titleLabel.setVisible(false);
                 titleLabel.setManaged(false);
 
-                // no artist
+                // no information
                 if (item.getArtist() == null) {
                     artistLabel.setText(item.getFile().getName());
                     artistLabel.setManaged(true);
@@ -1540,7 +1533,7 @@ public class ViewController implements Initializable, ViewInterface {
                 titleLabel.setManaged(true);
                 titleLabel.setVisible(true);
 
-                // artist image found
+                // information image found
                 if (StringUtils.isNotBlank(artistImagePath)) {
                     Logger.get().info("Artist image path: " + artistImagePath);
                     File f = new File(artistImagePath);
@@ -1561,7 +1554,7 @@ public class ViewController implements Initializable, ViewInterface {
                     }
                 }
 
-                // artist bio
+                // information bio
                 if (StringUtils.isNotBlank(artistWiki)) {
                     String text = Jsoup.parse(artistWiki).text();
                     artistBio.setText(text);
@@ -1570,37 +1563,34 @@ public class ViewController implements Initializable, ViewInterface {
                 }
 
                 // Top tracks
-                if (artistTopTracks != null) {
+                if (links != null) {
                     topTracks.setVisible(true);
 
-                    Collection<Track> top = artistTopTracks;
                     int trackCounter = 0;
 
-                    for (final Track t : top) {
-                        Hyperlink h = new Hyperlink(t.getName());
+                    for (Link link : links) {
+                        Hyperlink h = new Hyperlink(link.getText());
 
-                        try {
-                            final String url = "http://www.youtube.com/results?search_query=" + URLEncoder.encode(item.getArtist() + " " + t.getName(), "UTF-8");
-                            h.setTooltip(new Tooltip(url));
 
-                            h.setOnAction(new EventHandler<ActionEvent>() {
-                                @Override
-                                public void handle(ActionEvent e) {
-                                    try {
-                                        BrowserUtil.openWebpage(new URL(url));
-                                    } catch (MalformedURLException e1) {
-                                        e1.printStackTrace();
-                                    }
+                        final String url = link.getHref();
+                        h.setTooltip(new Tooltip(url));
+
+                        h.setOnAction(new EventHandler<ActionEvent>() {
+                            @Override
+                            public void handle(ActionEvent e) {
+                                try {
+                                    BrowserUtil.openWebpage(new URL(url));
+                                } catch (MalformedURLException e1) {
+                                    e1.printStackTrace();
                                 }
-                            });
-                            topTracks.getChildren().add(h);
-                            ++trackCounter;
-                            if (trackCounter == 32) {
-                                break;
                             }
-                        } catch (UnsupportedEncodingException e1) {
-                            e1.printStackTrace();
+                        });
+                        topTracks.getChildren().add(h);
+                        ++trackCounter;
+                        if (trackCounter == 32) {
+                            break;
                         }
+
                     }
                 }
             }

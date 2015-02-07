@@ -1,48 +1,19 @@
 package de.roth.jsona.logic;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
-
-import de.umass.lastfm.Track;
-import javafx.concurrent.Task;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.ScoreDoc;
-
-import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
-import uk.co.caprica.vlcj.player.MediaPlayer;
-import uk.co.caprica.vlcj.player.MediaPlayerEventListener;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sun.media.jfxmedia.events.PlayerStateEvent.PlayerState;
 import com.tulskiy.keymaster.common.HotKey;
 import com.tulskiy.keymaster.common.HotKeyListener;
 import com.tulskiy.keymaster.common.Provider;
-
-import de.roth.jsona.MainFX;
-import de.roth.jsona.artist.JSonaArtist;
+import de.roth.jsona.api.youtube.YoutubeAPI;
+import de.roth.jsona.information.Information;
+import de.roth.jsona.information.Link;
 import de.roth.jsona.config.Config;
 import de.roth.jsona.config.Global;
 import de.roth.jsona.database.DataManager;
 import de.roth.jsona.database.LuceneManager;
-import de.roth.jsona.external.ExternalInformationsListener;
+import de.roth.jsona.external.ExternalArtistInformationListener;
 import de.roth.jsona.external.ExternalInformationsThread;
 import de.roth.jsona.file.FileScanner;
 import de.roth.jsona.file.FileScannerListener;
@@ -64,6 +35,27 @@ import de.roth.jsona.util.Logger;
 import de.roth.jsona.util.NumberUtil;
 import de.roth.jsona.util.SerializeManager;
 import de.roth.jsona.util.TimeFormatter;
+import de.umass.lastfm.Track;
+import javafx.concurrent.Task;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.ScoreDoc;
+import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
+import uk.co.caprica.vlcj.player.MediaPlayer;
+import uk.co.caprica.vlcj.player.MediaPlayerEventListener;
+
+import java.io.*;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 
 /**
  * Core class of the jSona, where everything comes together. This class
@@ -71,7 +63,7 @@ import de.roth.jsona.util.TimeFormatter;
  *
  * @author Frank Roth
  */
-public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListener, FileScannerListener, FileTaggerListener, WatchDirListener, ExternalInformationsListener, HotKeyListener {
+public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListener, FileScannerListener, FileTaggerListener, WatchDirListener, ExternalArtistInformationListener, HotKeyListener {
 
     // Model
     private ArrayList<MusicListItem> newList;
@@ -91,7 +83,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
     private Provider hotkeysProvider;
 
     // Caches
-    private HashMap<String, JSonaArtist> artistsCache;
+    private HashMap<String, Information> informationCache;
 
     // Tmp
     private int folderTaggedAmount;
@@ -116,7 +108,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
         this.importTaggingExecutor.allowCoreThreadTimeOut(false);
 
         // Caches
-        this.artistsCache = new HashMap<String, JSonaArtist>();
+        this.informationCache = new HashMap<String, Information>();
 
         // Tmp
         this.folderTaggedAmount = 0;
@@ -222,7 +214,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
             }
         }, 0);
 
-        // Loading artist cache
+        // Loading information cache
         Timer artistCacheTimer = new Timer(true);
         artistCacheTimer.schedule(new TimerTask() {
             public void run() {
@@ -232,14 +224,14 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
                     Gson gson = new Gson();
                     try {
                         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(artistsJson)));
-                        artistsCache = gson.fromJson(reader, new TypeToken<HashMap<String, JSonaArtist>>() {
+                        informationCache = gson.fromJson(reader, new TypeToken<HashMap<String, Information>>() {
                         }.getType());
                     } catch (FileNotFoundException e1) {
                         e1.printStackTrace();
                     }
                 } else {
                     // no jsona cache file found, create new cache
-                    artistsCache = new HashMap<String, JSonaArtist>();
+                    informationCache = new HashMap<String, Information>();
                 }
             }
         }, 0);
@@ -683,23 +675,23 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
             }
         }
 
-        // Load artist informations from artist cache
-        JSonaArtist artist = this.artistsCache.get(item.getArtist());
+        // Load information informations from information cache
+        Information information = this.informationCache.get(item.getArtist());
 
         // Show informations immediately
-        ViewManagerFX.getInstance().getController().showInformations(null, null, null, item);
+        ViewManagerFX.getInstance().getController().showInformation(item);
 
-        // Load external informations for this artist
-        if (artist == null) {
+        // Load external informations for this information
+        if (information == null) {
             // load external informations
-            new Thread(new ExternalInformationsThread(httpClient, item, ImageType.ARTIST, this, artistsCache)).start();
+            new Thread(new ExternalInformationsThread(httpClient, item, ImageType.ARTIST, this, informationCache)).start();
         } else {
             // check if image still exists
-            File f = new File(artist.getImageFilesystemPath());
+            File f = new File(information.getImagePath());
             if (f.exists()) {
-                ViewManagerFX.getInstance().getController().showInformations(artist.getImageFilesystemPath(), artist.getArtist().getWikiSummary(), artist.getTopTracks(), item);
+                ViewManagerFX.getInstance().getController().showInformation(information.getImagePath(), information.getArtist().getWikiSummary(), information.getLinks(), item);
             } else {
-                new Thread(new ExternalInformationsThread(httpClient, item, ImageType.ARTIST, this, artistsCache)).start();
+                new Thread(new ExternalInformationsThread(httpClient, item, ImageType.ARTIST, this, informationCache)).start();
             }
         }
     }
@@ -829,18 +821,33 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
     }
 
     @Override
-    public void artistInformationsReady(MusicListItem item) {
+    public void ready(MusicListItem item) {
         if (this.mediaPlayerManager.getItem() == item) {
-            ViewManagerFX.getInstance().getController().showInformations(item);
+            ViewManagerFX.getInstance().getController().showInformation(item);
         }
     }
 
     @Override
-    public void artistInformationsReady(MusicListItem item, String artistImagePath, String artistWiki, Collection<Track> artistTopTracks) {
+    public void ready(MusicListItem item, String artistImagePath, String artistWiki, Collection<Track> artistTopTracks) {
         // download is ready but is the song still the same?
         if (this.mediaPlayerManager.getItem() == item) {
-            ViewManagerFX.getInstance().getController().showInformations(artistImagePath, artistWiki, artistTopTracks, item);
+            showArtistInformation(artistImagePath, artistWiki, artistTopTracks, item);
         }
+    }
+
+    private void showArtistInformation(String artistImagePath, String artistWiki, Collection<Track> artistTopTracks, MusicListItem item) {
+        List<Link> links = new ArrayList<Link>();
+
+        if (artistTopTracks == null) {
+            ViewManagerFX.getInstance().getController().showInformation(artistImagePath, artistWiki, null, item);
+            return;
+        }
+
+        for (Track track : artistTopTracks) {
+            links.add(new Link(YoutubeAPI.getSearchQueryUrl(track.getArtist() + " " + track.getName()), track.getName()));
+        }
+
+        ViewManagerFX.getInstance().getController().showInformation(artistImagePath, artistWiki, links, item);
     }
 
     @Override
