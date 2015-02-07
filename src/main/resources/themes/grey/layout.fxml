@@ -105,12 +105,16 @@
         </StackPane>
         <StackPane prefWidth="378.0" styleClass="sliderProgress" AnchorPane.bottomAnchor="28.0" AnchorPane.leftAnchor="358.0" AnchorPane.rightAnchor="121.0">
           <children>
-            <AnchorPane minHeight="6.0" prefHeight="6.0" prefWidth="-1.0" StackPane.alignment="CENTER">
-              <children>
-                <ProgressBar fx:id="durationProgress" minHeight="6.0" prefHeight="6.0" progress="0.0" styleClass="durationProgress" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="4.0" />
-              </children>
-            </AnchorPane>
-            <Slider fx:id="durationSlider" showTickLabels="false" showTickMarks="false" snapToTicks="false" StackPane.alignment="CENTER" />
+            <ProgressBar fx:id="durationProgress" maxWidth="1.7976931348623157E308" minHeight="10.0" prefHeight="10.0" prefWidth="-1.0" progress="0.0" style="-fx-background-radius: 10;" styleClass="durationProgress">
+              <StackPane.margin>
+                <Insets left="6.0" right="6.0" />
+              </StackPane.margin>
+            </ProgressBar>
+            <Slider fx:id="durationSlider" showTickLabels="false" showTickMarks="false" snapToTicks="false" StackPane.alignment="CENTER">
+              <StackPane.margin>
+                <Insets />
+              </StackPane.margin>
+            </Slider>
           </children>
         </StackPane>
         <Button fx:id="modeButton" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" style="-fx-background-radius: 80 80 80 80;&#10;-fx-focus-color: transparent;" text="" AnchorPane.bottomAnchor="19.0" AnchorPane.rightAnchor="15.0">

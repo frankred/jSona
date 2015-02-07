@@ -387,29 +387,29 @@ public class ViewController implements Initializable, ViewInterface {
         ClassLoader cl = getClass().getClassLoader();
 
         // Images
-        this.playImage = new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "play.png"));
-        this.pauseImage = new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "pause.png"));
+        this.playImage = new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "/play.png"));
+        this.pauseImage = new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "/pause.png"));
         this.playButtonImage.setImage(playImage);
-        this.nextButtonImage.setImage(new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "next.png")));
-        this.prevButtonImage.setImage(new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "prev.png")));
-        this.artistImage.setImage(new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "icon.png")));
-        this.maximizeImage = new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "maximize_window.png"));
-        this.reMaximizeImage = new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "remaximize_window.png"));
-        this.modeNormalImage = new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "mode_normal.png"));
-        this.modeShuffleImage = new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "mode_shuffle.png"));
-        this.modeRepeatImage = new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "mode_repeat.png"));
+        this.nextButtonImage.setImage(new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "/next.png")));
+        this.prevButtonImage.setImage(new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "/prev.png")));
+        this.artistImage.setImage(new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "/icon.png")));
+        this.maximizeImage = new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "/maximize_window.png"));
+        this.reMaximizeImage = new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "/remaximize_window.png"));
+        this.modeNormalImage = new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "/mode_normal.png"));
+        this.modeShuffleImage = new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "/mode_shuffle.png"));
+        this.modeRepeatImage = new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "/mode_repeat.png"));
         this.modeButtonImage.setImage(modeNormalImage);
 
         if (logic.equalizer_available()) {
-            this.equalizerIcon.setImage(new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "equalizer.png")));
+            this.equalizerIcon.setImage(new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "/equalizer.png")));
         } else {
             this.equalizerIcon.setImage(null);
             this.equalizerIcon.setDisable(true);
         }
 
         // Font
-        if (new File(ViewManagerFX.THEME + "jsona.otf").exists()) {
-            Font.loadFont(getClass().getClassLoader().getResource(ViewManagerFX.THEME + "jsona.otf").toExternalForm(), 10);
+        if (new File(ViewManagerFX.THEME + "/jsona.otf").exists()) {
+            Font.loadFont(getClass().getClassLoader().getResource(ViewManagerFX.THEME + "/jsona.otf").toExternalForm(), 10);
         }
 
         this.maximizeWindowIcon.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -482,7 +482,7 @@ public class ViewController implements Initializable, ViewInterface {
         removePlaylistButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                final Stage dialog = DialogUtil.createDialog(stage, getClass().getClassLoader().getResource(ViewManagerFX.THEME + "layout_confirm_dialog.fxml"), false);
+                final Stage dialog = DialogUtil.createDialog(stage, getClass().getClassLoader().getResource(ViewManagerFX.THEME + "/layout_confirm_dialog.fxml"), false);
                 Pane root = (Pane) dialog.getScene().getRoot();
 
                 Button ok = (Button) root.lookup("#okButton");
@@ -729,7 +729,7 @@ public class ViewController implements Initializable, ViewInterface {
             public void handle(MouseEvent m) {
                 // Create equalizer dialog once
                 if (equalizerStage == null) {
-                    equalizerStage = DialogUtil.createDialog(stage, getClass().getClassLoader().getResource(ViewManagerFX.THEME + "layout_equalizer.fxml"), false);
+                    equalizerStage = DialogUtil.createDialog(stage, getClass().getClassLoader().getResource(ViewManagerFX.THEME + "/layout_equalizer.fxml"), false);
                     Pane root = (Pane) equalizerStage.getScene().getRoot();
                     final GridPane gridPane = (GridPane) root.lookup("#equalizerSliderGridPane");
                     final CheckBox equalizerOnOffCheckbox = (CheckBox) root.lookup("#equalizerOnOffCheckbox");
@@ -997,7 +997,7 @@ public class ViewController implements Initializable, ViewInterface {
                 tab.setId(id);
                 AnchorPane loadingPane = null;
                 try {
-                    loadingPane = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ViewManagerFX.THEME + "layout_music_folder_loading.fxml"));
+                    loadingPane = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ViewManagerFX.THEME + "/layout_music_folder_loading.fxml"));
                 } catch (IOException e) {
                     e.printStackTrace();
                     return;
@@ -1023,7 +1023,7 @@ public class ViewController implements Initializable, ViewInterface {
                 tab.setId(id);
                 AnchorPane musicPane = null;
                 try {
-                    musicPane = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ViewManagerFX.THEME + "layout_list.fxml"));
+                    musicPane = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ViewManagerFX.THEME + "/layout_list.fxml"));
                 } catch (IOException e) {
                     e.printStackTrace();
                     return;
@@ -1043,7 +1043,7 @@ public class ViewController implements Initializable, ViewInterface {
             public void run() {
                 AnchorPane listPane = null;
                 try {
-                    listPane = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ViewManagerFX.THEME + "layout_list.fxml"));
+                    listPane = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ViewManagerFX.THEME + "/layout_list.fxml"));
                     musicFolderTabs.get(id).setContent(listPane);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -1100,7 +1100,7 @@ public class ViewController implements Initializable, ViewInterface {
         // get layout
         AnchorPane listPane = null;
         try {
-            listPane = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ViewManagerFX.THEME + "layout_list.fxml"));
+            listPane = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ViewManagerFX.THEME + "/layout_list.fxml"));
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -1360,7 +1360,7 @@ public class ViewController implements Initializable, ViewInterface {
 
         public void initCellLayout() {
             try {
-                this.listItem = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ViewManagerFX.THEME + "layout_list_item.fxml"));
+                this.listItem = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ViewManagerFX.THEME + "/layout_list_item.fxml"));
             } catch (Exception e) {
                 e.printStackTrace();
             }
