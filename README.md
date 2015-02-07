@@ -24,7 +24,7 @@ jSona has a dependency to VLC3, which only can be found here: [http://nightlies.
 * [Version 1.0.2](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.2.zip)
 * [Version 1.0.1](https://dl.dropboxusercontent.com/u/3669658/github/jsona/binary/jSona-1.0.1.zip)
 * [Version 1.0.0](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.0.zip)
-* 
+
 ###Install VLC3 on Ubuntu
 ```sudo add-apt-repository ppa:videolan/master-daily```
 ```sudo apt-get update```
