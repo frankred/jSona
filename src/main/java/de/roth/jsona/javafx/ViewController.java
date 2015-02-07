@@ -75,13 +75,12 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 
 import com.sun.media.jfxmedia.events.PlayerStateEvent.PlayerState;
 
 import de.roth.jsona.MainFX;
-import de.roth.jsona.artist.JSonaArtist;
 import de.roth.jsona.config.Config;
 import de.roth.jsona.config.Global;
 import de.roth.jsona.javafx.draghandler.ListItemDragHandler;
