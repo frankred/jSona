@@ -124,7 +124,7 @@ Minimum window width.
 
 #####COLORIZE_ITEMS
 If the value is set to **true** the same music items will be displayed with a different smooth background color. If the value is set to **false** then the default JavaFX list background will be used (see screenshot above).
-s
+
 ![jSona screenshot](https://dl.dropboxusercontent.com/u/3669658/github/jSona/jsona_colorized_items.png "You Got Rick Rolled!")
 
 #####FILEPATH_BASED_MUSIC_INFORMATIONS
@@ -164,15 +164,15 @@ With the follwing rules you can match the genre (%GENRE%), the artist (%ARTIST%)
         "REPLACE_UNDERSCORES_WITH_SPACES": false,
         "FOLDER_LEVEL": 2
       }
-    } 
-  {
+    }, 
+    {
       "rule": "ROOT_SUBFOLDER_LEVEL_RULE",
       "params": {
         "PATTERN": "%ALBUM%",
         "REPLACE_UNDERSCORES_WITH_SPACES": false,
         "FOLDER_LEVEL": 3
       }
-    }    
+    },    
     {
       "rule": "FILENAME_RULE",
       "params": {
