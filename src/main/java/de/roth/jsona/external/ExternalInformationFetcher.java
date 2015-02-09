@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 import de.roth.jsona.api.google.images.GoogleImageAPI;
+import de.roth.jsona.information.ArtistCacheInformation;
 import net.ricecode.similarity.JaroWinklerStrategy;
 import net.ricecode.similarity.StringSimilarityService;
 import net.ricecode.similarity.StringSimilarityServiceImpl;
@@ -18,7 +19,6 @@ import com.google.gson.GsonBuilder;
 
 import de.roth.jsona.api.musicbrainz.Musicbrainz;
 import de.roth.jsona.api.musicbrainz.MusicbrainzSearchResult;
-import de.roth.jsona.information.Information;
 import de.roth.jsona.config.Global;
 import de.roth.jsona.http.HttpClientHelper;
 import de.roth.jsona.http.ImageType;
@@ -55,7 +55,7 @@ public class ExternalInformationFetcher {
         }
 
         Logger.get().log(Level.INFO, "Image downloaded from last.fm for information '" + artist.getName() + "' to the file '" + artistImageFilePath + "'.");
-        externalArtistInformationListener.ready(item, artistImageFilePath, artist.getWikiSummary(), null);
+        externalArtistInformationListener.ready(item, new ArtistCacheInformation(artist, artistImageFilePath, null));
     }
 
     private Collection<Track> getLastFMTopTracks(String artistQuery) {
@@ -72,9 +72,10 @@ public class ExternalInformationFetcher {
         return Global.ARTIST_IMAGE_FOLDER + File.separator + Base64.getEncoder().encodeToString(artist.getName().getBytes());
     }
 
-    public void collectArtistInformations(MusicListItem item, HttpClient client, ImageType type, ExternalArtistInformationListener externalArtistInformationListener, HashMap<String, Information> artistsCache) {
+    public void collectArtistInformations(MusicListItem item, HttpClient client, ImageType type, ExternalArtistInformationListener externalArtistInformationListener, HashMap<String, ArtistCacheInformation> artistsCache) {
 
         if (item.getArtist() == null) {
+            saveInformationToCache(item, new ArtistCacheInformation(), artistsCache);
             return;
         }
 
@@ -94,8 +95,12 @@ public class ExternalInformationFetcher {
             artist = searchArtistWithLastFMCorrection(item.getArtist(), client);
         }
 
+        ArtistCacheInformation artistCacheInformation = null;
+
         // No information found...exit
         if (artist == null) {
+            artistCacheInformation = new ArtistCacheInformation();
+            saveInformationToCache(item, artistCacheInformation, artistsCache);
             return;
         }
 
@@ -104,22 +109,23 @@ public class ExternalInformationFetcher {
 
         // Image found -> Download image and refresh view
         if (StringUtils.isNotBlank(artistImageUrl)) {
-            if (StringUtils.isNotEmpty(artistImageUrl)) {
-                createFolderIfNotExists(Global.ARTIST_IMAGE_FOLDER);
-                artistImageFilePath = getArtistImageFilePath(artist);
-                downloadAndShowArtistInformation(item, artist, artistImageUrl, artistImageFilePath, client, externalArtistInformationListener);
-            }
+            createFolderIfNotExists(Global.ARTIST_IMAGE_FOLDER);
+            artistImageFilePath = getArtistImageFilePath(artist);
+            downloadAndShowArtistInformation(item, artist, artistImageUrl, artistImageFilePath, client, externalArtistInformationListener);
+            artistCacheInformation = new ArtistCacheInformation(artist, artistImageFilePath);
+            saveInformationToCache(item, artistCacheInformation , artistsCache);
         }
 
         // Top Tracks
         Collection<Track> artistTopTracks = getLastFMTopTracks(artist.getName());
-
         if (artistTopTracks != null && artistTopTracks.size() > 0) {
-            externalArtistInformationListener.ready(item, artistImageFilePath, artist.getWikiSummary(), artistTopTracks);
+            artistCacheInformation = new ArtistCacheInformation(artist, artistImageFilePath, artistTopTracks);
+            externalArtistInformationListener.ready(item, artistCacheInformation);
+            saveInformationToCache(item, artistCacheInformation, artistsCache);
         }
     }
 
-    private void saveInformationToCache(MusicListItem item, Information cachableArtist, HashMap<String, Information> informationCache) {
+    private void saveInformationToCache(MusicListItem item, ArtistCacheInformation cachableArtist, HashMap<String, ArtistCacheInformation> informationCache) {
         informationCache.put(item.getArtist(), cachableArtist);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String artistsJson = gson.toJson(informationCache);
@@ -172,7 +178,7 @@ public class ExternalInformationFetcher {
     private Artist searchArtistOnLastFMInfo(String artistQuery) {
         Artist foundArtist = Artist.getInfo(artistQuery, Global.LASTFM_API_KEY);
 
-        if(foundArtist == null){
+        if (foundArtist == null) {
             return null;
         }
 

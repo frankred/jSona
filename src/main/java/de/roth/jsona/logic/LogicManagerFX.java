@@ -7,7 +7,7 @@ import com.tulskiy.keymaster.common.HotKey;
 import com.tulskiy.keymaster.common.HotKeyListener;
 import com.tulskiy.keymaster.common.Provider;
 import de.roth.jsona.api.youtube.YoutubeAPI;
-import de.roth.jsona.information.Information;
+import de.roth.jsona.information.ArtistCacheInformation;
 import de.roth.jsona.information.Link;
 import de.roth.jsona.config.Config;
 import de.roth.jsona.config.Global;
@@ -83,7 +83,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
     private Provider hotkeysProvider;
 
     // Caches
-    private HashMap<String, Information> informationCache;
+    private HashMap<String, ArtistCacheInformation> informationCache;
 
     // Tmp
     private int folderTaggedAmount;
@@ -108,7 +108,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
         this.importTaggingExecutor.allowCoreThreadTimeOut(false);
 
         // Caches
-        this.informationCache = new HashMap<String, Information>();
+        this.informationCache = new HashMap<String, ArtistCacheInformation>();
 
         // Tmp
         this.folderTaggedAmount = 0;
@@ -224,14 +224,14 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
                     Gson gson = new Gson();
                     try {
                         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(artistsJson)));
-                        informationCache = gson.fromJson(reader, new TypeToken<HashMap<String, Information>>() {
+                        informationCache = gson.fromJson(reader, new TypeToken<HashMap<String, ArtistCacheInformation>>() {
                         }.getType());
                     } catch (FileNotFoundException e1) {
                         e1.printStackTrace();
                     }
                 } else {
                     // no jsona cache file found, create new cache
-                    informationCache = new HashMap<String, Information>();
+                    informationCache = new HashMap<String, ArtistCacheInformation>();
                 }
             }
         }, 0);
@@ -675,25 +675,27 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
             }
         }
 
-        // Load information informations from information cache
-        Information information = this.informationCache.get(item.getArtist());
-
-        // Show informations immediately
+        // Show information immediately
+        showArtistInformation(item);
         ViewManagerFX.getInstance().getController().showInformation(item);
 
-        // Load external informations for this information
-        if (information == null) {
-            // load external informations
-            new Thread(new ExternalInformationsThread(httpClient, item, ImageType.ARTIST, this, informationCache)).start();
-        } else {
-            // check if image still exists
-            File f = new File(information.getImagePath());
-            if (f.exists()) {
-                ViewManagerFX.getInstance().getController().showInformation(information.getImagePath(), information.getArtist().getWikiSummary(), information.getLinks(), item);
-            } else {
-                new Thread(new ExternalInformationsThread(httpClient, item, ImageType.ARTIST, this, informationCache)).start();
-            }
+        // Load information informations from information cache
+        ArtistCacheInformation artistCacheInformation = this.informationCache.get(item.getArtist());
+
+        // Load external artist information
+        if (artistCacheInformation == null) {
+            loadArtistInformation(item);
+            return;
         }
+
+        showArtistInformation(artistCacheInformation, item);
+
+
+        loadArtistInformation(item);
+    }
+
+    private void loadArtistInformation(MusicListItem item) {
+        new Thread(new ExternalInformationsThread(httpClient, item, ImageType.ARTIST, this, informationCache)).start();
     }
 
     @Override
@@ -828,26 +830,34 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
     }
 
     @Override
-    public void ready(MusicListItem item, String artistImagePath, String artistWiki, Collection<Track> artistTopTracks) {
+    public void ready(MusicListItem item, ArtistCacheInformation artistInformation) {
         // download is ready but is the song still the same?
         if (this.mediaPlayerManager.getItem() == item) {
-            showArtistInformation(artistImagePath, artistWiki, artistTopTracks, item);
+            showArtistInformation(artistInformation, item);
         }
     }
 
-    private void showArtistInformation(String artistImagePath, String artistWiki, Collection<Track> artistTopTracks, MusicListItem item) {
-        List<Link> links = new ArrayList<Link>();
+    private void showArtistInformation(MusicListItem item) {
+        ViewManagerFX.getInstance().getController().showInformation(null, null, null, item);
+    }
 
-        if (artistTopTracks == null) {
-            ViewManagerFX.getInstance().getController().showInformation(artistImagePath, artistWiki, null, item);
+    private void showArtistInformation(ArtistCacheInformation artistInformation, MusicListItem item) {
+
+        if (artistInformation == null) {
+            showArtistInformation(item);
+        }
+
+        if (artistInformation.getTopTracks() == null) {
+            ViewManagerFX.getInstance().getController().showInformation(artistInformation.getImagePath(), artistInformation.getArtist().getWikiSummary(), null, item);
             return;
         }
 
-        for (Track track : artistTopTracks) {
+        List<Link> links = new ArrayList<Link>();
+        for (Track track : artistInformation.getTopTracks()) {
             links.add(new Link(YoutubeAPI.getSearchQueryUrl(track.getArtist() + " " + track.getName()), track.getName()));
         }
 
-        ViewManagerFX.getInstance().getController().showInformation(artistImagePath, artistWiki, links, item);
+        ViewManagerFX.getInstance().getController().showInformation(artistInformation.getImagePath(), artistInformation.getArtist().getWikiSummary(), links, item);
     }
 
     @Override

@@ -65,7 +65,7 @@ public class MainFX extends Application {
         checks();
 
         // JavaFX 2.0 default theme, it's much faster then the JavaFX 8.0 default theme
-        System.setProperty("javafx.userAgentStylesheetUrl", "caspian");
+        // System.setProperty("javafx.userAgentStylesheetUrl", "caspian");
 
         // Logo
         Logger.get().info("Starting jSona..." + System.lineSeparator() + getLogo(VERSION));

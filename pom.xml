@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.rothf</groupId>
-    <artifactId>de.rothf.jsona</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>jSona</artifactId>
+    <version>1.0.6</version>
 
     <repositories>
         <repository>
@@ -16,6 +16,8 @@
     </repositories>
 
     <build>
+
+        <finalName>${artifactId}</finalName>
 
         <plugins>
             <plugin>
