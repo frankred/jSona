@@ -1498,11 +1498,108 @@ public class ViewController implements Initializable, ViewInterface {
     public void showInformation(final String artistImagePath, final String artistWiki, final List<Link> links, final MusicListItem item) {
         Platform.runLater(new Runnable() {
             public void run() {
-                // Reset view
+                resetView();
+                setImage(artistImagePath);
+                setArtistLabel(item.getArtist(), item.getFile().getName());
+                setTitleLabel(item.getTitle());
+                setArtistBio(artistWiki);
+                setLinks(links);
+            }
+
+            private void setArtistBio(String text) {
+                if (text == null) {
+                    return;
+                }
+                artistBio.setText(Jsoup.parse(text).text());
+                artistBio.setVisible(true);
+                artistBio.setManaged(true);
+            }
+
+            private void setTitleLabel(String text) {
+                if (text == null) {
+                    return;
+                }
+
+                titleLabel.setText(text);
+                titleLabel.setManaged(true);
+                titleLabel.setVisible(true);
+            }
+
+            private void setArtistLabel(String text, String alternativeText) {
+                if (text == null) {
+                    text = alternativeText;
+                }
+
+                if (text == null) {
+                    return;
+                }
+
+                artistLabel.setText(text);
+                artistLabel.setManaged(true);
+                artistLabel.setVisible(true);
+            }
+
+            private void setLinks(List<Link> links) {
+                if (links == null || links.size() == 0) {
+                    return;
+                }
+
+                topTracks.setVisible(true);
+
+                int trackCounter = 0;
+
+                for (Link link : links) {
+                    Hyperlink h = new Hyperlink(link.getText());
+
+
+                    final String url = link.getHref();
+                    h.setTooltip(new Tooltip(url));
+
+                    h.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent e) {
+                            try {
+                                BrowserUtil.openWebpage(new URL(url));
+                            } catch (MalformedURLException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    });
+                    topTracks.getChildren().add(h);
+                    ++trackCounter;
+                    if (trackCounter == 32) {
+                        break;
+                    }
+                }
+            }
+
+            private void setImage(String artistImagePath) {
+                if (artistImagePath == null) {
+                    return;
+                }
+
+                Logger.get().info("Artist image path: " + artistImagePath);
+                File f = new File(artistImagePath);
+
+                // image exists
+                if (f.exists()) {
+                    try {
+                        Image img = new Image(new FileInputStream(f));
+                        artistImage.setImage(img);
+                        imageContainer.setVisible(true);
+                        imageContainer.setManaged(true);
+                        artistImage.setVisible(true);
+                        artistImage.setManaged(true);
+                    } catch (FileNotFoundException e2) {
+                        e2.printStackTrace();
+                    }
+                }
+            }
+
+            private void resetView() {
                 artistLabel.setText("");
                 artistLabel.setManaged(false);
                 artistLabel.setVisible(false);
-
                 artistBio.setText("");
                 artistBio.setManaged(false);
                 artistBio.setVisible(false);
@@ -1515,84 +1612,6 @@ public class ViewController implements Initializable, ViewInterface {
                 titleLabel.setText("");
                 titleLabel.setVisible(false);
                 titleLabel.setManaged(false);
-
-                // no information
-                if (item.getArtist() == null) {
-                    artistLabel.setText(item.getFile().getName());
-                    artistLabel.setManaged(true);
-                    artistLabel.setVisible(true);
-
-                    return;
-                }
-
-                artistLabel.setManaged(true);
-                artistLabel.setVisible(true);
-                artistLabel.setText(item.getArtist());
-
-                titleLabel.setText(item.getTitle());
-                titleLabel.setManaged(true);
-                titleLabel.setVisible(true);
-
-                // information image found
-                if (StringUtils.isNotBlank(artistImagePath)) {
-                    Logger.get().info("Artist image path: " + artistImagePath);
-                    File f = new File(artistImagePath);
-
-                    // image exists
-                    if (f.exists()) {
-                        try {
-                            imageContainer.setVisible(true);
-                            imageContainer.setManaged(true);
-                            artistImage.setVisible(true);
-                            artistImage.setManaged(true);
-                            Image img = new Image(new FileInputStream(f));
-                            artistImage.setImage(img);
-                        } catch (FileNotFoundException e2) {
-                            e2.printStackTrace();
-                        }
-
-                    }
-                }
-
-                // information bio
-                if (StringUtils.isNotBlank(artistWiki)) {
-                    String text = Jsoup.parse(artistWiki).text();
-                    artistBio.setText(text);
-                    artistBio.setVisible(true);
-                    artistBio.setManaged(true);
-                }
-
-                // Top tracks
-                if (links != null) {
-                    topTracks.setVisible(true);
-
-                    int trackCounter = 0;
-
-                    for (Link link : links) {
-                        Hyperlink h = new Hyperlink(link.getText());
-
-
-                        final String url = link.getHref();
-                        h.setTooltip(new Tooltip(url));
-
-                        h.setOnAction(new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(ActionEvent e) {
-                                try {
-                                    BrowserUtil.openWebpage(new URL(url));
-                                } catch (MalformedURLException e1) {
-                                    e1.printStackTrace();
-                                }
-                            }
-                        });
-                        topTracks.getChildren().add(h);
-                        ++trackCounter;
-                        if (trackCounter == 32) {
-                            break;
-                        }
-
-                    }
-                }
             }
         });
     }

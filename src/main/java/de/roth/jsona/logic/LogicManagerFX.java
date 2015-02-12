@@ -845,6 +845,12 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 
         if (artistInformation == null) {
             showArtistInformation(item);
+            return;
+        }
+
+        if (artistInformation.getArtist() == null) {
+            ViewManagerFX.getInstance().getController().showInformation(artistInformation.getImagePath(), null, getYoutubeLinksByTopTracks(artistInformation), item);
+            return;
         }
 
         if (artistInformation.getTopTracks() == null) {
@@ -852,12 +858,22 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
             return;
         }
 
+        List<Link> links = getYoutubeLinksByTopTracks(artistInformation);
+
+        ViewManagerFX.getInstance().getController().showInformation(artistInformation.getImagePath(), artistInformation.getArtist().getWikiSummary(), links, item);
+    }
+
+    private List<Link> getYoutubeLinksByTopTracks(ArtistCacheInformation artistInformation) {
         List<Link> links = new ArrayList<Link>();
+
+        if (artistInformation.getTopTracks() == null) {
+            return links;
+        }
+
         for (Track track : artistInformation.getTopTracks()) {
             links.add(new Link(YoutubeAPI.getSearchQueryUrl(track.getArtist() + " " + track.getName()), track.getName()));
         }
-
-        ViewManagerFX.getInstance().getController().showInformation(artistInformation.getImagePath(), artistInformation.getArtist().getWikiSummary(), links, item);
+        return links;
     }
 
     @Override

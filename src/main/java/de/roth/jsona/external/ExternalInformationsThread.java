@@ -1,5 +1,7 @@
 package de.roth.jsona.external;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 
 import de.roth.jsona.information.ArtistCacheInformation;
@@ -7,6 +9,7 @@ import org.apache.commons.httpclient.HttpClient;
 
 import de.roth.jsona.http.ImageType;
 import de.roth.jsona.model.MusicListItem;
+import org.codehaus.jettison.json.JSONException;
 
 /**
  * Thread to load external informations
@@ -32,6 +35,14 @@ public class ExternalInformationsThread implements Runnable {
 
 	@Override
 	public void run() {
-		ExternalInformationFetcher.getInstance().collectArtistInformations(item, client, type, l, cachedArtists);
+		try {
+			ExternalInformationFetcher.getInstance().collectArtistInformations(item, client, type, l, cachedArtists);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
 	}
 }

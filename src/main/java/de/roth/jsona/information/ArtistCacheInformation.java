@@ -23,6 +23,10 @@ public class ArtistCacheInformation {
         this.date = new Date();
     }
 
+    public ArtistCacheInformation(String imagePath) {
+        this(null, imagePath);
+    }
+
     public ArtistCacheInformation(Artist artist, String imagePath) {
         this(artist, imagePath, null);
     }

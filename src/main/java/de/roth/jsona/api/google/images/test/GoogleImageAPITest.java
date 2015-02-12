@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 public class GoogleImageAPITest {
 
@@ -18,7 +19,7 @@ public class GoogleImageAPITest {
     }
 
     @Test
-    public void test() throws IOException, JSONException {
+    public void test() throws IOException, JSONException, URISyntaxException {
         MultiThreadedHttpConnectionManager mgr = new MultiThreadedHttpConnectionManager();
         mgr.getParams().setDefaultMaxConnectionsPerHost(4);
         HttpClient httpClient = new HttpClient(mgr);
