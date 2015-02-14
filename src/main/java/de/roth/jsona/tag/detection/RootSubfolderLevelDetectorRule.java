@@ -14,67 +14,66 @@ import java.util.ArrayList;
  * sub folder is interpreted as the album name.
  *
  * @author Frank Roth
- *
  */
 public class RootSubfolderLevelDetectorRule extends DetectorRule {
 
-	private int folderLevel;
+    private int folderLevel;
 
-	public RootSubfolderLevelDetectorRule(int folderLevel, String pattern, boolean ignoreFileEnding, boolean replaceUnderscoresWithSpaces) {
-		this.folderLevel = folderLevel;
-		this.setPattern(pattern);
-		this.setIgnoreFileEnding(ignoreFileEnding);
-		this.setIgnoreFileEnding(replaceUnderscoresWithSpaces);
-	}
+    public RootSubfolderLevelDetectorRule(int folderLevel, String pattern, boolean ignoreFileEnding, boolean replaceUnderscoresWithSpaces) {
+        this.folderLevel = folderLevel;
+        this.setPattern(pattern);
+        this.setIgnoreFileEnding(ignoreFileEnding);
+        this.setIgnoreFileEnding(replaceUnderscoresWithSpaces);
+    }
 
-	public int getFolderLevel() {
-		return folderLevel;
-	}
+    public int getFolderLevel() {
+        return folderLevel;
+    }
 
-	public void setFolderLevel(int folderLevel) {
-		this.folderLevel = folderLevel;
-	}
+    public void setFolderLevel(int folderLevel) {
+        this.folderLevel = folderLevel;
+    }
 
-	/**
-	 *
-	 */
-	public ArrayList<FieldResult> detect(File rootFolder, File file) {
-		boolean notSameFolder = true;
-		int levelsDiff = 0;
-		File currentFolder = new File(file.getAbsolutePath());
+    /**
+     *
+     */
+    public ArrayList<FieldResult> detect(File rootFolder, File file) {
+        boolean notSameFolder = true;
+        int levelsDiff = 0;
+        File currentFolder = new File(file.getAbsolutePath());
 
-		// Find the folder
-		while (notSameFolder) {
-			try {
-				// on the first run this should never be happen
-				if (rootFolder.getCanonicalPath().equals(currentFolder.getCanonicalPath())) {
-					notSameFolder = false;
-				} else {
-					levelsDiff++;
-					currentFolder = currentFolder.getParentFile();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+        // Find the folder
+        while (notSameFolder) {
+            try {
+                // on the first run this should never be happen
+                if (rootFolder.getCanonicalPath().equals(currentFolder.getCanonicalPath())) {
+                    notSameFolder = false;
+                } else {
+                    levelsDiff++;
+                    currentFolder = currentFolder.getParentFile();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
-		// know we know that we have to traverse 'levelsDiff' times up to get to
-		// our folder, the root folder...
-		// this means that if we traverse 'levelsDiff' - 'folderLevel' times
-		// from our file up we come to the specific folder on level
-		// 'folderLevel'
-		currentFolder = new File(file.getAbsolutePath());
-		int traverseXTimesUp = levelsDiff - folderLevel;
-		for (int i = 0; i < traverseXTimesUp; i++) {
-			currentFolder = currentFolder.getParentFile();
-		}
+        // know we know that we have to traverse 'levelsDiff' times up to get to
+        // our folder, the root folder...
+        // this means that if we traverse 'levelsDiff' - 'folderLevel' times
+        // from our file up we come to the specific folder on level
+        // 'folderLevel'
+        currentFolder = new File(file.getAbsolutePath());
+        int traverseXTimesUp = levelsDiff - folderLevel;
+        for (int i = 0; i < traverseXTimesUp; i++) {
+            currentFolder = currentFolder.getParentFile();
+        }
 
-		ArrayList<FieldResult> results = match(this.getPattern(), currentFolder.getName());
+        ArrayList<FieldResult> results = match(this.getPattern(), currentFolder.getName());
 
-		if (results.size() == 0) {
-			return null;
-		}
+        if (results.size() == 0) {
+            return null;
+        }
 
-		return results;
-	}
+        return results;
+    }
 }

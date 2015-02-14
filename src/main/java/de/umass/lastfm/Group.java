@@ -36,86 +36,86 @@ import java.util.LinkedHashMap;
  */
 public class Group {
 
-	private Group() {
-	}
+    private Group() {
+    }
 
-	public static Chart<Album> getWeeklyAlbumChart(String group, String apiKey) {
-		return getWeeklyAlbumChart(group, null, null, -1, apiKey);
-	}
+    public static Chart<Album> getWeeklyAlbumChart(String group, String apiKey) {
+        return getWeeklyAlbumChart(group, null, null, -1, apiKey);
+    }
 
-	public static Chart<Album> getWeeklyAlbumChart(String group, int limit, String apiKey) {
-		return getWeeklyAlbumChart(group, null, null, limit, apiKey);
-	}
+    public static Chart<Album> getWeeklyAlbumChart(String group, int limit, String apiKey) {
+        return getWeeklyAlbumChart(group, null, null, limit, apiKey);
+    }
 
-	public static Chart<Album> getWeeklyAlbumChart(String group, String from, String to, int limit, String apiKey) {
-		return Chart.getChart("group.getWeeklyAlbumChart", "group", group, "album", from, to, limit, apiKey);
-	}
+    public static Chart<Album> getWeeklyAlbumChart(String group, String from, String to, int limit, String apiKey) {
+        return Chart.getChart("group.getWeeklyAlbumChart", "group", group, "album", from, to, limit, apiKey);
+    }
 
-	public static Chart<Artist> getWeeklyArtistChart(String group, String apiKey) {
-		return getWeeklyArtistChart(group, null, null, -1, apiKey);
-	}
+    public static Chart<Artist> getWeeklyArtistChart(String group, String apiKey) {
+        return getWeeklyArtistChart(group, null, null, -1, apiKey);
+    }
 
-	public static Chart<Artist> getWeeklyArtistChart(String group, int limit, String apiKey) {
-		return getWeeklyArtistChart(group, null, null, limit, apiKey);
-	}
+    public static Chart<Artist> getWeeklyArtistChart(String group, int limit, String apiKey) {
+        return getWeeklyArtistChart(group, null, null, limit, apiKey);
+    }
 
-	public static Chart<Artist> getWeeklyArtistChart(String group, String from, String to, int limit, String apiKey) {
-		return Chart.getChart("group.getWeeklyArtistChart", "group", group, "artist", from, to, limit, apiKey);
-	}
+    public static Chart<Artist> getWeeklyArtistChart(String group, String from, String to, int limit, String apiKey) {
+        return Chart.getChart("group.getWeeklyArtistChart", "group", group, "artist", from, to, limit, apiKey);
+    }
 
-	public static Chart<Track> getWeeklyTrackChart(String group, String apiKey) {
-		return getWeeklyTrackChart(group, null, null, -1, apiKey);
-	}
+    public static Chart<Track> getWeeklyTrackChart(String group, String apiKey) {
+        return getWeeklyTrackChart(group, null, null, -1, apiKey);
+    }
 
-	public static Chart<Track> getWeeklyTrackChart(String group, int limit, String apiKey) {
-		return getWeeklyTrackChart(group, null, null, limit, apiKey);
-	}
+    public static Chart<Track> getWeeklyTrackChart(String group, int limit, String apiKey) {
+        return getWeeklyTrackChart(group, null, null, limit, apiKey);
+    }
 
-	public static Chart<Track> getWeeklyTrackChart(String group, String from, String to, int limit, String apiKey) {
-		return Chart.getChart("group.getWeeklyTrackChart", "group", group, "track", from, to, limit, apiKey);
-	}
+    public static Chart<Track> getWeeklyTrackChart(String group, String from, String to, int limit, String apiKey) {
+        return Chart.getChart("group.getWeeklyTrackChart", "group", group, "track", from, to, limit, apiKey);
+    }
 
-	public static LinkedHashMap<String, String> getWeeklyChartList(String group, String apiKey) {
-		return Chart.getWeeklyChartList("group.getWeeklyChartList", "group", group, apiKey);
-	}
+    public static LinkedHashMap<String, String> getWeeklyChartList(String group, String apiKey) {
+        return Chart.getWeeklyChartList("group.getWeeklyChartList", "group", group, apiKey);
+    }
 
-	public static Collection<Chart> getWeeklyChartListAsCharts(String group, String apiKey) {
-		return Chart.getWeeklyChartListAsCharts("group", group, apiKey);
-	}
+    public static Collection<Chart> getWeeklyChartListAsCharts(String group, String apiKey) {
+        return Chart.getWeeklyChartListAsCharts("group", group, apiKey);
+    }
 
-	/**
-	 * Get a list of members for this group.
-	 *
-	 * @param group The group name to fetch the members of
-	 * @param apiKey A Last.fm API key
-	 * @return the list of {@link de.umass.lastfm.User}s
-	 */
-	public static PaginatedResult<User> getMembers(String group, String apiKey) {
-		return getMembers(group, 1, apiKey);
-	}
+    /**
+     * Get a list of members for this group.
+     *
+     * @param group  The group name to fetch the members of
+     * @param apiKey A Last.fm API key
+     * @return the list of {@link de.umass.lastfm.User}s
+     */
+    public static PaginatedResult<User> getMembers(String group, String apiKey) {
+        return getMembers(group, 1, apiKey);
+    }
 
-	/**
-	 * Get a list of members for this group.
-	 *
-	 * @param group The group name to fetch the members of
-	 * @param page The results page you would like to fetch
-	 * @param apiKey A Last.fm API key
-	 * @return the list of {@link de.umass.lastfm.User}s
-	 */
-	public static PaginatedResult<User> getMembers(String group, int page, String apiKey) {
-		Result result = Caller.getInstance().call("group.getMembers", apiKey, "group", group, "page", String.valueOf(page));
-		return ResponseBuilder.buildPaginatedResult(result, User.class);
-	}
+    /**
+     * Get a list of members for this group.
+     *
+     * @param group  The group name to fetch the members of
+     * @param page   The results page you would like to fetch
+     * @param apiKey A Last.fm API key
+     * @return the list of {@link de.umass.lastfm.User}s
+     */
+    public static PaginatedResult<User> getMembers(String group, int page, String apiKey) {
+        Result result = Caller.getInstance().call("group.getMembers", apiKey, "group", group, "page", String.valueOf(page));
+        return ResponseBuilder.buildPaginatedResult(result, User.class);
+    }
 
-	/**
-	 * Get the hype list for a group.
-	 *
-	 * @param group The last.fm group name
-	 * @param apiKey A Last.fm API key
-	 * @return a Collection of {@link Artist}s
-	 */
-	public static Collection<Artist> getHype(String group, String apiKey) {
-		Result result = Caller.getInstance().call("group.getHype", apiKey, "group", group);
-		return ResponseBuilder.buildCollection(result, Artist.class);
-	}
+    /**
+     * Get the hype list for a group.
+     *
+     * @param group  The last.fm group name
+     * @param apiKey A Last.fm API key
+     * @return a Collection of {@link Artist}s
+     */
+    public static Collection<Artist> getHype(String group, String apiKey) {
+        Result result = Caller.getInstance().call("group.getHype", apiKey, "group", group);
+        return ResponseBuilder.buildCollection(result, Artist.class);
+    }
 }

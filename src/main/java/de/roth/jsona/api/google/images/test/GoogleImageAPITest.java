@@ -1,7 +1,6 @@
 package de.roth.jsona.api.google.images.test;
 
 import de.roth.jsona.api.google.images.GoogleImageAPI;
-import de.roth.jsona.api.musicbrainz.Musicbrainz;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.codehaus.jettison.json.JSONException;

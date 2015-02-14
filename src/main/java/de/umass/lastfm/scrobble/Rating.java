@@ -36,33 +36,33 @@ package de.umass.lastfm.scrobble;
 @Deprecated
 public enum Rating {
 
-	/**
-	 * Love (on any mode if the user has manually loved the track). This implies a listen.
-	 */
-	LOVE("L"),
+    /**
+     * Love (on any mode if the user has manually loved the track). This implies a listen.
+     */
+    LOVE("L"),
 
-	/**
-	 * Ban (only if source=L). This implies a skip, and the client should skip to the next track when a ban happens
-	 */
-	BAN("B"),
+    /**
+     * Ban (only if source=L). This implies a skip, and the client should skip to the next track when a ban happens
+     */
+    BAN("B"),
 
-	/**
-	 * Skip (only if source=L)
-	 */
-	SKIP("S");
+    /**
+     * Skip (only if source=L)
+     */
+    SKIP("S");
 
-	private String code;
+    private String code;
 
-	Rating(String code) {
-		this.code = code;
-	}
+    Rating(String code) {
+        this.code = code;
+    }
 
-	/**
-	 * Returns the corresponding code for this rating.
-	 *
-	 * @return the code
-	 */
-	public String getCode() {
-		return code;
-	}
+    /**
+     * Returns the corresponding code for this rating.
+     *
+     * @return the code
+     */
+    public String getCode() {
+        return code;
+    }
 }

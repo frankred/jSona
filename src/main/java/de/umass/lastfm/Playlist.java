@@ -26,10 +26,10 @@
 
 package de.umass.lastfm;
 
+import de.umass.xml.DomElement;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import de.umass.xml.DomElement;
 
 /**
  * Bean for music playlists. Contains the {@link #fetch(String, String) fetch} method and various <code>fetchXXX</code>
@@ -46,158 +46,158 @@ import de.umass.xml.DomElement;
  */
 public class Playlist {
 
-	static final ItemFactory<Playlist> FACTORY = new PlaylistFactory();
+    static final ItemFactory<Playlist> FACTORY = new PlaylistFactory();
 
-	private int id;
-	private String title;
-	private String annotation;
-	private int size;
-	private String creator;
+    private int id;
+    private String title;
+    private String annotation;
+    private int size;
+    private String creator;
 
-	private List<Track> tracks = new ArrayList<Track>();
+    private List<Track> tracks = new ArrayList<Track>();
 
-	private Playlist() {
-	}
+    private Playlist() {
+    }
 
-	public String getCreator() {
-		return creator;
-	}
+    public String getCreator() {
+        return creator;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public int getSize() {
-		return size;
-	}
+    public int getSize() {
+        return size;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public String getAnnotation() {
-		return annotation;
-	}
+    public String getAnnotation() {
+        return annotation;
+    }
 
-	public List<Track> getTracks() {
-		return tracks;
-	}
+    public List<Track> getTracks() {
+        return tracks;
+    }
 
-	/**
-	 * Fetches an album playlist, which contains the tracks of the specified album.
-	 *
-	 * @param albumId The album id as returned in {@link de.umass.lastfm.Album#getInfo(String, String, String) Album.getInfo}.
-	 * @param apiKey A Last.fm API key.
-	 * @return a playlist
-	 */
-	public static Playlist fetchAlbumPlaylist(String albumId, String apiKey) {
-		return fetch("lastfm://playlist/album/" + albumId, apiKey);
-	}
+    /**
+     * Fetches an album playlist, which contains the tracks of the specified album.
+     *
+     * @param albumId The album id as returned in {@link de.umass.lastfm.Album#getInfo(String, String, String) Album.getInfo}.
+     * @param apiKey  A Last.fm API key.
+     * @return a playlist
+     */
+    public static Playlist fetchAlbumPlaylist(String albumId, String apiKey) {
+        return fetch("lastfm://playlist/album/" + albumId, apiKey);
+    }
 
-	/**
-	 * Fetches a user-created playlist.
-	 *
-	 * @param playlistId A playlist id.
-	 * @param apiKey A Last.fm API key.
-	 * @return a playlist
-	 */
-	public static Playlist fetchUserPlaylist(int playlistId, String apiKey) {
-		return fetch("lastfm://playlist/" + playlistId, apiKey);
-	}
+    /**
+     * Fetches a user-created playlist.
+     *
+     * @param playlistId A playlist id.
+     * @param apiKey     A Last.fm API key.
+     * @return a playlist
+     */
+    public static Playlist fetchUserPlaylist(int playlistId, String apiKey) {
+        return fetch("lastfm://playlist/" + playlistId, apiKey);
+    }
 
-	/**
-	 * Fetches a playlist of freetracks for a given tag name.
-	 *
-	 * @param tag A tag name.
-	 * @param apiKey A Last.fm API key.
-	 * @return a playlist
-	 */
-	public static Playlist fetchTagPlaylist(String tag, String apiKey) {
-		return fetch("lastfm://playlist/tag/" + tag + "/freetracks", apiKey);
-	}
+    /**
+     * Fetches a playlist of freetracks for a given tag name.
+     *
+     * @param tag    A tag name.
+     * @param apiKey A Last.fm API key.
+     * @return a playlist
+     */
+    public static Playlist fetchTagPlaylist(String tag, String apiKey) {
+        return fetch("lastfm://playlist/tag/" + tag + "/freetracks", apiKey);
+    }
 
-	/**
-	 * Fetches a playlist using a lastfm playlist url. See the class description for a list of valid
-	 * playlist urls.
-	 *
-	 * @param playlistUrl A valid playlist url.
-	 * @param apiKey A Last.fm API key.
-	 * @return a playlist
-	 */
-	public static Playlist fetch(String playlistUrl, String apiKey) {
-		Result result = Caller.getInstance().call("playlist.fetch", apiKey, "playlistURL", playlistUrl);
-		return ResponseBuilder.buildItem(result, Playlist.class);
-	}
+    /**
+     * Fetches a playlist using a lastfm playlist url. See the class description for a list of valid
+     * playlist urls.
+     *
+     * @param playlistUrl A valid playlist url.
+     * @param apiKey      A Last.fm API key.
+     * @return a playlist
+     */
+    public static Playlist fetch(String playlistUrl, String apiKey) {
+        Result result = Caller.getInstance().call("playlist.fetch", apiKey, "playlistURL", playlistUrl);
+        return ResponseBuilder.buildItem(result, Playlist.class);
+    }
 
-	/**
-	 * Add a track to a Last.fm user's playlist.
-	 *
-	 * @param playlistId The ID of the playlist - this is available in user.getPlaylists
-	 * @param artist The artist name that corresponds to the track to be added.
-	 * @param track The track name to add to the playlist.
-	 * @param session A Session instance.
-	 * @return the result of the operation
-	 */
-	public static Result addTrack(int playlistId, String artist, String track, Session session) {
-		return Caller.getInstance()
-				.call("playlist.addTrack", session, "playlistID", String.valueOf(playlistId), "artist", artist, "track",
-						track);
-	}
+    /**
+     * Add a track to a Last.fm user's playlist.
+     *
+     * @param playlistId The ID of the playlist - this is available in user.getPlaylists
+     * @param artist     The artist name that corresponds to the track to be added.
+     * @param track      The track name to add to the playlist.
+     * @param session    A Session instance.
+     * @return the result of the operation
+     */
+    public static Result addTrack(int playlistId, String artist, String track, Session session) {
+        return Caller.getInstance()
+                .call("playlist.addTrack", session, "playlistID", String.valueOf(playlistId), "artist", artist, "track",
+                        track);
+    }
 
-	/**
-	 * Creates a Last.fm playlist.
-	 *
-	 * @param title A title for the playlist
-	 * @param description A description for the playlist
-	 * @param session A Session instance
-	 * @return the result of the operation
-	 */
-	public static Playlist create(String title, String description, Session session) {
-		Result result = Caller.getInstance().call("playlist.create", session, "title", title, "description", description);
-		if (!result.isSuccessful())
-			return null;
-		return ResponseBuilder.buildItem(result.getContentElement().getChild("playlist"), Playlist.class);
-	}
+    /**
+     * Creates a Last.fm playlist.
+     *
+     * @param title       A title for the playlist
+     * @param description A description for the playlist
+     * @param session     A Session instance
+     * @return the result of the operation
+     */
+    public static Playlist create(String title, String description, Session session) {
+        Result result = Caller.getInstance().call("playlist.create", session, "title", title, "description", description);
+        if (!result.isSuccessful())
+            return null;
+        return ResponseBuilder.buildItem(result.getContentElement().getChild("playlist"), Playlist.class);
+    }
 
-	private static class PlaylistFactory implements ItemFactory<Playlist> {
-		public Playlist createItemFromElement(DomElement element) {
-			Playlist playlist = new Playlist();
+    private static class PlaylistFactory implements ItemFactory<Playlist> {
+        public Playlist createItemFromElement(DomElement element) {
+            Playlist playlist = new Playlist();
 
-			if (element.hasChild("id"))
-				playlist.id = Integer.parseInt(element.getChildText("id"));
+            if (element.hasChild("id"))
+                playlist.id = Integer.parseInt(element.getChildText("id"));
 
-			playlist.title = element.getChildText("title");
+            playlist.title = element.getChildText("title");
 
-			if (element.hasChild("size"))
-				playlist.size = Integer.parseInt(element.getChildText("size"));
+            if (element.hasChild("size"))
+                playlist.size = Integer.parseInt(element.getChildText("size"));
 
-			playlist.creator = element.getChildText("creator");
-			playlist.annotation = element.getChildText("annotation");
+            playlist.creator = element.getChildText("creator");
+            playlist.annotation = element.getChildText("annotation");
 
-			DomElement trackList = element.getChild("trackList");
-			if (trackList != null) {
-				for (DomElement te : trackList.getChildren("track")) {
-					Track t = new Track(te.getChildText("title"), te.getChildText("identifier"), te.getChildText("creator"));
-					t.album = te.getChildText("album");
-					t.duration = Integer.parseInt(te.getChildText("duration")) / 1000;
-					t.imageUrls.put(ImageSize.LARGE, te.getChildText("image"));
-					t.imageUrls.put(ImageSize.ORIGINAL, te.getChildText("image"));
-					t.location = te.getChildText("location");
-					for (DomElement ext : te.getChildren("extension")) {
-						if ("http://www.last.fm".equals(ext.getAttribute("application"))) {
-							for (DomElement child : ext.getChildren()) {
-								t.lastFmExtensionInfos.put(child.getTagName(), child.getText());
-							}
-						}
-					}
-					playlist.tracks.add(t);
-				}
+            DomElement trackList = element.getChild("trackList");
+            if (trackList != null) {
+                for (DomElement te : trackList.getChildren("track")) {
+                    Track t = new Track(te.getChildText("title"), te.getChildText("identifier"), te.getChildText("creator"));
+                    t.album = te.getChildText("album");
+                    t.duration = Integer.parseInt(te.getChildText("duration")) / 1000;
+                    t.imageUrls.put(ImageSize.LARGE, te.getChildText("image"));
+                    t.imageUrls.put(ImageSize.ORIGINAL, te.getChildText("image"));
+                    t.location = te.getChildText("location");
+                    for (DomElement ext : te.getChildren("extension")) {
+                        if ("http://www.last.fm".equals(ext.getAttribute("application"))) {
+                            for (DomElement child : ext.getChildren()) {
+                                t.lastFmExtensionInfos.put(child.getTagName(), child.getText());
+                            }
+                        }
+                    }
+                    playlist.tracks.add(t);
+                }
 
-				if (playlist.size == 0)
-					playlist.size = playlist.tracks.size();
-			}
+                if (playlist.size == 0)
+                    playlist.size = playlist.tracks.size();
+            }
 
-			return playlist;
-		}
-	}
+            return playlist;
+        }
+    }
 }

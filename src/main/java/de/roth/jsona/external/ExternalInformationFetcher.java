@@ -1,37 +1,35 @@
 package de.roth.jsona.external;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.*;
-import java.util.logging.Level;
-
-import de.roth.jsona.api.google.images.GoogleImageAPI;
-import de.roth.jsona.information.ArtistCacheInformation;
-import net.ricecode.similarity.JaroWinklerStrategy;
-import net.ricecode.similarity.StringSimilarityService;
-import net.ricecode.similarity.StringSimilarityServiceImpl;
-
-import org.apache.commons.httpclient.HttpClient;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
+import de.roth.jsona.api.google.images.GoogleImageAPI;
 import de.roth.jsona.api.musicbrainz.Musicbrainz;
 import de.roth.jsona.api.musicbrainz.MusicbrainzSearchResult;
 import de.roth.jsona.config.Global;
 import de.roth.jsona.http.HttpClientHelper;
 import de.roth.jsona.http.ImageType;
+import de.roth.jsona.information.ArtistCacheInformation;
 import de.roth.jsona.model.MusicListItem;
 import de.roth.jsona.util.Logger;
 import de.umass.lastfm.Artist;
 import de.umass.lastfm.ImageSize;
 import de.umass.lastfm.Track;
+import net.ricecode.similarity.JaroWinklerStrategy;
+import net.ricecode.similarity.StringSimilarityService;
+import net.ricecode.similarity.StringSimilarityServiceImpl;
+import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jettison.json.JSONException;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.Base64;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.logging.Level;
 
 public class ExternalInformationFetcher {
 

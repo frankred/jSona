@@ -37,44 +37,44 @@ import java.util.Map;
  */
 final class ItemFactoryBuilder {
 
-	private static final ItemFactoryBuilder INSTANCE = new ItemFactoryBuilder();
-	private Map<Class, ItemFactory> factories = new HashMap<Class, ItemFactory>();
+    private static final ItemFactoryBuilder INSTANCE = new ItemFactoryBuilder();
+    private Map<Class, ItemFactory> factories = new HashMap<Class, ItemFactory>();
 
-	private ItemFactoryBuilder() {
-		// register default factories
-		addItemFactory(Album.class, Album.FACTORY);
-		addItemFactory(Track.class, Track.FACTORY);
-		addItemFactory(Artist.class, Artist.FACTORY);
-		addItemFactory(Tag.class, Tag.FACTORY);
-		addItemFactory(Image.class, Image.FACTORY);
-		addItemFactory(User.class, User.FACTORY);
-		addItemFactory(Event.class, Event.FACTORY);
-		addItemFactory(Venue.class, Venue.FACTORY);
-		addItemFactory(Shout.class, Shout.FACTORY);
-		addItemFactory(Playlist.class, Playlist.FACTORY);
-	}
+    private ItemFactoryBuilder() {
+        // register default factories
+        addItemFactory(Album.class, Album.FACTORY);
+        addItemFactory(Track.class, Track.FACTORY);
+        addItemFactory(Artist.class, Artist.FACTORY);
+        addItemFactory(Tag.class, Tag.FACTORY);
+        addItemFactory(Image.class, Image.FACTORY);
+        addItemFactory(User.class, User.FACTORY);
+        addItemFactory(Event.class, Event.FACTORY);
+        addItemFactory(Venue.class, Venue.FACTORY);
+        addItemFactory(Shout.class, Shout.FACTORY);
+        addItemFactory(Playlist.class, Playlist.FACTORY);
+    }
 
-	/**
-	 * Retrieve the instance of the <code>ItemFactoryBuilder</code>.
-	 *
-	 * @return the instance
-	 */
-	public static ItemFactoryBuilder getFactoryBuilder() {
-		return INSTANCE;
-	}
+    /**
+     * Retrieve the instance of the <code>ItemFactoryBuilder</code>.
+     *
+     * @return the instance
+     */
+    public static ItemFactoryBuilder getFactoryBuilder() {
+        return INSTANCE;
+    }
 
-	public <T> void addItemFactory(Class<T> itemClass, ItemFactory<T> factory) {
-		factories.put(itemClass, factory);
-	}
+    public <T> void addItemFactory(Class<T> itemClass, ItemFactory<T> factory) {
+        factories.put(itemClass, factory);
+    }
 
-	/**
-	 * Retrieves an {@link de.umass.lastfm.ItemFactory} for the given type, or <code>null</code> if no such factory was registered.
-	 *
-	 * @param itemClass the type's Class object
-	 * @return the <code>ItemFactory</code> or <code>null</code>
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> ItemFactory<T> getItemFactory(Class<T> itemClass) {
-		return factories.get(itemClass);
-	}
+    /**
+     * Retrieves an {@link de.umass.lastfm.ItemFactory} for the given type, or <code>null</code> if no such factory was registered.
+     *
+     * @param itemClass the type's Class object
+     * @return the <code>ItemFactory</code> or <code>null</code>
+     */
+    @SuppressWarnings("unchecked")
+    public <T> ItemFactory<T> getItemFactory(Class<T> itemClass) {
+        return factories.get(itemClass);
+    }
 }
