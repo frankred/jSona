@@ -26,13 +26,13 @@
 
 package de.umass.lastfm;
 
+import de.umass.util.MapUtilities;
+import de.umass.xml.DomElement;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import de.umass.util.MapUtilities;
-import de.umass.xml.DomElement;
 
 /**
  * Venue information bean.
@@ -41,186 +41,186 @@ import de.umass.xml.DomElement;
  */
 public class Venue extends ImageHolder {
 
-	static final ItemFactory<Venue> FACTORY = new VenueFactory();
-	
-	private String name;
-	private String url, website;
-	private String city, country, street, postal, phonenumber;
+    static final ItemFactory<Venue> FACTORY = new VenueFactory();
 
-	private float latitude, longitude;
-	private String timezone;
-	private String id;
+    private String name;
+    private String url, website;
+    private String city, country, street, postal, phonenumber;
 
-	private Venue() {
-	}
+    private float latitude, longitude;
+    private String timezone;
+    private String id;
 
-	public String getId() {
-		return id;
-	}
+    private Venue() {
+    }
 
-	/**
-	 * Returns a last.fm URL to this venue, e.g.: http://www.last.fm/venue/&lt;id&gt;-&lt;venue name&gt;
-	 *
-	 * @return last.fm url
-	 * @see #getWebsite()
-	 */
-	public String getUrl() {
-		return url;
-	}
+    public String getId() {
+        return id;
+    }
 
-	/**
-	 * Returns an URL to the actual venue's website.
-	 *
-	 * @return website url
-	 */
-	public String getWebsite() {
-		return website;
-	}
+    /**
+     * Returns a last.fm URL to this venue, e.g.: http://www.last.fm/venue/&lt;id&gt;-&lt;venue name&gt;
+     *
+     * @return last.fm url
+     * @see #getWebsite()
+     */
+    public String getUrl() {
+        return url;
+    }
 
-	public String getCity() {
-		return city;
-	}
+    /**
+     * Returns an URL to the actual venue's website.
+     *
+     * @return website url
+     */
+    public String getWebsite() {
+        return website;
+    }
 
-	public String getCountry() {
-		return country;
-	}
+    public String getCity() {
+        return city;
+    }
 
-	public float getLatitude() {
-		return latitude;
-	}
+    public String getCountry() {
+        return country;
+    }
 
-	public float getLongitude() {
-		return longitude;
-	}
+    public float getLatitude() {
+        return latitude;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public float getLongitude() {
+        return longitude;
+    }
 
-	public String getPostal() {
-		return postal;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getStreet() {
-		return street;
-	}
+    public String getPostal() {
+        return postal;
+    }
 
-	public String getTimezone() {
-		return timezone;
-	}
+    public String getStreet() {
+        return street;
+    }
 
-	public String getPhonenumber() {
-		return phonenumber;
-	}
+    public String getTimezone() {
+        return timezone;
+    }
 
-	/**
-	 * Search for a venue by venue name.
-	 *
-	 * @param venue The venue name you would like to search for
-	 * @param apiKey A Last.fm API key
-	 * @return a list of venues
-	 */
-	public static Collection<Venue> search(String venue, String apiKey) {
-		return search(venue, null, apiKey);
-	}
+    public String getPhonenumber() {
+        return phonenumber;
+    }
 
-	/**
-	 * Search for a venue by venue name.
-	 *
-	 * @param venue The venue name you would like to search for
-	 * @param country Filter your results by country. Expressed as an ISO 3166-2 code
-	 * @param apiKey A Last.fm API key
-	 * @return a list of venues
-	 */
-	public static Collection<Venue> search(String venue, String country, String apiKey) {
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("venue", venue);
-		MapUtilities.nullSafePut(params, "country", country);
-		Result result = Caller.getInstance().call("venue.search", apiKey, params);
-		if (!result.isSuccessful())
-			return Collections.emptyList();
-		DomElement child = result.getContentElement().getChild("venuematches");
-		return ResponseBuilder.buildCollection(child, Venue.class);
-	}
+    /**
+     * Search for a venue by venue name.
+     *
+     * @param venue  The venue name you would like to search for
+     * @param apiKey A Last.fm API key
+     * @return a list of venues
+     */
+    public static Collection<Venue> search(String venue, String apiKey) {
+        return search(venue, null, apiKey);
+    }
 
-	/**
-	 * Get a list of upcoming events at this venue.
-	 *
-	 * @param venueId The venue id to fetch the events for
-	 * @param apiKey A Last.fm API key
-	 * @return a list of events
-	 * @see #getPastEvents
-	 */
-	public static Collection<Event> getEvents(String venueId, String apiKey) {
-		return getEvents(venueId, false, apiKey);
-	}
+    /**
+     * Search for a venue by venue name.
+     *
+     * @param venue   The venue name you would like to search for
+     * @param country Filter your results by country. Expressed as an ISO 3166-2 code
+     * @param apiKey  A Last.fm API key
+     * @return a list of venues
+     */
+    public static Collection<Venue> search(String venue, String country, String apiKey) {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("venue", venue);
+        MapUtilities.nullSafePut(params, "country", country);
+        Result result = Caller.getInstance().call("venue.search", apiKey, params);
+        if (!result.isSuccessful())
+            return Collections.emptyList();
+        DomElement child = result.getContentElement().getChild("venuematches");
+        return ResponseBuilder.buildCollection(child, Venue.class);
+    }
 
-	/**
-	 * Get a list of upcoming events at this venue.
-	 *
-	 * @param venueId The venue id to fetch the events for
-	 * @param festivalsOnly Whether only festivals should be returned, or all events
-	 * @param apiKey A Last.fm API key
-	 * @return a list of events
-	 * @see #getPastEvents
-	 */
-	public static Collection<Event> getEvents(String venueId, boolean festivalsOnly, String apiKey) {
-		Result result = Caller.getInstance().call("venue.getEvents", apiKey, "venue", venueId, "festivalsonly", festivalsOnly ? "1" : "0" );
-		return ResponseBuilder.buildCollection(result, Event.class);
-	}
-	
-	/**
-	 * Get a paginated list of all the events held at this venue in the past.
-	 *
-	 * @param venueId The id for the venue you would like to fetch event listings for
-	 * @param apiKey A Last.fm API key
-	 * @return a paginated list of events
-	 */
-	public static PaginatedResult<Event> getPastEvents(String venueId, String apiKey) {
-		return getPastEvents(venueId, false, -1, -1, apiKey);
-	}
+    /**
+     * Get a list of upcoming events at this venue.
+     *
+     * @param venueId The venue id to fetch the events for
+     * @param apiKey  A Last.fm API key
+     * @return a list of events
+     * @see #getPastEvents
+     */
+    public static Collection<Event> getEvents(String venueId, String apiKey) {
+        return getEvents(venueId, false, apiKey);
+    }
 
-	/**
-	 * Get a paginated list of all the events held at this venue in the past.
-	 *
-	 * @param venueId The id for the venue you would like to fetch event listings for
-	 * @param festivalsOnly Whether only festivals should be returned, or all events.
-	 * @param page The page of results to return
-	 * @param limit The number of results to fetch per page.
-	 * @param apiKey A Last.fm API key
-	 * @return a paginated list of events
-	 */
-	public static PaginatedResult<Event> getPastEvents(String venueId, boolean festivalsOnly, int page, int limit, String apiKey) {
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("venue", venueId);
-		params.put("festivalsonly", festivalsOnly ? "1" : "0");
-		MapUtilities.nullSafePut(params, "page", page);
-		MapUtilities.nullSafePut(params, "limit", limit);
-		Result result = Caller.getInstance().call("venue.getPastEvents", apiKey, params);
-		return ResponseBuilder.buildPaginatedResult(result, Event.class);
-	}
+    /**
+     * Get a list of upcoming events at this venue.
+     *
+     * @param venueId       The venue id to fetch the events for
+     * @param festivalsOnly Whether only festivals should be returned, or all events
+     * @param apiKey        A Last.fm API key
+     * @return a list of events
+     * @see #getPastEvents
+     */
+    public static Collection<Event> getEvents(String venueId, boolean festivalsOnly, String apiKey) {
+        Result result = Caller.getInstance().call("venue.getEvents", apiKey, "venue", venueId, "festivalsonly", festivalsOnly ? "1" : "0");
+        return ResponseBuilder.buildCollection(result, Event.class);
+    }
 
-	private static class VenueFactory implements ItemFactory<Venue> {
-		public Venue createItemFromElement(DomElement element) {
-			Venue venue = new Venue();
-			venue.id = element.getChildText("id");
-			venue.name = element.getChildText("name");
-			venue.url = element.getChildText("url");
-			venue.phonenumber = element.getChildText("phonenumber");
-			venue.website = element.getChildText("website");
-			ImageHolder.loadImages(venue, element);
-			DomElement l = element.getChild("location");
-			venue.city = l.getChildText("city");
-			venue.country = l.getChildText("country");
-			venue.street = l.getChildText("street");
-			venue.postal = l.getChildText("postalcode");
-			venue.timezone = l.getChildText("timezone");
-			DomElement p = l.getChild("geo:point");
-			if (p.getChildText("geo:lat").length() != 0) { // some venues don't have geo information applied
-				venue.latitude = Float.parseFloat(p.getChildText("geo:lat"));
-				venue.longitude = Float.parseFloat(p.getChildText("geo:long"));
-			}
-			return venue;
-		}
-	}
+    /**
+     * Get a paginated list of all the events held at this venue in the past.
+     *
+     * @param venueId The id for the venue you would like to fetch event listings for
+     * @param apiKey  A Last.fm API key
+     * @return a paginated list of events
+     */
+    public static PaginatedResult<Event> getPastEvents(String venueId, String apiKey) {
+        return getPastEvents(venueId, false, -1, -1, apiKey);
+    }
+
+    /**
+     * Get a paginated list of all the events held at this venue in the past.
+     *
+     * @param venueId       The id for the venue you would like to fetch event listings for
+     * @param festivalsOnly Whether only festivals should be returned, or all events.
+     * @param page          The page of results to return
+     * @param limit         The number of results to fetch per page.
+     * @param apiKey        A Last.fm API key
+     * @return a paginated list of events
+     */
+    public static PaginatedResult<Event> getPastEvents(String venueId, boolean festivalsOnly, int page, int limit, String apiKey) {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("venue", venueId);
+        params.put("festivalsonly", festivalsOnly ? "1" : "0");
+        MapUtilities.nullSafePut(params, "page", page);
+        MapUtilities.nullSafePut(params, "limit", limit);
+        Result result = Caller.getInstance().call("venue.getPastEvents", apiKey, params);
+        return ResponseBuilder.buildPaginatedResult(result, Event.class);
+    }
+
+    private static class VenueFactory implements ItemFactory<Venue> {
+        public Venue createItemFromElement(DomElement element) {
+            Venue venue = new Venue();
+            venue.id = element.getChildText("id");
+            venue.name = element.getChildText("name");
+            venue.url = element.getChildText("url");
+            venue.phonenumber = element.getChildText("phonenumber");
+            venue.website = element.getChildText("website");
+            ImageHolder.loadImages(venue, element);
+            DomElement l = element.getChild("location");
+            venue.city = l.getChildText("city");
+            venue.country = l.getChildText("country");
+            venue.street = l.getChildText("street");
+            venue.postal = l.getChildText("postalcode");
+            venue.timezone = l.getChildText("timezone");
+            DomElement p = l.getChild("geo:point");
+            if (p.getChildText("geo:lat").length() != 0) { // some venues don't have geo information applied
+                venue.latitude = Float.parseFloat(p.getChildText("geo:lat"));
+                venue.longitude = Float.parseFloat(p.getChildText("geo:long"));
+            }
+            return venue;
+        }
+    }
 }

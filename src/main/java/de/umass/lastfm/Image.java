@@ -26,13 +26,13 @@
 
 package de.umass.lastfm;
 
+import de.umass.xml.DomElement;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
-import de.umass.xml.DomElement;
 
 /**
  * An <code>Image</code> contains metadata and URLs for an artist's image. Metadata contains title, votes, format and other.
@@ -44,87 +44,87 @@ import de.umass.xml.DomElement;
  */
 public class Image extends ImageHolder {
 
-	static final ItemFactory<Image> FACTORY = new ImageFactory();
+    static final ItemFactory<Image> FACTORY = new ImageFactory();
 
-	private static final DateFormat DATE_ADDED_FORMAT = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss",
-			Locale.ENGLISH);
+    private static final DateFormat DATE_ADDED_FORMAT = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss",
+            Locale.ENGLISH);
 
-	private String title;
-	private String url;
-	private Date dateAdded;
-	private String format;
+    private String title;
+    private String url;
+    private Date dateAdded;
+    private String format;
 
-	private String owner;
-	private int thumbsUp, thumbsDown;
+    private String owner;
+    private int thumbsUp, thumbsDown;
 
-	private Image() {
-	}
+    private Image() {
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public String getUrl() {
-		return url;
-	}
+    public String getUrl() {
+        return url;
+    }
 
-	public Date getDateAdded() {
-		return dateAdded;
-	}
+    public Date getDateAdded() {
+        return dateAdded;
+    }
 
-	public String getFormat() {
-		return format;
-	}
+    public String getFormat() {
+        return format;
+    }
 
-	public String getOwner() {
-		return owner;
-	}
+    public String getOwner() {
+        return owner;
+    }
 
-	public int getThumbsUp() {
-		return thumbsUp;
-	}
+    public int getThumbsUp() {
+        return thumbsUp;
+    }
 
-	public int getThumbsDown() {
-		return thumbsDown;
-	}
+    public int getThumbsDown() {
+        return thumbsDown;
+    }
 
-	private static class ImageFactory implements ItemFactory<Image> {
-		public Image createItemFromElement(DomElement element) {
-			Image i = new Image();
-			i.title = element.getChildText("title");
-			i.url = element.getChildText("url");
-			i.format = element.getChildText("format");
-			try {
-				i.dateAdded = DATE_ADDED_FORMAT.parse(element.getChildText("dateadded"));
-			} catch (ParseException e1) {
-				e1.printStackTrace();
-			}
-			DomElement owner = element.getChild("owner");
-			if (owner != null)
-				i.owner = owner.getChildText("name");
-			DomElement votes = element.getChild("votes");
-			if (votes != null) {
-				i.thumbsUp = Integer.parseInt(votes.getChildText("thumbsup"));
-				i.thumbsDown = Integer.parseInt(votes.getChildText("thumbsdown"));
-			}
-			DomElement sizes = element.getChild("sizes");
-			for (DomElement image : sizes.getChildren("size")) {
-				// code copied from ImageHolder.loadImages
-				String attribute = image.getAttribute("name");
-				ImageSize size = null;
-				if (attribute == null) {
-					size = ImageSize.MEDIUM; // workaround for image responses without size attr.
-				} else {
-					try {
-						size = ImageSize.valueOf(attribute.toUpperCase(Locale.ENGLISH));
-					} catch (IllegalArgumentException e) {
-						// if they suddenly again introduce a new image size
-					}
-				}
-				if (size != null)
-					i.imageUrls.put(size, image.getText());
-			}
-			return i;
-		}
-	}
+    private static class ImageFactory implements ItemFactory<Image> {
+        public Image createItemFromElement(DomElement element) {
+            Image i = new Image();
+            i.title = element.getChildText("title");
+            i.url = element.getChildText("url");
+            i.format = element.getChildText("format");
+            try {
+                i.dateAdded = DATE_ADDED_FORMAT.parse(element.getChildText("dateadded"));
+            } catch (ParseException e1) {
+                e1.printStackTrace();
+            }
+            DomElement owner = element.getChild("owner");
+            if (owner != null)
+                i.owner = owner.getChildText("name");
+            DomElement votes = element.getChild("votes");
+            if (votes != null) {
+                i.thumbsUp = Integer.parseInt(votes.getChildText("thumbsup"));
+                i.thumbsDown = Integer.parseInt(votes.getChildText("thumbsdown"));
+            }
+            DomElement sizes = element.getChild("sizes");
+            for (DomElement image : sizes.getChildren("size")) {
+                // code copied from ImageHolder.loadImages
+                String attribute = image.getAttribute("name");
+                ImageSize size = null;
+                if (attribute == null) {
+                    size = ImageSize.MEDIUM; // workaround for image responses without size attr.
+                } else {
+                    try {
+                        size = ImageSize.valueOf(attribute.toUpperCase(Locale.ENGLISH));
+                    } catch (IllegalArgumentException e) {
+                        // if they suddenly again introduce a new image size
+                    }
+                }
+                if (size != null)
+                    i.imageUrls.put(size, image.getText());
+            }
+            return i;
+        }
+    }
 }

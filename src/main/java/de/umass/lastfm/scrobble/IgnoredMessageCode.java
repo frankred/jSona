@@ -35,48 +35,48 @@ import java.util.Map;
  */
 public enum IgnoredMessageCode {
 
-	ARTIST_IGNORED(1),
-	TRACK_IGNORED(2),
-	TIMESTAMP_TOO_OLD(3),
-	TIMESTAMP_TOO_NEW(4),
-	DAILY_SCROBBLE_LIMIT_EXCEEDED(5);
+    ARTIST_IGNORED(1),
+    TRACK_IGNORED(2),
+    TIMESTAMP_TOO_OLD(3),
+    TIMESTAMP_TOO_NEW(4),
+    DAILY_SCROBBLE_LIMIT_EXCEEDED(5);
 
-	/**
-	 * The ignored message error id returned by the Last.fm API.
-	 */
-	private int codeId;
+    /**
+     * The ignored message error id returned by the Last.fm API.
+     */
+    private int codeId;
 
-	/**
-	 * A map which maps error codes against their corresponding enums for lookups by code.
-	 */
-	private static Map<Integer, IgnoredMessageCode> idToCodeMap = new HashMap<Integer, IgnoredMessageCode>();
+    /**
+     * A map which maps error codes against their corresponding enums for lookups by code.
+     */
+    private static Map<Integer, IgnoredMessageCode> idToCodeMap = new HashMap<Integer, IgnoredMessageCode>();
 
-	static {
-		for (IgnoredMessageCode code : IgnoredMessageCode.values()) {
-			idToCodeMap.put(code.getCodeId(), code);
-		}
-	}
+    static {
+        for (IgnoredMessageCode code : IgnoredMessageCode.values()) {
+            idToCodeMap.put(code.getCodeId(), code);
+        }
+    }
 
-	private IgnoredMessageCode(int code) {
-		this.codeId = code;
-	}
+    private IgnoredMessageCode(int code) {
+        this.codeId = code;
+    }
 
-	/**
-	 * Gets the IgnoredMessage enum value for the passed Last.fm error code.
-	 *
-	 * @param code The Last.fm error code.
-	 * @return The appopriate IgnoredMessage enum value.
-	 */
-	public static IgnoredMessageCode valueOfCode(int code) {
-		IgnoredMessageCode messageCode = idToCodeMap.get(code);
-		if (messageCode != null) {
-			return messageCode;
-		}
-		throw new IllegalArgumentException("No IgnoredMessageCode for code " + code);
-	}
+    /**
+     * Gets the IgnoredMessage enum value for the passed Last.fm error code.
+     *
+     * @param code The Last.fm error code.
+     * @return The appopriate IgnoredMessage enum value.
+     */
+    public static IgnoredMessageCode valueOfCode(int code) {
+        IgnoredMessageCode messageCode = idToCodeMap.get(code);
+        if (messageCode != null) {
+            return messageCode;
+        }
+        throw new IllegalArgumentException("No IgnoredMessageCode for code " + code);
+    }
 
-	private int getCodeId() {
-		return codeId;
-	}
+    private int getCodeId() {
+        return codeId;
+    }
 
 }

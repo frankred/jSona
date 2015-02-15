@@ -26,12 +26,12 @@
 
 package de.umass.lastfm;
 
+import de.umass.util.MapUtilities;
+import de.umass.xml.DomElement;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import de.umass.util.MapUtilities;
-import de.umass.xml.DomElement;
 
 /**
  * Provides access to the Last.fm radio streaming service.<br/>
@@ -42,230 +42,230 @@ import de.umass.xml.DomElement;
  */
 public class Radio {
 
-	private String type;
-	private String stationName;
-	private String stationUrl;
-	private boolean supportsDiscovery;
+    private String type;
+    private String stationName;
+    private String stationUrl;
+    private boolean supportsDiscovery;
 
-	private Session session;
-	private int expiry = -1;
+    private Session session;
+    private int expiry = -1;
 
-	private Radio(Session session) {
-		this.session = session;
-	}
+    private Radio(Session session) {
+        this.session = session;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public String getStationName() {
-		return stationName;
-	}
+    public String getStationName() {
+        return stationName;
+    }
 
-	public String getStationUrl() {
-		return stationUrl;
-	}
+    public String getStationUrl() {
+        return stationUrl;
+    }
 
-	public boolean supportsDiscovery() {
-		return supportsDiscovery;
-	}
+    public boolean supportsDiscovery() {
+        return supportsDiscovery;
+    }
 
-	/**
-	 * Returns the playlist expiration value for the last playlist fetchet, or -1 if no playlist has been fetched yet.
-	 *
-	 * @return playlist expiration in seconds
-	 */
-	public int playlistExpiresIn() {
-		return expiry;
-	}
+    /**
+     * Returns the playlist expiration value for the last playlist fetchet, or -1 if no playlist has been fetched yet.
+     *
+     * @return playlist expiration in seconds
+     */
+    public int playlistExpiresIn() {
+        return expiry;
+    }
 
-	/**
-	 * Resolve the name of a resource into a station depending on which resource it is most likely to represent
-	 *
-	 * @param name The tag or artist to resolve
-	 * @param apiKey A Last.fm API key.
-	 * @return A {@link de.umass.lastfm.Radio.RadioStation} or <code>null</code>
-	 */
-	public static RadioStation search(String name, String apiKey) {
-		Result result = Caller.getInstance().call("radio.search", apiKey, "name", name);
-		if(!result.isSuccessful())
-			return null;
+    /**
+     * Resolve the name of a resource into a station depending on which resource it is most likely to represent
+     *
+     * @param name   The tag or artist to resolve
+     * @param apiKey A Last.fm API key.
+     * @return A {@link de.umass.lastfm.Radio.RadioStation} or <code>null</code>
+     */
+    public static RadioStation search(String name, String apiKey) {
+        Result result = Caller.getInstance().call("radio.search", apiKey, "name", name);
+        if (!result.isSuccessful())
+            return null;
 
-		DomElement stationElement = result.getContentElement().getChild("station");
-		if(stationElement == null)
-			return null;
+        DomElement stationElement = result.getContentElement().getChild("station");
+        if (stationElement == null)
+            return null;
 
-		return new RadioStation(stationElement.getChildText("url"), stationElement.getChildText("name"));
-	}
+        return new RadioStation(stationElement.getChildText("url"), stationElement.getChildText("name"));
+    }
 
-	/**
-	 * Tune in to a Last.fm radio station.
-	 *
-	 * @param station An instance of {@link de.umass.lastfm.Radio.RadioStation}
-	 * @param session A Session instance
-	 * @return a Radio instance
-	 */
-	public static Radio tune(RadioStation station, Session session) {
-		return tune(station, Locale.getDefault(), session);
-	}
+    /**
+     * Tune in to a Last.fm radio station.
+     *
+     * @param station An instance of {@link de.umass.lastfm.Radio.RadioStation}
+     * @param session A Session instance
+     * @return a Radio instance
+     */
+    public static Radio tune(RadioStation station, Session session) {
+        return tune(station, Locale.getDefault(), session);
+    }
 
-	/**
-	 * Tune in to a Last.fm radio station.
-	 *
-	 * @param station An instance of {@link de.umass.lastfm.Radio.RadioStation}
-	 * @param locale The language you want the radio's name in
-	 * @param session A Session instance
-	 * @return a Radio instance
-	 */
-	public static Radio tune(RadioStation station, Locale locale, Session session) {
-		return tune(station.getUrl(), locale, session);
-	}
+    /**
+     * Tune in to a Last.fm radio station.
+     *
+     * @param station An instance of {@link de.umass.lastfm.Radio.RadioStation}
+     * @param locale  The language you want the radio's name in
+     * @param session A Session instance
+     * @return a Radio instance
+     */
+    public static Radio tune(RadioStation station, Locale locale, Session session) {
+        return tune(station.getUrl(), locale, session);
+    }
 
-	/**
-	 * Tune in to a Last.fm radio station.
-	 *
-	 * @param station A lastfm radio URL
-	 * @param locale The language you want the radio's name in
-	 * @param session A Session instance
-	 * @return a Radio instance
-	 */
-	public static Radio tune(String station, Locale locale, Session session) {
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("station", station);
-		if (locale != null && locale.getLanguage().length() != 0) {
-			params.put("lang", locale.getLanguage());
-		}
+    /**
+     * Tune in to a Last.fm radio station.
+     *
+     * @param station A lastfm radio URL
+     * @param locale  The language you want the radio's name in
+     * @param session A Session instance
+     * @return a Radio instance
+     */
+    public static Radio tune(String station, Locale locale, Session session) {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("station", station);
+        if (locale != null && locale.getLanguage().length() != 0) {
+            params.put("lang", locale.getLanguage());
+        }
 
-		Result result = Caller.getInstance().call("radio.tune", session, params);
-		if (!result.isSuccessful())
-			return null;
+        Result result = Caller.getInstance().call("radio.tune", session, params);
+        if (!result.isSuccessful())
+            return null;
 
-		DomElement root = result.getContentElement();
-		Radio radio = new Radio(session);
-		radio.type = root.getChildText("type");
-		radio.stationName = root.getChildText("name");
-		radio.stationUrl = root.getChildText("url");
-		radio.supportsDiscovery = "1".equals(root.getChildText("type"));
-		return radio;
-	}
+        DomElement root = result.getContentElement();
+        Radio radio = new Radio(session);
+        radio.type = root.getChildText("type");
+        radio.stationName = root.getChildText("name");
+        radio.stationUrl = root.getChildText("url");
+        radio.supportsDiscovery = "1".equals(root.getChildText("type"));
+        return radio;
+    }
 
-	/**
-	 * Fetches a new radio playlist or <code>null</code> if an error occured, such as when the user is not allowed to stream radio
-	 * (no subscriber).
-	 *
-	 * @return a new {@link Playlist} or <code>null</code>
-	 */
-	public Playlist getPlaylist() {
-		return getPlaylist(false, false);
-	}
+    /**
+     * Fetches a new radio playlist or <code>null</code> if an error occured, such as when the user is not allowed to stream radio
+     * (no subscriber).
+     *
+     * @return a new {@link Playlist} or <code>null</code>
+     */
+    public Playlist getPlaylist() {
+        return getPlaylist(false, false);
+    }
 
-	/**
-	 * Fetches a new radio playlist.
-	 *
-	 * @param discovery Whether to request last.fm content with discovery mode switched on
-	 * @param rtp Whether the user is scrobbling or not during this radio session (helps content generation)
-	 * @return a new Playlist
-	 */
-	public Playlist getPlaylist(boolean discovery, boolean rtp) {
-		return getPlaylist(discovery, rtp, false, -1, -1);
-	}
+    /**
+     * Fetches a new radio playlist.
+     *
+     * @param discovery Whether to request last.fm content with discovery mode switched on
+     * @param rtp       Whether the user is scrobbling or not during this radio session (helps content generation)
+     * @return a new Playlist
+     */
+    public Playlist getPlaylist(boolean discovery, boolean rtp) {
+        return getPlaylist(discovery, rtp, false, -1, -1);
+    }
 
-	/**
-	 * Fetches a new radio playlist.
-	 *
-	 * @param discovery Whether to request last.fm content with discovery mode switched on
-	 * @param rtp Whether the user is scrobbling or not during this radio session (helps content generation)
-	 * @param buyLinks Whether the response should contain links for purchase/download, if available
-	 * @param speedMultiplier The rate at which to provide the stream (supported multipliers are 1.0 and 2.0)
-	 * @param bitrate What bitrate to stream content at, in kbps (supported bitrates are 64 and 128)
-	 * @return a new Playlist
-	 */
-	public Playlist getPlaylist(boolean discovery, boolean rtp, boolean buyLinks, double speedMultiplier, int bitrate) {
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("discovery", String.valueOf(discovery));
-		params.put("rtp", String.valueOf(rtp));
-		params.put("buylinks", String.valueOf(buyLinks));
-		MapUtilities.nullSafePut(params, "speed_multiplier", speedMultiplier);
-		MapUtilities.nullSafePut(params, "bitrate", bitrate);
-		Result result = Caller.getInstance().call("radio.getPlaylist", session, params);
+    /**
+     * Fetches a new radio playlist.
+     *
+     * @param discovery       Whether to request last.fm content with discovery mode switched on
+     * @param rtp             Whether the user is scrobbling or not during this radio session (helps content generation)
+     * @param buyLinks        Whether the response should contain links for purchase/download, if available
+     * @param speedMultiplier The rate at which to provide the stream (supported multipliers are 1.0 and 2.0)
+     * @param bitrate         What bitrate to stream content at, in kbps (supported bitrates are 64 and 128)
+     * @return a new Playlist
+     */
+    public Playlist getPlaylist(boolean discovery, boolean rtp, boolean buyLinks, double speedMultiplier, int bitrate) {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("discovery", String.valueOf(discovery));
+        params.put("rtp", String.valueOf(rtp));
+        params.put("buylinks", String.valueOf(buyLinks));
+        MapUtilities.nullSafePut(params, "speed_multiplier", speedMultiplier);
+        MapUtilities.nullSafePut(params, "bitrate", bitrate);
+        Result result = Caller.getInstance().call("radio.getPlaylist", session, params);
 
-		if (!result.isSuccessful())
-			return null;
+        if (!result.isSuccessful())
+            return null;
 
-		DomElement root = result.getContentElement();
-		for (DomElement e : root.getChildren("link")) {
-			if ("http://www.last.fm/expiry".equals(e.getAttribute("rel"))) {
-				this.expiry = Integer.parseInt(e.getText());
-				break;
-			}
-		}
-		return ResponseBuilder.buildItem(root, Playlist.class);
-	}
+        DomElement root = result.getContentElement();
+        for (DomElement e : root.getChildren("link")) {
+            if ("http://www.last.fm/expiry".equals(e.getAttribute("rel"))) {
+                this.expiry = Integer.parseInt(e.getText());
+                break;
+            }
+        }
+        return ResponseBuilder.buildItem(root, Playlist.class);
+    }
 
-	public static class RadioStation {
-		private String name;
-		private String url;
+    public static class RadioStation {
+        private String name;
+        private String url;
 
-		public RadioStation(String url) {
-			this(url, null);
-		}
+        public RadioStation(String url) {
+            this(url, null);
+        }
 
-		public RadioStation(String url, String name) {
-			this.url = url;
-			this.name = name;
-		}
+        public RadioStation(String url, String name) {
+            this.url = url;
+            this.name = name;
+        }
 
-		public String getUrl() {
-			return url;
-		}
+        public String getUrl() {
+            return url;
+        }
 
-		public String getName() {
-			return name;
-		}
+        public String getName() {
+            return name;
+        }
 
-		public static RadioStation similarArtists(String artist) {
-			return new RadioStation("lastfm://artist/" + artist + "/similarartists");
-		}
+        public static RadioStation similarArtists(String artist) {
+            return new RadioStation("lastfm://artist/" + artist + "/similarartists");
+        }
 
-		public static RadioStation artistFans(String artist) {
-			return new RadioStation("lastfm://artist/" + artist + "/fans");
-		}
+        public static RadioStation artistFans(String artist) {
+            return new RadioStation("lastfm://artist/" + artist + "/fans");
+        }
 
-		public static RadioStation library(String user) {
-			return new RadioStation("lastfm://user/" + user + "/library");
-		}
+        public static RadioStation library(String user) {
+            return new RadioStation("lastfm://user/" + user + "/library");
+        }
 
-		public static RadioStation neighbours(String user) {
-			return new RadioStation("lastfm://user/" + user + "/neighbours");
-		}
+        public static RadioStation neighbours(String user) {
+            return new RadioStation("lastfm://user/" + user + "/neighbours");
+        }
 
-		/**
-		 * @deprecated This station has been deprected as of nov. 2010, see <a href="http://www.last.fm/stationchanges2010">here</a>
-		 */
-		public static RadioStation lovedTracks(String user) {
-			return new RadioStation("lastfm://user/" + user + "/loved");
-		}
+        /**
+         * @deprecated This station has been deprected as of nov. 2010, see <a href="http://www.last.fm/stationchanges2010">here</a>
+         */
+        public static RadioStation lovedTracks(String user) {
+            return new RadioStation("lastfm://user/" + user + "/loved");
+        }
 
-		public static RadioStation recommended(String user) {
-			return new RadioStation("lastfm://user/" + user + "/recommended");
-		}
+        public static RadioStation recommended(String user) {
+            return new RadioStation("lastfm://user/" + user + "/recommended");
+        }
 
-		public static RadioStation tagged(String tag) {
-			return new RadioStation("lastfm://globaltags/" + tag);
-		}
+        public static RadioStation tagged(String tag) {
+            return new RadioStation("lastfm://globaltags/" + tag);
+        }
 
-		/**
-		 * @deprecated This station has been deprected as of nov. 2010, see <a href="http://www.last.fm/stationchanges2010">here</a>
-		 */
-		public static RadioStation playlist(String playlistId) {
-			return new RadioStation("lastfm://playlist/" + playlistId);
-		}
+        /**
+         * @deprecated This station has been deprected as of nov. 2010, see <a href="http://www.last.fm/stationchanges2010">here</a>
+         */
+        public static RadioStation playlist(String playlistId) {
+            return new RadioStation("lastfm://playlist/" + playlistId);
+        }
 
-		/**
-		 * @deprecated This station has been deprected as of nov. 2010, see <a href="http://www.last.fm/stationchanges2010">here</a>
-		 */
-		public static RadioStation personalTag(String user, String tag) {
-			return new RadioStation("lastfm://usertags/" + user + "/" + tag);
-		}
-	}
+        /**
+         * @deprecated This station has been deprected as of nov. 2010, see <a href="http://www.last.fm/stationchanges2010">here</a>
+         */
+        public static RadioStation personalTag(String user, String tag) {
+            return new RadioStation("lastfm://usertags/" + user + "/" + tag);
+        }
+    }
 }

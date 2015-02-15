@@ -1,15 +1,22 @@
 package de.roth.jsona.javafx;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
-
+import com.sun.media.jfxmedia.events.PlayerStateEvent.PlayerState;
+import de.roth.jsona.MainFX;
+import de.roth.jsona.config.Config;
+import de.roth.jsona.config.Global;
 import de.roth.jsona.information.Link;
+import de.roth.jsona.javafx.draghandler.ListItemDragHandler;
+import de.roth.jsona.javafx.util.BrowserUtil;
+import de.roth.jsona.javafx.util.DialogUtil;
+import de.roth.jsona.javafx.util.TabUtil;
+import de.roth.jsona.logic.LogicInterfaceFX;
+import de.roth.jsona.model.MusicListItem;
+import de.roth.jsona.model.MusicListItem.Status;
+import de.roth.jsona.model.PlayList;
+import de.roth.jsona.theme.ThemeUtils;
 import de.roth.jsona.util.Logger;
+import de.roth.jsona.util.TimeFormatter;
+import de.roth.jsona.vlc.mediaplayer.PlayBackMode;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -26,67 +33,26 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.Slider;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DataFormat;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
-import javafx.scene.input.TransferMode;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.input.*;
+import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-
-import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 
-import com.sun.media.jfxmedia.events.PlayerStateEvent.PlayerState;
-
-import de.roth.jsona.MainFX;
-import de.roth.jsona.config.Config;
-import de.roth.jsona.config.Global;
-import de.roth.jsona.javafx.draghandler.ListItemDragHandler;
-import de.roth.jsona.javafx.util.BrowserUtil;
-import de.roth.jsona.javafx.util.DialogUtil;
-import de.roth.jsona.javafx.util.TabUtil;
-import de.roth.jsona.logic.LogicInterfaceFX;
-import de.roth.jsona.mediaplayer.PlayBackMode;
-import de.roth.jsona.model.MusicListItem;
-import de.roth.jsona.model.MusicListItem.Status;
-import de.roth.jsona.model.PlayList;
-import de.roth.jsona.util.TimeFormatter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
 
 public class ViewController implements Initializable, ViewInterface {
 
@@ -381,29 +347,29 @@ public class ViewController implements Initializable, ViewInterface {
         ClassLoader cl = getClass().getClassLoader();
 
         // Images
-        this.playImage = new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "/play.png"));
-        this.pauseImage = new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "/pause.png"));
+        this.playImage = new Image(cl.getResourceAsStream(ThemeUtils.getThemePath() + "/play.png"));
+        this.pauseImage = new Image(cl.getResourceAsStream(ThemeUtils.getThemePath() + "/pause.png"));
         this.playButtonImage.setImage(playImage);
-        this.nextButtonImage.setImage(new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "/next.png")));
-        this.prevButtonImage.setImage(new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "/prev.png")));
-        this.artistImage.setImage(new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "/icon.png")));
-        this.maximizeImage = new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "/maximize_window.png"));
-        this.reMaximizeImage = new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "/remaximize_window.png"));
-        this.modeNormalImage = new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "/mode_normal.png"));
-        this.modeShuffleImage = new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "/mode_shuffle.png"));
-        this.modeRepeatImage = new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "/mode_repeat.png"));
+        this.nextButtonImage.setImage(new Image(cl.getResourceAsStream(ThemeUtils.getThemePath() + "/next.png")));
+        this.prevButtonImage.setImage(new Image(cl.getResourceAsStream(ThemeUtils.getThemePath() + "/prev.png")));
+        this.artistImage.setImage(new Image(cl.getResourceAsStream(ThemeUtils.getThemePath() + "/icon.png")));
+        this.maximizeImage = new Image(cl.getResourceAsStream(ThemeUtils.getThemePath() + "/maximize_window.png"));
+        this.reMaximizeImage = new Image(cl.getResourceAsStream(ThemeUtils.getThemePath() + "/remaximize_window.png"));
+        this.modeNormalImage = new Image(cl.getResourceAsStream(ThemeUtils.getThemePath() + "/mode_normal.png"));
+        this.modeShuffleImage = new Image(cl.getResourceAsStream(ThemeUtils.getThemePath() + "/mode_shuffle.png"));
+        this.modeRepeatImage = new Image(cl.getResourceAsStream(ThemeUtils.getThemePath() + "/mode_repeat.png"));
         this.modeButtonImage.setImage(modeNormalImage);
 
         if (logic.equalizer_available()) {
-            this.equalizerIcon.setImage(new Image(cl.getResourceAsStream(ViewManagerFX.THEME + "/equalizer.png")));
+            this.equalizerIcon.setImage(new Image(cl.getResourceAsStream(ThemeUtils.getThemePath() + "/equalizer.png")));
         } else {
             this.equalizerIcon.setImage(null);
             this.equalizerIcon.setDisable(true);
         }
 
         // Font
-        if (new File(ViewManagerFX.THEME + "/jsona.otf").exists()) {
-            Font.loadFont(getClass().getClassLoader().getResource(ViewManagerFX.THEME + "/jsona.otf").toExternalForm(), 10);
+        if (new File(ThemeUtils.getThemePath() + "/jsona.otf").exists()) {
+            Font.loadFont(getClass().getClassLoader().getResource(ThemeUtils.getThemePath() + "/jsona.otf").toExternalForm(), 10);
         }
 
         this.maximizeWindowIcon.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -476,7 +442,7 @@ public class ViewController implements Initializable, ViewInterface {
         removePlaylistButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                final Stage dialog = DialogUtil.createDialog(stage, getClass().getClassLoader().getResource(ViewManagerFX.THEME + "/layout_confirm_dialog.fxml"), false);
+                final Stage dialog = DialogUtil.createDialog(stage, getClass().getClassLoader().getResource(ThemeUtils.getThemePath() + "/layout_confirm_dialog.fxml"), false);
                 Pane root = (Pane) dialog.getScene().getRoot();
 
                 Button ok = (Button) root.lookup("#okButton");
@@ -723,7 +689,7 @@ public class ViewController implements Initializable, ViewInterface {
             public void handle(MouseEvent m) {
                 // Create equalizer dialog once
                 if (equalizerStage == null) {
-                    equalizerStage = DialogUtil.createDialog(stage, getClass().getClassLoader().getResource(ViewManagerFX.THEME + "/layout_equalizer.fxml"), false);
+                    equalizerStage = DialogUtil.createDialog(stage, getClass().getClassLoader().getResource(ThemeUtils.getThemePath() + "/layout_equalizer.fxml"), false);
                     Pane root = (Pane) equalizerStage.getScene().getRoot();
                     final GridPane gridPane = (GridPane) root.lookup("#equalizerSliderGridPane");
                     final CheckBox equalizerOnOffCheckbox = (CheckBox) root.lookup("#equalizerOnOffCheckbox");
@@ -991,7 +957,7 @@ public class ViewController implements Initializable, ViewInterface {
                 tab.setId(id);
                 AnchorPane loadingPane = null;
                 try {
-                    loadingPane = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ViewManagerFX.THEME + "/layout_music_folder_loading.fxml"));
+                    loadingPane = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ThemeUtils.getThemePath() + "/layout_music_folder_loading.fxml"));
                 } catch (IOException e) {
                     e.printStackTrace();
                     return;
@@ -1017,7 +983,7 @@ public class ViewController implements Initializable, ViewInterface {
                 tab.setId(id);
                 AnchorPane musicPane = null;
                 try {
-                    musicPane = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ViewManagerFX.THEME + "/layout_list.fxml"));
+                    musicPane = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ThemeUtils.getThemePath() + "/layout_list.fxml"));
                 } catch (IOException e) {
                     e.printStackTrace();
                     return;
@@ -1037,7 +1003,7 @@ public class ViewController implements Initializable, ViewInterface {
             public void run() {
                 AnchorPane listPane = null;
                 try {
-                    listPane = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ViewManagerFX.THEME + "/layout_list.fxml"));
+                    listPane = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ThemeUtils.getThemePath() + "/layout_list.fxml"));
                     musicFolderTabs.get(id).setContent(listPane);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -1094,7 +1060,7 @@ public class ViewController implements Initializable, ViewInterface {
         // get layout
         AnchorPane listPane = null;
         try {
-            listPane = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ViewManagerFX.THEME + "/layout_list.fxml"));
+            listPane = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ThemeUtils.getThemePath() + "/layout_list.fxml"));
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -1354,7 +1320,7 @@ public class ViewController implements Initializable, ViewInterface {
 
         public void initCellLayout() {
             try {
-                this.listItem = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ViewManagerFX.THEME + "/layout_list_item.fxml"));
+                this.listItem = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ThemeUtils.getThemePath() + "/layout_list_item.fxml"));
             } catch (Exception e) {
                 e.printStackTrace();
             }

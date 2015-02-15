@@ -1,9 +1,9 @@
 package de.roth.jsona.javafx;
 
-import de.roth.jsona.MainFX;
 import de.roth.jsona.config.Config;
 import de.roth.jsona.javafx.close.CloseEventHandler;
 import de.roth.jsona.logic.LogicManagerFX;
+import de.roth.jsona.theme.ThemeUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,7 +19,6 @@ public class ViewManagerFX {
 
     private static ViewManagerFX instance = new ViewManagerFX();
     private ViewController controller;
-    public static String THEME = MainFX.getTheme();
 
     public void init(Stage stage, LogicManagerFX logic) {
         try {
@@ -28,7 +27,7 @@ public class ViewManagerFX {
             stage.setMinWidth(Config.getInstance().MIN_WIDTH);
 
             // setting application properties
-            stage.getIcons().add(new Image(THEME + "/icon.png"));
+            stage.getIcons().add(new Image(ThemeUtils.getThemePath() + "/icon.png"));
             stage.setTitle(Config.getInstance().TITLE);
 
             if (Config.getInstance().WINDOW_OS_DECORATION == false) {
@@ -40,7 +39,7 @@ public class ViewManagerFX {
             // setting controller
             this.controller = new ViewController(stage);
 
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource(THEME + "/layout.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource(ThemeUtils.getThemePath() + "/layout.fxml"));
             fxmlLoader.setController(this.controller);
             Parent parent = fxmlLoader.load();
             Scene scene = new Scene(parent, Config.getInstance().WIDTH, Config.getInstance().HEIGHT, true, SceneAntialiasing.DISABLED);

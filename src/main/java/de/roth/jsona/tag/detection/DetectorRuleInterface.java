@@ -7,8 +7,7 @@ import java.util.ArrayList;
  * Interface for detection
  *
  * @author Frank Roth
- *
  */
 public interface DetectorRuleInterface {
-	public ArrayList<FieldResult> detect(File rootFolder, File file);
+    public ArrayList<FieldResult> detect(File rootFolder, File file);
 }

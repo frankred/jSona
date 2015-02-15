@@ -5,23 +5,23 @@ import java.nio.file.Path;
 
 public class WatchDirThread implements Runnable {
 
-	private Path path;
-	private WatchDirListener listener;
+    private Path path;
+    private WatchDirListener listener;
 
-	public WatchDirThread(Path pathToWatch, WatchDirListener listener) {
-		this.path = pathToWatch;
-		this.listener = listener;
-	}
+    public WatchDirThread(Path pathToWatch, WatchDirListener listener) {
+        this.path = pathToWatch;
+        this.listener = listener;
+    }
 
-	@Override
-	public void run() {
+    @Override
+    public void run() {
         WatchDir watchDir;
-		try {
-			watchDir = new WatchDir(path, true);	// recursive = true
-			watchDir.addEntryListener(listener);
-			watchDir.processEvents();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} 	
-	}
+        try {
+            watchDir = new WatchDir(path, true);    // recursive = true
+            watchDir.addEntryListener(listener);
+            watchDir.processEvents();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

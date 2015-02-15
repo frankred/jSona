@@ -31,20 +31,20 @@ package de.umass.lastfm;
  */
 public enum Period {
 
-	OVERALL("overall"),
-	WEEK("7day"),
-	ONE_MONTH("1month"),
-	THREE_MONTHS("3month"),
-	SIX_MONTHS("6month"),
-	TWELVE_MONTHS("12month");
+    OVERALL("overall"),
+    WEEK("7day"),
+    ONE_MONTH("1month"),
+    THREE_MONTHS("3month"),
+    SIX_MONTHS("6month"),
+    TWELVE_MONTHS("12month");
 
-	private String string;
+    private String string;
 
-	Period(String string) {
-		this.string = string;
-	}
+    Period(String string) {
+        this.string = string;
+    }
 
-	public String getString() {
-		return string;
-	}
+    public String getString() {
+        return string;
+    }
 }

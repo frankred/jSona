@@ -37,85 +37,85 @@ import de.umass.xml.DomElement;
  */
 public class Session {
 
-	private String apiKey;
-	private String secret;
-	private String username;
-	private String key;
-	private boolean subscriber;
+    private String apiKey;
+    private String secret;
+    private String username;
+    private String key;
+    private boolean subscriber;
 
-	private Session() {
-	}
+    private Session() {
+    }
 
-	/**
-	 * Restores a Session instance with the given session key.
-	 *
-	 * @param apiKey An api key
-	 * @param secret A secret
-	 * @param sessionKey The previously obtained session key
-	 * @return a Session instance
-	 */
-	public static Session createSession(String apiKey, String secret, String sessionKey) {
-		return createSession(apiKey, secret, sessionKey, null, false);
-	}
+    /**
+     * Restores a Session instance with the given session key.
+     *
+     * @param apiKey     An api key
+     * @param secret     A secret
+     * @param sessionKey The previously obtained session key
+     * @return a Session instance
+     */
+    public static Session createSession(String apiKey, String secret, String sessionKey) {
+        return createSession(apiKey, secret, sessionKey, null, false);
+    }
 
-	/**
-	 * Restores a Session instance with the given session key.
-	 *
-	 * @param apiKey An api key
-	 * @param secret A secret
-	 * @param sessionKey The previously obtained session key
-	 * @param username A Last.fm username
-	 * @param subscriber Subscriber status
-	 * @return a Session instance
-	 */
-	public static Session createSession(String apiKey, String secret, String sessionKey, String username,
-										boolean subscriber) {
-		Session s = new Session();
-		s.apiKey = apiKey;
-		s.secret = secret;
-		s.key = sessionKey;
-		s.username = username;
-		s.subscriber = subscriber;
-		return s;
-	}
+    /**
+     * Restores a Session instance with the given session key.
+     *
+     * @param apiKey     An api key
+     * @param secret     A secret
+     * @param sessionKey The previously obtained session key
+     * @param username   A Last.fm username
+     * @param subscriber Subscriber status
+     * @return a Session instance
+     */
+    public static Session createSession(String apiKey, String secret, String sessionKey, String username,
+                                        boolean subscriber) {
+        Session s = new Session();
+        s.apiKey = apiKey;
+        s.secret = secret;
+        s.key = sessionKey;
+        s.username = username;
+        s.subscriber = subscriber;
+        return s;
+    }
 
-	public String getSecret() {
-		return secret;
-	}
+    public String getSecret() {
+        return secret;
+    }
 
-	public String getApiKey() {
-		return apiKey;
-	}
+    public String getApiKey() {
+        return apiKey;
+    }
 
-	public String getKey() {
-		return key;
-	}
+    public String getKey() {
+        return key;
+    }
 
-	public boolean isSubscriber() {
-		return subscriber;
-	}
+    public boolean isSubscriber() {
+        return subscriber;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	@Override
-	public String toString() {
-		return "Session[" +
-				"apiKey=" + apiKey +
-				", secret=" + secret +
-				", username=" + username +
-				", key=" + key +
-				", subscriber=" + subscriber +
-				']';
-	}
+    @Override
+    public String toString() {
+        return "Session[" +
+                "apiKey=" + apiKey +
+                ", secret=" + secret +
+                ", username=" + username +
+                ", key=" + key +
+                ", subscriber=" + subscriber +
+                ']';
+    }
 
-	static Session sessionFromElement(DomElement element, String apiKey, String secret) {
-		if (element == null)
-			return null;
-		String user = element.getChildText("name");
-		String key = element.getChildText("key");
-		boolean subsc = element.getChildText("subscriber").equals("1");
-		return createSession(apiKey, secret, key, user, subsc);
-	}
+    static Session sessionFromElement(DomElement element, String apiKey, String secret) {
+        if (element == null)
+            return null;
+        String user = element.getChildText("name");
+        String key = element.getChildText("key");
+        boolean subsc = element.getChildText("subscriber").equals("1");
+        return createSession(apiKey, secret, key, user, subsc);
+    }
 }

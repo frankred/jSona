@@ -7,8 +7,6 @@ import com.tulskiy.keymaster.common.HotKey;
 import com.tulskiy.keymaster.common.HotKeyListener;
 import com.tulskiy.keymaster.common.Provider;
 import de.roth.jsona.api.youtube.YoutubeAPI;
-import de.roth.jsona.information.ArtistCacheInformation;
-import de.roth.jsona.information.Link;
 import de.roth.jsona.config.Config;
 import de.roth.jsona.config.Global;
 import de.roth.jsona.database.DataManager;
@@ -22,10 +20,10 @@ import de.roth.jsona.file.FileTaggerListener;
 import de.roth.jsona.folderwatch.DirWatcher;
 import de.roth.jsona.folderwatch.WatchDirListener;
 import de.roth.jsona.http.ImageType;
+import de.roth.jsona.information.ArtistCacheInformation;
+import de.roth.jsona.information.Link;
 import de.roth.jsona.javafx.ViewManagerFX;
 import de.roth.jsona.keyevent.HotkeyConfig;
-import de.roth.jsona.mediaplayer.MediaPlayerManager;
-import de.roth.jsona.mediaplayer.PlayBackMode;
 import de.roth.jsona.model.MusicListItem;
 import de.roth.jsona.model.MusicListItem.Status;
 import de.roth.jsona.model.PlayList;
@@ -35,6 +33,8 @@ import de.roth.jsona.util.Logger;
 import de.roth.jsona.util.NumberUtil;
 import de.roth.jsona.util.SerializeManager;
 import de.roth.jsona.util.TimeFormatter;
+import de.roth.jsona.vlc.mediaplayer.MediaPlayerManager;
+import de.roth.jsona.vlc.mediaplayer.PlayBackMode;
 import de.umass.lastfm.Track;
 import javafx.concurrent.Task;
 import org.apache.commons.httpclient.HttpClient;
@@ -294,7 +294,6 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
         this.hotkeysProvider.stop();
 
         if (Config.getInstance().ALLOW_JSONA_TO_OVERWRITE_ME) {
-            Logger.get().log(Level.INFO, "Saving current configuration to '" + Global.CONFIG_JSON + "'...");
             Config.getInstance().toFile(Global.CONFIG_JSON);
         }
 

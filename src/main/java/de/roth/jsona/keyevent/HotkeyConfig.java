@@ -1,8 +1,8 @@
 package de.roth.jsona.keyevent;
 
-import javax.swing.KeyStroke;
-
 import com.google.gson.annotations.Expose;
+
+import javax.swing.*;
 
 /**
  * This class represents a hotkey for the application with an keyEvent

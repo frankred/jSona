@@ -34,135 +34,135 @@ import de.umass.lastfm.Result;
  */
 public class ScrobbleResult extends Result {
 
-	private String track;
-	private String artist;
-	private String album;
-	private String albumArtist;
-	private int timestamp;
-	private boolean trackCorrected;
-	private boolean artistCorrected;
-	private boolean albumCorrected;
-	private boolean albumArtistCorrected;
-	private boolean ignored;
-	private IgnoredMessageCode ignoredMessageCode;
-	private String ignoredMessage;
+    private String track;
+    private String artist;
+    private String album;
+    private String albumArtist;
+    private int timestamp;
+    private boolean trackCorrected;
+    private boolean artistCorrected;
+    private boolean albumCorrected;
+    private boolean albumArtistCorrected;
+    private boolean ignored;
+    private IgnoredMessageCode ignoredMessageCode;
+    private String ignoredMessage;
 
-	public ScrobbleResult(Result result) {
-		super(result.getResultDocument());
-		super.status = result.getStatus();
-		super.errorMessage = result.getErrorMessage();
-		super.errorCode = result.getErrorCode();
-		super.httpErrorCode = result.getHttpErrorCode();
-	}
+    public ScrobbleResult(Result result) {
+        super(result.getResultDocument());
+        super.status = result.getStatus();
+        super.errorMessage = result.getErrorMessage();
+        super.errorCode = result.getErrorCode();
+        super.httpErrorCode = result.getHttpErrorCode();
+    }
 
-	public String getTrack() {
-		return track;
-	}
+    public String getTrack() {
+        return track;
+    }
 
-	public void setTrack(String track) {
-		this.track = track;
-	}
+    public void setTrack(String track) {
+        this.track = track;
+    }
 
-	public String getArtist() {
-		return artist;
-	}
+    public String getArtist() {
+        return artist;
+    }
 
-	public void setArtist(String artist) {
-		this.artist = artist;
-	}
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
 
-	public String getAlbum() {
-		return album;
-	}
+    public String getAlbum() {
+        return album;
+    }
 
-	public void setAlbum(String album) {
-		this.album = album;
-	}
+    public void setAlbum(String album) {
+        this.album = album;
+    }
 
-	public String getAlbumArtist() {
-		return albumArtist;
-	}
+    public String getAlbumArtist() {
+        return albumArtist;
+    }
 
-	public void setAlbumArtist(String albumArtist) {
-		this.albumArtist = albumArtist;
-	}
+    public void setAlbumArtist(String albumArtist) {
+        this.albumArtist = albumArtist;
+    }
 
-	public long getTimestamp() {
-		return timestamp;
-	}
+    public long getTimestamp() {
+        return timestamp;
+    }
 
-	public void setTimestamp(int timestamp) {
-		this.timestamp = timestamp;
-	}
+    public void setTimestamp(int timestamp) {
+        this.timestamp = timestamp;
+    }
 
-	public boolean isTrackCorrected() {
-		return trackCorrected;
-	}
+    public boolean isTrackCorrected() {
+        return trackCorrected;
+    }
 
-	public void setTrackCorrected(boolean trackCorrected) {
-		this.trackCorrected = trackCorrected;
-	}
+    public void setTrackCorrected(boolean trackCorrected) {
+        this.trackCorrected = trackCorrected;
+    }
 
-	public boolean isArtistCorrected() {
-		return artistCorrected;
-	}
+    public boolean isArtistCorrected() {
+        return artistCorrected;
+    }
 
-	public void setArtistCorrected(boolean artistCorrected) {
-		this.artistCorrected = artistCorrected;
-	}
+    public void setArtistCorrected(boolean artistCorrected) {
+        this.artistCorrected = artistCorrected;
+    }
 
-	public boolean isAlbumCorrected() {
-		return albumCorrected;
-	}
+    public boolean isAlbumCorrected() {
+        return albumCorrected;
+    }
 
-	public void setAlbumCorrected(boolean albumCorrected) {
-		this.albumCorrected = albumCorrected;
-	}
+    public void setAlbumCorrected(boolean albumCorrected) {
+        this.albumCorrected = albumCorrected;
+    }
 
-	public boolean isAlbumArtistCorrected() {
-		return albumArtistCorrected;
-	}
+    public boolean isAlbumArtistCorrected() {
+        return albumArtistCorrected;
+    }
 
-	public void setAlbumArtistCorrected(boolean albumArtistCorrected) {
-		this.albumArtistCorrected = albumArtistCorrected;
-	}
+    public void setAlbumArtistCorrected(boolean albumArtistCorrected) {
+        this.albumArtistCorrected = albumArtistCorrected;
+    }
 
-	public boolean isIgnored() {
-		return ignored;
-	}
+    public boolean isIgnored() {
+        return ignored;
+    }
 
-	public void setIgnored(boolean ignored) {
-		this.ignored = ignored;
-	}
+    public void setIgnored(boolean ignored) {
+        this.ignored = ignored;
+    }
 
-	public IgnoredMessageCode getIgnoredMessageCode() {
-		return ignoredMessageCode;
-	}
+    public IgnoredMessageCode getIgnoredMessageCode() {
+        return ignoredMessageCode;
+    }
 
-	public void setIgnoredMessageCode(IgnoredMessageCode ignoredMessageCode) {
-		this.ignoredMessageCode = ignoredMessageCode;
-	}
+    public void setIgnoredMessageCode(IgnoredMessageCode ignoredMessageCode) {
+        this.ignoredMessageCode = ignoredMessageCode;
+    }
 
-	public String getIgnoredMessage() {
-		return ignoredMessage;
-	}
+    public String getIgnoredMessage() {
+        return ignoredMessage;
+    }
 
-	public void setIgnoredMessage(String ignoredMessage) {
-		this.ignoredMessage = ignoredMessage;
-	}
+    public void setIgnoredMessage(String ignoredMessage) {
+        this.ignoredMessage = ignoredMessage;
+    }
 
 	/*
-	 * (non-Javadoc)
+     * (non-Javadoc)
 	 *
 	 * @see java.lang.Object#toString()
 	 */
 
-	@Override
-	public String toString() {
-		return "ScrobbleResult [" + super.toString() + ", track=" + track + ", trackCorrected=" + trackCorrected + ", artist=" + artist
-				+ ", artistCorrected=" + artistCorrected + ", album=" + album + ", albumCorrected=" + albumCorrected + ", albumArtist="
-				+ albumArtist + ", albumArtistCorrected=" + albumArtistCorrected + ", ignored=" + ignored + ", ignoredMessageCode="
-				+ ignoredMessageCode + ", ignoredMessage=" + ignoredMessage + ", timestamp=" + timestamp + "]";
-	}
+    @Override
+    public String toString() {
+        return "ScrobbleResult [" + super.toString() + ", track=" + track + ", trackCorrected=" + trackCorrected + ", artist=" + artist
+                + ", artistCorrected=" + artistCorrected + ", album=" + album + ", albumCorrected=" + albumCorrected + ", albumArtist="
+                + albumArtist + ", albumArtistCorrected=" + albumArtistCorrected + ", ignored=" + ignored + ", ignoredMessageCode="
+                + ignoredMessageCode + ", ignoredMessage=" + ignoredMessage + ", timestamp=" + timestamp + "]";
+    }
 
 }

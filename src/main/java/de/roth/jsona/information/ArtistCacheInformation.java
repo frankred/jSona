@@ -1,10 +1,10 @@
 package de.roth.jsona.information;
 
-import java.util.Collection;
-import java.util.Date;
-
 import de.umass.lastfm.Artist;
 import de.umass.lastfm.Track;
+
+import java.util.Collection;
+import java.util.Date;
 
 /**
  * Artist abstraction class for API calls. Holds the information, image path from the

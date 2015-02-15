@@ -2,15 +2,13 @@ package de.roth.jsona.api.google.images;
 
 import de.roth.jsona.http.HttpClientHelper;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.util.URIUtil;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.*;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
 
 public class GoogleImageAPI {
 

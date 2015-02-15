@@ -1,4 +1,4 @@
-package de.roth.jsona.mediaplayer.job;
+package de.roth.jsona.vlc.mediaplayer.job;
 
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 

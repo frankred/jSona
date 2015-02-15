@@ -40,88 +40,88 @@ import de.umass.xml.DomElement;
  */
 public class BuyLink {
 
-	public static enum StoreType {
-		PHYSICAl,
-		DIGITAL
-	}
+    public static enum StoreType {
+        PHYSICAl,
+        DIGITAL
+    }
 
-	private StoreType type;
-	private String name;
-	private String link;
-	private String icon;
-	private boolean search;
+    private StoreType type;
+    private String name;
+    private String link;
+    private String icon;
+    private boolean search;
 
-	private String currency;
-	private double price;
+    private String currency;
+    private double price;
 
-	private BuyLink(String name, StoreType type, String link) {
-		this.name = name;
-		this.type = type;
-		this.link = link;
-	}
+    private BuyLink(String name, StoreType type, String link) {
+        this.name = name;
+        this.type = type;
+        this.link = link;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getLink() {
-		return link;
-	}
+    public String getLink() {
+        return link;
+    }
 
-	public StoreType getType() {
-		return type;
-	}
+    public StoreType getType() {
+        return type;
+    }
 
-	/**
-	 * Returns a url to a 16x16 pixel icon for the store, or <code>null</code> if no icon url was supplied.
-	 *
-	 * @return Icon URL or <code>null</code>
-	 */
-	public String getIcon() {
-		return icon;
-	}
+    /**
+     * Returns a url to a 16x16 pixel icon for the store, or <code>null</code> if no icon url was supplied.
+     *
+     * @return Icon URL or <code>null</code>
+     */
+    public String getIcon() {
+        return icon;
+    }
 
-	/**
-	 * Returns <code>true</code> if this link points to a search page instead of an actual product page. Note that
-	 * for search links there is no price information available.
-	 *
-	 * @return if this is a search link
-	 */
-	public boolean isSearch() {
-		return search;
-	}
+    /**
+     * Returns <code>true</code> if this link points to a search page instead of an actual product page. Note that
+     * for search links there is no price information available.
+     *
+     * @return if this is a search link
+     */
+    public boolean isSearch() {
+        return search;
+    }
 
-	/**
-	 * Returns the currency of the price of the item. Check if this is <code>null</code> to double-check if there is
-	 * price information available
-	 *
-	 * @return currency
-	 */
-	public String getCurrency() {
-		return currency;
-	}
+    /**
+     * Returns the currency of the price of the item. Check if this is <code>null</code> to double-check if there is
+     * price information available
+     *
+     * @return currency
+     */
+    public String getCurrency() {
+        return currency;
+    }
 
-	/**
-	 * Returns the price for the item, or 0.0 if no price information is available. Use {@link #getCurrency()} and
-	 * {@link #isSearch()} to check if price information is available.
-	 *
-	 * @return price, if available
-	 */
-	public double getPrice() {
-		return price;
-	}
+    /**
+     * Returns the price for the item, or 0.0 if no price information is available. Use {@link #getCurrency()} and
+     * {@link #isSearch()} to check if price information is available.
+     *
+     * @return price, if available
+     */
+    public double getPrice() {
+        return price;
+    }
 
-	static BuyLink linkFromElement(StoreType type, DomElement element) {
-		BuyLink link = new BuyLink(element.getChildText("supplierName"), type, element.getChildText("buyLink"));
-		link.search = "1".equals(element.getChildText("isSearch"));
-		link.icon = element.getChildText("supplierIcon");
-		if (link.icon != null && link.icon.length() == 0)
-			link.icon = null;
-		if (element.hasChild("price")) {
-			DomElement child = element.getChild("price");
-			link.currency = child.getChildText("currency");
-			link.price = Double.parseDouble(child.getChildText("amount"));
-		}
-		return link;
-	}
+    static BuyLink linkFromElement(StoreType type, DomElement element) {
+        BuyLink link = new BuyLink(element.getChildText("supplierName"), type, element.getChildText("buyLink"));
+        link.search = "1".equals(element.getChildText("isSearch"));
+        link.icon = element.getChildText("supplierIcon");
+        if (link.icon != null && link.icon.length() == 0)
+            link.icon = null;
+        if (element.hasChild("price")) {
+            DomElement child = element.getChild("price");
+            link.currency = child.getChildText("currency");
+            link.price = Double.parseDouble(child.getChildText("amount"));
+        }
+        return link;
+    }
 }
