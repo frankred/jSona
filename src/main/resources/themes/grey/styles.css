@@ -64,21 +64,19 @@
 .c11 {-fx-background-color: #FFEBFB;}
 
 .list-cell {
-    /* -fx-skin: "com.sun.javafx.scene.control.skin.ListCellSkin"; */
-    /* -fx-background-color: -fx-control-inner-background; */
     -fx-background-color: #FFFFFF;
     -fx-padding: 0.25em; /* 3 */
-    /* -fx-text-fill: -fx-text-inner-color; */
     -fx-text-fill: #000000;
     -fx-cell-size: 20;
+    -fx-padding: 0 2 0 2;
 }
 
 
 .list-cell:odd {
-    /* -fx-background-color: derive(-fx-control-inner-background,-5.0%);-fx-alignment: */
     -fx-background-color: #FFFFFF;
     -fx-text-fill: #000000;
-    
+    -fx-cell-size: 20;
+    -fx-padding: 0 2 0 2;
 }
 
 .c0, .c0:odd {-fx-background-color: #FFEBF1;}

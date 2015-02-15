@@ -107,6 +107,10 @@ public class ExternalInformationFetcher {
     }
 
     private void downloadAndInformListener(MusicListItem item, Artist artist, String artistImageUrl, String artistImageFilePath, HttpClient client, ExternalArtistInformationListener externalArtistInformationListener) {
+        if (artistImageUrl == null) {
+            return;
+        }
+
         boolean downloadSucceed = HttpClientHelper.downloadFile(artistImageUrl, artistImageFilePath, client);
 
         if (downloadSucceed == false) {
