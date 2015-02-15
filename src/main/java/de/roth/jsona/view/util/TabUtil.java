@@ -1,4 +1,4 @@
-package de.roth.jsona.javafx.util;
+package de.roth.jsona.view.util;
 
 import de.roth.jsona.logic.LogicInterfaceFX;
 import javafx.application.Platform;

@@ -17,7 +17,7 @@ public class Global {
 
     // Data
     public static final String PLAYLIST_LIST_DATA = "playlists.data";
-    public static final String CONFIG_JSON = "config.json";
+    public static final String CONFIG = "config.json";
 
     // Caches
     public static final String CACHE_FOLDER = "cache";

@@ -1,7 +1,7 @@
-package de.roth.jsona.javafx;
+package de.roth.jsona.view;
 
 import de.roth.jsona.config.Config;
-import de.roth.jsona.javafx.close.CloseEventHandler;
+import de.roth.jsona.view.closehandler.CloseEventHandler;
 import de.roth.jsona.logic.LogicManagerFX;
 import de.roth.jsona.theme.ThemeUtils;
 import javafx.application.Platform;

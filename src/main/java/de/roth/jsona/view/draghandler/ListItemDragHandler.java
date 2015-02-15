@@ -1,6 +1,6 @@
-package de.roth.jsona.javafx.draghandler;
+package de.roth.jsona.view.draghandler;
 
-import de.roth.jsona.javafx.ViewController.ListItemCell;
+import de.roth.jsona.view.ViewController.ListItemCell;
 import javafx.event.EventHandler;
 import javafx.scene.input.DragEvent;
 

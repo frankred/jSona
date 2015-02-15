@@ -1,4 +1,4 @@
-package de.roth.jsona.javafx.close;
+package de.roth.jsona.view.closehandler;
 
 import de.roth.jsona.logic.LogicManagerFX;
 import javafx.application.Platform;

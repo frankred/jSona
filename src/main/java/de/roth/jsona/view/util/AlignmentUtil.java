@@ -1,4 +1,4 @@
-package de.roth.jsona.javafx.util;
+package de.roth.jsona.view.util;
 
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;

@@ -23,7 +23,7 @@ public class Config {
     public boolean ALLOW_JSONA_TO_OVERWRITE_ME;
 
     @Expose
-    public String PATH_TO_VLCJ;
+    public String PATH_TO_VLC;
 
     @Expose
     public int MAX_SEARCH_RESULT_AMOUNT;

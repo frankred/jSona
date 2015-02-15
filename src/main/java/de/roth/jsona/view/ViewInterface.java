@@ -1,4 +1,4 @@
-package de.roth.jsona.javafx;
+package de.roth.jsona.view;
 
 import de.roth.jsona.logic.LogicInterfaceFX;
 import de.roth.jsona.model.MusicListItem;

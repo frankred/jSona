@@ -1,14 +1,14 @@
-package de.roth.jsona.javafx;
+package de.roth.jsona.view;
 
 import com.sun.media.jfxmedia.events.PlayerStateEvent.PlayerState;
 import de.roth.jsona.MainFX;
 import de.roth.jsona.config.Config;
 import de.roth.jsona.config.Global;
 import de.roth.jsona.information.Link;
-import de.roth.jsona.javafx.draghandler.ListItemDragHandler;
-import de.roth.jsona.javafx.util.BrowserUtil;
-import de.roth.jsona.javafx.util.DialogUtil;
-import de.roth.jsona.javafx.util.TabUtil;
+import de.roth.jsona.view.draghandler.ListItemDragHandler;
+import de.roth.jsona.view.util.BrowserUtil;
+import de.roth.jsona.view.util.DialogUtil;
+import de.roth.jsona.view.util.TabUtil;
 import de.roth.jsona.logic.LogicInterfaceFX;
 import de.roth.jsona.model.MusicListItem;
 import de.roth.jsona.model.MusicListItem.Status;

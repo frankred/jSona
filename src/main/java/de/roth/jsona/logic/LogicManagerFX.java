@@ -22,7 +22,7 @@ import de.roth.jsona.folderwatch.WatchDirListener;
 import de.roth.jsona.http.ImageType;
 import de.roth.jsona.information.ArtistCacheInformation;
 import de.roth.jsona.information.Link;
-import de.roth.jsona.javafx.ViewManagerFX;
+import de.roth.jsona.view.ViewManagerFX;
 import de.roth.jsona.keyevent.HotkeyConfig;
 import de.roth.jsona.model.MusicListItem;
 import de.roth.jsona.model.MusicListItem.Status;
@@ -294,7 +294,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
         this.hotkeysProvider.stop();
 
         if (Config.getInstance().ALLOW_JSONA_TO_OVERWRITE_ME) {
-            Config.getInstance().toFile(Global.CONFIG_JSON);
+            Config.getInstance().toFile(Global.CONFIG);
         }
 
         Logger.get().log(Level.INFO, "Close jSona now! Bye Bye thank you for using jSona =)");

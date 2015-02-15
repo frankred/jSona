@@ -3,15 +3,17 @@ package de.roth.jsona;
 import de.roth.jsona.config.Config;
 import de.roth.jsona.config.Global;
 import de.roth.jsona.config.Validator;
-import de.roth.jsona.javafx.ViewManagerFX;
+import de.roth.jsona.view.ViewManagerFX;
 import de.roth.jsona.logic.LogicManagerFX;
 import de.roth.jsona.theme.ThemeUtils;
 import de.roth.jsona.util.Logger;
+import de.roth.jsona.view.util.DialogUtil;
 import de.roth.jsona.vlc.VLCUtils;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import org.apache.log4j.BasicConfigurator;
 
+import java.io.File;
 import java.util.Locale;
 import java.util.logging.Level;
 
@@ -22,10 +24,13 @@ import java.util.logging.Level;
  */
 public class MainFX extends Application {
 
+    private Stage stage;
     public static final String VERSION = "1.0.6";
 
     @Override
     public void start(final Stage stage) throws Exception {
+        this.stage = stage;
+
         init();
         checks();
 
@@ -56,7 +61,7 @@ public class MainFX extends Application {
         Logger.get().setLevel(Level.ALL);
 
         // Configuration
-        Config.load(Global.CONFIG_JSON);
+        Config.load(Global.CONFIG);
 
         // Language
         Locale.setDefault(Locale.ENGLISH);
@@ -69,28 +74,39 @@ public class MainFX extends Application {
 
         // If its windows then the vlc path is required
         if (VLCUtils.vlcPathRequired()) {
-            if (Config.getInstance().PATH_TO_VLCJ == null) {
-                Logger.get().info("PATH_TO_VLCJ in '" + Global.CONFIG_JSON + "' was not defined");
+            if (Config.getInstance().PATH_TO_VLC == null) {
+                Logger.get().info("PATH_TO_VLC in '" + Global.CONFIG + "' was not defined");
 
-                Logger.get().info("Try to find VLC path");
-
-                VLCUtils.autoSetupVLCPath();
+                searchVLCPath();
                 return;
             }
 
-            if (Validator.isInvalidAbsolutePath(Config.getInstance().PATH_TO_VLCJ)) {
-                Logger.get().info("PATH_TO_VLCJ '" + Config.getInstance().PATH_TO_VLCJ + "' is invalid");
+            if (Validator.isInvalidAbsolutePath(Config.getInstance().PATH_TO_VLC)) {
+                Logger.get().info("PATH_TO_VLC '" + Config.getInstance().PATH_TO_VLC + "' is invalid");
 
-                Logger.get().info("Try to find VLC path");
-                VLCUtils.autoSetupVLCPath();
-
+                searchVLCPath();
                 return;
             }
 
-            System.setProperty("jna.library.path", Config.getInstance().PATH_TO_VLCJ);
+            System.setProperty("jna.library.path", Config.getInstance().PATH_TO_VLC);
         }
     }
 
+    private void searchVLCPath() {
+        Logger.get().info("Try to automatically find the VLC path");
+
+        if (VLCUtils.autoSetupVLCPath()) {
+            Logger.get().warning("VLC path found");
+        } else {
+            Logger.get().warning("VLC not path found");
+
+            String message = "VLC path was not found! \n \nPlease setup up 'PATH_TO_VLC' in " + new File(Global.CONFIG).getAbsolutePath();
+            Config.getInstance().PATH_TO_VLC = "";
+            Config.getInstance().toFile(Global.CONFIG);
+            DialogUtil.showErrorDialog(this.stage, "VLC path was not found", message);
+            System.exit(0);
+        }
+    }
 
     public static String getLogo(String version) {
         return System.lineSeparator() + System.lineSeparator() +
