@@ -1,6 +1,7 @@
 package de.roth.jsona.view;
 
 import de.roth.jsona.config.Config;
+import de.roth.jsona.util.Logger;
 import de.roth.jsona.view.closehandler.CloseEventHandler;
 import de.roth.jsona.logic.LogicManagerFX;
 import de.roth.jsona.theme.ThemeUtils;
@@ -25,6 +26,8 @@ public class ViewManagerFX {
             // setting min windows size
             stage.setMinHeight(Config.getInstance().MIN_HEIGHT);
             stage.setMinWidth(Config.getInstance().MIN_WIDTH);
+
+            Logger.get().info("Theme path: " + ThemeUtils.getThemePath() + "/icon.png");
 
             // setting application properties
             stage.getIcons().add(new Image(ThemeUtils.getThemePath() + "/icon.png"));

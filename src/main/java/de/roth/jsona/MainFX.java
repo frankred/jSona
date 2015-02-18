@@ -3,10 +3,9 @@ package de.roth.jsona;
 import de.roth.jsona.config.Config;
 import de.roth.jsona.config.Global;
 import de.roth.jsona.config.Validator;
-import de.roth.jsona.view.ViewManagerFX;
 import de.roth.jsona.logic.LogicManagerFX;
-import de.roth.jsona.theme.ThemeUtils;
 import de.roth.jsona.util.Logger;
+import de.roth.jsona.view.ViewManagerFX;
 import de.roth.jsona.view.util.DialogUtil;
 import de.roth.jsona.vlc.VLCUtils;
 import javafx.application.Application;
@@ -14,6 +13,7 @@ import javafx.stage.Stage;
 import org.apache.log4j.BasicConfigurator;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Locale;
 import java.util.logging.Level;
 
@@ -67,10 +67,7 @@ public class MainFX extends Application {
         Locale.setDefault(Locale.ENGLISH);
     }
 
-    public void checks() {
-
-        // Check if theme was found, otherwise take default one
-        Config.getInstance().THEME = ThemeUtils.themeFromConfigOrFallback();
+    public void checks() throws IOException {
 
         // If its windows then the vlc path is required
         if (VLCUtils.vlcPathRequired()) {
@@ -96,7 +93,7 @@ public class MainFX extends Application {
         Logger.get().info("Try to automatically find the VLC path");
 
         if (VLCUtils.autoSetupVLCPath()) {
-            Logger.get().warning("VLC path found");
+            Logger.get().info("VLC path found");
         } else {
             Logger.get().warning("VLC not path found");
 
