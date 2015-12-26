@@ -7,7 +7,7 @@ import java.io.*;
  *
  * @author Frank Roth
  */
-public class SerializeManager {
+public class Serializer {
 
     public static Object load(String file) {
         File data = new File(file);

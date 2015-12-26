@@ -188,8 +188,6 @@ public class Scrobbler {
         String n = tracknumber == -1 ? "" : String.valueOf(tracknumber);
         String body = String
                 .format("s=%s&a=%s&t=%s&b=%s&l=%s&n=%s&m=", sessionId, encode(artist), encode(track), b, l, n);
-        if (Caller.getInstance().isDebugMode())
-            System.out.println("now playing: " + body);
         HttpURLConnection urlConnection = Caller.getInstance().openConnection(nowPlayingUrl);
         urlConnection.setRequestMethod("POST");
         urlConnection.setDoOutput(true);
@@ -256,8 +254,6 @@ public class Scrobbler {
             index++;
         }
         String body = builder.toString();
-        if (Caller.getInstance().isDebugMode())
-            System.out.println("submit: " + body);
         HttpURLConnection urlConnection = Caller.getInstance().openConnection(submissionUrl);
         urlConnection.setRequestMethod("POST");
         urlConnection.setDoOutput(true);

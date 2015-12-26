@@ -4,13 +4,12 @@ import de.roth.jsona.config.Global;
 import de.roth.jsona.model.MusicListItem;
 import de.roth.jsona.tag.MP3Tagger;
 import de.roth.jsona.util.Logger;
-import de.roth.jsona.util.SerializeManager;
+import de.roth.jsona.util.Serializer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexableField;
 
 import java.io.File;
 import java.util.*;
-import java.util.logging.Level;
 
 /**
  * Singleton class that load the cache and manages all cache and lucene actions.
@@ -24,7 +23,7 @@ public class DataManager {
 
     @SuppressWarnings("unchecked")
     public DataManager() {
-        this.cache = (HashMap<String, MusicListItem>) SerializeManager.load(Global.FILES_CACHE);
+        this.cache = (HashMap<String, MusicListItem>) Serializer.load(Global.FILES_CACHE);
         if (this.cache == null) {
             this.cache = new HashMap<String, MusicListItem>(5120, 0.5f);
         }
@@ -40,7 +39,7 @@ public class DataManager {
      * @param item
      */
     public void delete(MusicListItem item) {
-        Logger.get().log(Level.INFO, "- Delete '" + item.getFile().getAbsolutePath() + "'.");
+        Logger.get().info("- Delete '" + item.getFile().getAbsolutePath() + "'.");
         LuceneManager.getInstance().delete(item.getId());
         this.cache.remove(item.getFile().getAbsolutePath());
     }
@@ -84,7 +83,7 @@ public class DataManager {
     public void commit() {
         try {
             LuceneManager.getInstance().commit();
-            SerializeManager.save(Global.FILES_CACHE, this.cache);
+            Serializer.save(Global.FILES_CACHE, this.cache);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -105,7 +104,7 @@ public class DataManager {
                     MusicListItem item = pair.getValue();
 
                     if (!item.isTmp_keep_in_cache()) {
-                        Logger.get().log(Level.INFO, "Remove file '" + item.getFile().getAbsolutePath() + "' from cache.");
+                        Logger.get().info("Remove file '" + item.getFile().getAbsolutePath() + "' from cache.");
                         iter.remove();
                     }
 
@@ -114,7 +113,7 @@ public class DataManager {
                 }
 
                 // Save new cache to file
-                SerializeManager.save(Global.FILES_CACHE, cache);
+                Serializer.save(Global.FILES_CACHE, cache);
             }
         }).start();
     }
@@ -127,7 +126,6 @@ public class DataManager {
      * Perform a cache lookup for the file with the over given file path and
      * return the MusicListItem.
      *
-     * @param File f
      * @return MusicListItem
      */
     public MusicListItem get(File f) {
@@ -166,8 +164,8 @@ public class DataManager {
      * Output the number of cached and indexed lucene items.
      */
     public void outputInfo() {
-        Logger.get().log(Level.INFO, "Cache has " + this.cache.size() + " items.");
-        Logger.get().log(Level.INFO, "Lucene has " + LuceneManager.getInstance().getAmount() + " items.");
+        Logger.get().info("Cache has " + this.cache.size() + " items.");
+        Logger.get().info("Lucene has " + LuceneManager.getInstance().getAmount() + " items.");
     }
 
     private void add(MusicListItem item) {

@@ -7,7 +7,6 @@ import de.roth.jsona.api.musicbrainz.Musicbrainz;
 import de.roth.jsona.api.musicbrainz.MusicbrainzSearchResult;
 import de.roth.jsona.config.Global;
 import de.roth.jsona.http.HttpClientHelper;
-import de.roth.jsona.http.ImageType;
 import de.roth.jsona.information.ArtistCacheInformation;
 import de.roth.jsona.model.MusicListItem;
 import de.roth.jsona.util.Logger;
@@ -47,61 +46,67 @@ public class ExternalInformationFetcher {
         return (instance);
     }
 
-    public void collectArtistInformations(MusicListItem item, HttpClient client, ImageType type, ExternalArtistInformationListener externalArtistInformationListener, HashMap<String, ArtistCacheInformation> artistsCache) throws IOException, JSONException, URISyntaxException {
+    public void collectArtistInformation(final MusicListItem item, final HttpClient client, final ExternalArtistInformationListener externalArtistInformationListener, final HashMap<String, ArtistCacheInformation> artistsCache) throws IOException, JSONException, URISyntaxException {
+        Runnable collectArtistInformation = new Runnable() {
+            @Override
+            public void run() {
+/*
+                if (item.getArtist() == null) {
+                    externalArtistInformationListener.ready(item);
 
-        if (item.getArtist() == null) {
-            externalArtistInformationListener.ready(item);
+                    String filename = FilenameUtils.removeExtension(item.getFile().getName());
+                    filename = filename.replaceAll("_", " ");
+                    filename = filename.replace("-", " ");
 
-            String filename = FilenameUtils.removeExtension(item.getFile().getName());
-            filename = filename.replaceAll("_", " ");
-            filename = filename.replace("-", " ");
+                    String itemImage = GoogleImageAPI.getFirstImageURL(filename, client);
+                    String itemImageFilePath = getArtistImageFilePath(item.getFile().getAbsolutePath());
+                    downloadAndInformListener(item, null, itemImage, itemImageFilePath, client, externalArtistInformationListener);
+                    saveInformationToCache(item.getFile().getName(), new ArtistCacheInformation(null, itemImageFilePath), artistsCache);
+                    return;
+                }
+*/
+                Logger.get().info("Collection informations for '" + item.getArtist() + "'.");
 
-            String itemImage = GoogleImageAPI.getFirstImageURL(filename, client);
-            String itemImageFilePath = getArtistImageFilePath(item.getFile().getAbsolutePath());
-            downloadAndInformListener(item, null, itemImage, itemImageFilePath, client, externalArtistInformationListener);
-            saveInformationToCache(item, new ArtistCacheInformation(null, itemImageFilePath), artistsCache);
-            return;
-        }
+                Artist artist = searchArtistOnLastFMInfo(item.getArtist());
 
-        Logger.get().log(Level.INFO, "Collection informations for '" + item.getArtist() + "'.");
+                if (artist == null) {
+                    artist = searchArtistOnLastFMSearch(item.getArtist());
+                }
 
-        Artist artist = this.searchArtistOnLastFMInfo(item.getArtist());
+                if (artist == null) {
+                    artist = searchArtistOnMusicbrainz(item.getArtist(), client);
+                }
 
-        if (artist == null) {
-            artist = this.searchArtistOnLastFMSearch(item.getArtist());
-        }
+                if (artist == null) {
+                    artist = searchArtistWithLastFMCorrection(item.getArtist(), client);
+                }
 
-        if (artist == null) {
-            artist = searchArtistOnMusicbrainz(item.getArtist(), client);
-        }
+                String artistImageUrl = getBiggestImageUrl(artist);
 
-        if (artist == null) {
-            artist = searchArtistWithLastFMCorrection(item.getArtist(), client);
-        }
+                if (StringUtils.isBlank(artistImageUrl)) {
+                    artistImageUrl = GoogleImageAPI.getFirstImageURL(item.getArtist(), client);
+                }
 
-        String artistImageUrl = getBiggestImageUrl(artist);
+                String artistImageFilePath = null;
 
-        if (StringUtils.isBlank(artistImageUrl)) {
-            artistImageUrl = GoogleImageAPI.getFirstImageURL(item.getArtist(), client);
-        }
+                // Image found -> Download image and refresh view
+                if (StringUtils.isNotBlank(artistImageUrl)) {
+                    createFolderIfNotExists(Global.ARTIST_IMAGE_FOLDER);
+                    artistImageFilePath = getArtistImageFilePath(artist);
+                    downloadAndInformListener(item, artist, artistImageUrl, artistImageFilePath, client, externalArtistInformationListener);
+                    saveInformationToCache(item, new ArtistCacheInformation(artist, artistImageFilePath), artistsCache);
+                }
 
-        String artistImageFilePath = null;
-
-        // Image found -> Download image and refresh view
-        if (StringUtils.isNotBlank(artistImageUrl)) {
-            createFolderIfNotExists(Global.ARTIST_IMAGE_FOLDER);
-            artistImageFilePath = getArtistImageFilePath(artist);
-            downloadAndInformListener(item, artist, artistImageUrl, artistImageFilePath, client, externalArtistInformationListener);
-            saveInformationToCache(item, new ArtistCacheInformation(artist, artistImageFilePath), artistsCache);
-        }
-
-        // Top Tracks
-        Collection<Track> artistTopTracks = getLastFMTopTracks(artist.getName());
-        if (artistTopTracks != null && artistTopTracks.size() > 0) {
-            ArtistCacheInformation artistCacheInformation = new ArtistCacheInformation(artist, artistImageFilePath, artistTopTracks);
-            externalArtistInformationListener.ready(item, artistCacheInformation);
-            saveInformationToCache(item, artistCacheInformation, artistsCache);
-        }
+                // Top Tracks
+                Collection<Track> artistTopTracks = getLastFMTopTracks(artist.getName());
+                if (artistTopTracks != null && artistTopTracks.size() > 0) {
+                    ArtistCacheInformation artistCacheInformation = new ArtistCacheInformation(artist, artistImageFilePath, artistTopTracks);
+                    externalArtistInformationListener.ready(item, artistCacheInformation);
+                    saveInformationToCache(item, artistCacheInformation, artistsCache);
+                }
+            }
+        };
+        new Thread(collectArtistInformation).start();
     }
 
     private void downloadAndInformListener(MusicListItem item, Artist artist, String artistImageUrl, String artistImageFilePath, HttpClient client, ExternalArtistInformationListener externalArtistInformationListener) {
@@ -112,11 +117,11 @@ public class ExternalInformationFetcher {
         boolean downloadSucceed = HttpClientHelper.downloadFile(artistImageUrl, artistImageFilePath, client);
 
         if (downloadSucceed == false) {
-            Logger.get().log(Level.INFO, "Image download from '" + artistImageUrl + "' failed.");
+            Logger.get().info("Image download from '" + artistImageUrl + "' failed.");
             return;
         }
 
-        Logger.get().log(Level.INFO, "Image download from  '" + artistImageUrl + "' to the file '" + artistImageFilePath + "'.");
+        Logger.get().info("Image download from  '" + artistImageUrl + "' to the file '" + artistImageFilePath + "'.");
         externalArtistInformationListener.ready(item, new ArtistCacheInformation(artist, artistImageFilePath, null));
     }
 
@@ -125,7 +130,7 @@ public class ExternalInformationFetcher {
             Collection<Track> tracks = Artist.getTopTracks(artistQuery, Global.LASTFM_API_KEY);
             return tracks;
         } catch (Exception e) {
-            Logger.get().log(Level.INFO, "Error during LastFM.information.getTopTracks('" + artistQuery + "'), maybe API out of date or no internet connection.");
+            Logger.get().info("Error during LastFM.information.getTopTracks('" + artistQuery + "'), maybe API out of date or no internet connection.");
         }
         return null;
     }
@@ -134,13 +139,12 @@ public class ExternalInformationFetcher {
         return Global.ARTIST_IMAGE_FOLDER + File.separator + Base64.getEncoder().encodeToString(artist.getName().getBytes());
     }
 
-
     private String getArtistImageFilePath(String path) {
         return Global.ARTIST_IMAGE_FOLDER + File.separator + Base64.getEncoder().encodeToString(path.getBytes());
     }
 
-    private void saveInformationToCache(MusicListItem item, ArtistCacheInformation cachableArtist, HashMap<String, ArtistCacheInformation> informationCache) {
-        informationCache.put(item.getArtist(), cachableArtist);
+    private void saveInformationToCache(String key, ArtistCacheInformation cachableArtist, HashMap<String, ArtistCacheInformation> informationCache) {
+        informationCache.put(key, cachableArtist);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String artistsJson = gson.toJson(informationCache);
         try {
@@ -151,6 +155,10 @@ public class ExternalInformationFetcher {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void saveInformationToCache(MusicListItem item, ArtistCacheInformation cachableArtist, HashMap<String, ArtistCacheInformation> informationCache) {
+        saveInformationToCache(item.getArtist(), cachableArtist, informationCache);
     }
 
     private void createFolderIfNotExists(String folder) {
@@ -185,10 +193,10 @@ public class ExternalInformationFetcher {
         }
 
         if (foundArtist.getName().trim().toLowerCase().equals(artistQuery.trim().toLowerCase())) {
-            Logger.get().log(Level.INFO, "LastFM.information.getInfo('" + artistQuery + "')" + ": '" + foundArtist.getName() + "'.");
+            Logger.get().info("LastFM.information.getInfo('" + artistQuery + "')" + ": '" + foundArtist.getName() + "'.");
             return foundArtist;
         } else {
-            Logger.get().log(Level.INFO, "LastFM.information.getInfo('" + artistQuery + "')" + ": No match found.");
+            Logger.get().info("LastFM.information.getInfo('" + artistQuery + "')" + ": No match found.");
             return null;
         }
     }
@@ -207,7 +215,7 @@ public class ExternalInformationFetcher {
                 return null;
             }
 
-            Logger.get().log(Level.INFO, "LastFM.information.search('" + artistQuery + "')" + ": Most similar information '" + mostSimilarArtist.getName() + "'.");
+            Logger.get().info("LastFM.information.search('" + artistQuery + "')" + ": Most similar information '" + mostSimilarArtist.getName() + "'.");
 
             Artist foundArtist = Artist.getInfo(mostSimilarArtist.getName(), Global.LASTFM_API_KEY);
 
@@ -215,11 +223,11 @@ public class ExternalInformationFetcher {
                 return null;
             }
 
-            Logger.get().log(Level.INFO, "LastFM.information.getInfo('" + mostSimilarArtist.getName() + "')" + ": '" + foundArtist.getName() + "'.");
+            Logger.get().info("LastFM.information.getInfo('" + mostSimilarArtist.getName() + "')" + ": '" + foundArtist.getName() + "'.");
 
             return foundArtist;
         } catch (Exception e) {
-            Logger.get().log(Level.INFO, "Error during LastFM.information.search('" + artistQuery + "'), maybe API out of date or no internet connection.");
+            Logger.get().info("Error during LastFM.information.search('" + artistQuery + "'), maybe API out of date or no internet connection.");
         }
         return null;
     }
@@ -231,13 +239,13 @@ public class ExternalInformationFetcher {
             return null;
         }
 
-        Logger.get().log(Level.INFO, "Musicbrainz.org findMbidByArtist('" + artistQuery + "'): " + searchResult.getMbid());
+        Logger.get().info("Musicbrainz.org findMbidByArtist('" + artistQuery + "'): " + searchResult.getMbid());
         Artist foundArtist = Artist.getInfo(searchResult.getMbid(), Global.LASTFM_API_KEY);
 
         if (foundArtist == null) {
             return null;
         }
-        Logger.get().log(Level.INFO, "LastFM.information.getInfo('" + searchResult.getMbid() + "')" + ": '" + foundArtist.getName() + "'.");
+        Logger.get().info("LastFM.information.getInfo('" + searchResult.getMbid() + "')" + ": '" + foundArtist.getName() + "'.");
 
         return foundArtist;
     }
@@ -246,11 +254,11 @@ public class ExternalInformationFetcher {
         Artist foundArtist = Artist.getCorrection(artistQuery, Global.LASTFM_API_KEY);
 
         if (foundArtist == null) {
-            Logger.get().log(Level.INFO, "No information found on last.fm and musicbrainz.org for '" + artistQuery + "'.");
+            Logger.get().info("No information found on last.fm and musicbrainz.org for '" + artistQuery + "'.");
             return null;
         }
 
-        Logger.get().log(Level.INFO, "LastFM.information.getCorrection('" + artistQuery + "'): " + foundArtist.getName());
+        Logger.get().info("LastFM.information.getCorrection('" + artistQuery + "'): " + foundArtist.getName());
 
         return foundArtist;
     }

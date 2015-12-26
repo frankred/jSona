@@ -236,14 +236,6 @@ public class MusicListItem implements Serializable, Observable {
         this.id = id;
     }
 
-    public boolean isTmp_view_insertBeforeMe() {
-        return tmp_view_insertBeforeMe;
-    }
-
-    public void setTmp_view_insertBeforeMe(boolean tmp_view_insertBeforeMe) {
-        this.tmp_view_insertBeforeMe = tmp_view_insertBeforeMe;
-    }
-
     public int getColorClass() {
         return colorClass;
     }
@@ -262,10 +254,6 @@ public class MusicListItem implements Serializable, Observable {
 
     public File getRootFolder() {
         return rootFolder;
-    }
-
-    public void setRootFolder(File rootFolder) {
-        this.rootFolder = rootFolder;
     }
 
     @Override
@@ -293,9 +281,5 @@ public class MusicListItem implements Serializable, Observable {
                 }
             });
         }
-    }
-
-    public String getInvalidateionListenerCause() {
-        return invalidateionListenerCause;
     }
 }

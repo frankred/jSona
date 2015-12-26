@@ -9,7 +9,10 @@ import de.roth.jsona.tag.detection.DetectorRuleConfig;
 import de.roth.jsona.vlc.mediaplayer.PlayBackMode;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class Config {
 
@@ -91,6 +94,9 @@ public class Config {
     @Expose
     public boolean EQUALIZER_ACTIVE;
 
+    @Expose
+    public String LANGUAGE_FILE;
+
     public Config() {
         // default values
         this.TITLE = "jSona " + MainFX.VERSION + " | OpenSource Hell Ya!";
@@ -114,19 +120,9 @@ public class Config {
         this.EQUALIZER_ACTIVE = false;
         this.WINDOW_OS_DECORATION = false;
         this.ALLOW_JSONA_TO_OVERWRITE_ME = false;
-    }
 
-    public static void load(File file) {
-        instance = fromFile(file);
-
-        // no config file found
-        if (instance == null) {
-            instance = new Config();
-        }
-    }
-
-    public static void load(String file) {
-        load(new File(file));
+        // language text
+        this.LANGUAGE_FILE = "jsona_en.properties";
     }
 
     public void toFile(String file) {
@@ -147,6 +143,29 @@ public class Config {
         }
     }
 
+    public static Config fromFile(File configFile) {
+        try {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(configFile)));
+            return gson.fromJson(reader, Config.class);
+        } catch (FileNotFoundException e) {
+            return null;
+        }
+    }
+
+    public static void load(File file) {
+        instance = fromFile(file);
+
+        // no config file found
+        if (instance == null) {
+            instance = new Config();
+        }
+    }
+
+    public static void load(String file) {
+        load(new File(file));
+    }
+
     public static ArrayList<File> asFileArrayList(ArrayList<String> filepaths) {
         ArrayList<File> files = new ArrayList<File>();
         for (String f : filepaths) {
@@ -155,19 +174,20 @@ public class Config {
         return files;
     }
 
-    @Override
     public String toString() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         return gson.toJson(this);
     }
 
-    private static Config fromFile(File configFile) {
-        try {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(configFile)));
-            return gson.fromJson(reader, Config.class);
-        } catch (FileNotFoundException e) {
-            return null;
+    public Map<String, Object> getMap() {
+        Map<String, Object> map = new LinkedHashMap<String, Object>();
+
+        Field[] fields = Config.class.getDeclaredFields();
+        System.out.printf("%d fields:%n", fields.length);
+        for (Field field : fields) {
+            map.put("Group 1#" + field.getName(), field.getType());
         }
+
+        return map;
     }
 }

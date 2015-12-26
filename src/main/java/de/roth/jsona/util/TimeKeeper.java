@@ -38,7 +38,7 @@ public class TimeKeeper {
      */
     public void stop() {
         this.time = System.currentTimeMillis() - this.start;
-        Logger.get().log(Level.INFO, "Duration for process '" + this.name + "' was " + getTime() + "ns.");
+        Logger.get().info("Duration for process '" + this.name + "' was " + getTime() + "ns.");
     }
 
 

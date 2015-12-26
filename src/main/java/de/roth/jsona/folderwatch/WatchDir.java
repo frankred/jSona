@@ -76,10 +76,10 @@ public class WatchDir {
         if (trace) {
             Path prev = keys.get(key);
             if (prev == null) {
-                Logger.get().log(Level.ALL, "Register to watch folder'" + dir + "'");
+                Logger.get().info("Register to watch folder'" + dir + "'");
             } else {
                 if (!dir.equals(prev)) {
-                    Logger.get().log(Level.ALL, "Update folder'" + dir + "' and '" + prev + "'");
+                    Logger.get().info("Update folder'" + dir + "' and '" + prev + "'");
                 }
             }
         }

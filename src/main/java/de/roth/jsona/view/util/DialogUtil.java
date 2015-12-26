@@ -48,7 +48,7 @@ public class DialogUtil {
             e1.printStackTrace();
             return null;
         }
-        ;
+
 
         Scene s = new Scene(root);
         s.setFill(Color.TRANSPARENT);

@@ -12,7 +12,7 @@ import de.roth.jsona.view.util.TabUtil;
 import de.roth.jsona.logic.LogicInterfaceFX;
 import de.roth.jsona.model.MusicListItem;
 import de.roth.jsona.model.MusicListItem.Status;
-import de.roth.jsona.model.PlayList;
+import de.roth.jsona.model.playlist.Playlist;
 import de.roth.jsona.theme.ThemeUtils;
 import de.roth.jsona.util.Logger;
 import de.roth.jsona.util.TimeFormatter;
@@ -46,10 +46,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.jsoup.Jsoup;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
@@ -135,8 +132,21 @@ public class ViewController implements Initializable, ViewInterface {
     private static double newY;
     private static Rectangle stageDimension = new Rectangle();
 
+    // Language
+    ResourceBundle languageBundle;
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        // load language bundle
+        try {
+            InputStream inputStream = getClass().getClassLoader().getResource(Global.LANGUAGE_FOLDER + "/" + Config.getInstance().LANGUAGE_FILE).openStream();
+            languageBundle = new PropertyResourceBundle(inputStream);
+        } catch (IOException e) {
+            Logger.get().warn("Could not load language file");
+            e.printStackTrace();
+        }
 
         // os window decoration
         if (Config.getInstance().WINDOW_OS_DECORATION == true) {
@@ -853,10 +863,10 @@ public class ViewController implements Initializable, ViewInterface {
         });
     }
 
-    public void initPlaylists(final LogicInterfaceFX logic, final ArrayList<PlayList> playlists, int activeIndex) {
+    public void initPlaylists(final LogicInterfaceFX logic, final ArrayList<Playlist> playlists, int activeIndex) {
         Platform.runLater(new Runnable() {
             public void run() {
-                for (PlayList p : playlists) {
+                for (Playlist p : playlists) {
                     playlistTabs.getTabs().add(createPlayList(logic, p, false, false));
                 }
                 playlistTabs.getTabs().add(createNewTabButton(logic));
@@ -864,7 +874,7 @@ public class ViewController implements Initializable, ViewInterface {
         });
     }
 
-    public void newPlaylist(final LogicInterfaceFX logic, final PlayList p) {
+    public void newPlaylist(final LogicInterfaceFX logic, final Playlist p) {
         Platform.runLater(new Runnable() {
             public void run() {
                 int last = playlistTabs.getTabs().size() - 1;
@@ -921,6 +931,26 @@ public class ViewController implements Initializable, ViewInterface {
         });
     }
 
+    public void updateMusicFolderNotFound(final String tabLabel, final String id, final int pos) {
+        Platform.runLater(new Runnable() {
+            public void run() {
+
+                Tab tab = musicFolderTabs.get(id);
+
+                AnchorPane nodeFoundPane;
+                try {
+                    nodeFoundPane = FXMLLoader.load(getClass().getClassLoader().getResource(ThemeUtils.getThemePath() + "/layout_music_folder_not_found.fxml"), languageBundle);
+                    Label folderNotFoundLabelPath = (Label) nodeFoundPane.lookup("#folder_not_found_path");
+                    folderNotFoundLabelPath.setText(id);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return;
+                }
+                tab.setContent(nodeFoundPane);
+            }
+        });
+    }
+
     public void updateMusicFolderLoading(final int current, final int total, final MusicListItem item, final String id) {
         Platform.runLater(new Runnable() {
             public void run() {
@@ -957,7 +987,7 @@ public class ViewController implements Initializable, ViewInterface {
                 tab.setId(id);
                 AnchorPane loadingPane = null;
                 try {
-                    loadingPane = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ThemeUtils.getThemePath() + "/layout_music_folder_loading.fxml"));
+                    loadingPane = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ThemeUtils.getThemePath() + "/layout_music_folder_loading.fxml"), languageBundle);
                 } catch (IOException e) {
                     e.printStackTrace();
                     return;
@@ -1054,7 +1084,7 @@ public class ViewController implements Initializable, ViewInterface {
         return listView;
     }
 
-    private Tab createPlayList(final LogicInterfaceFX logic, final PlayList playlist, boolean selectTitle, boolean activateTab) {
+    private Tab createPlayList(final LogicInterfaceFX logic, final Playlist playlist, boolean selectTitle, boolean activateTab) {
         Tab tab = TabUtil.createEditableTab(playlist.getAtomicId(), playlist.getName(), selectTitle, logic);
 
         // get layout

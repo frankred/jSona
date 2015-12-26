@@ -1,8 +1,9 @@
 package de.roth.jsona.util;
 
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.SimpleLayout;
 
 /**
  * Logger abstraction class that holds one java util logger
@@ -11,7 +12,7 @@ import java.util.logging.Level;
  */
 public class Logger {
 
-    private static java.util.logging.Logger l;
+    private static org.apache.log4j.Logger logger;
 
     /**
      * Return logger, if logger is null then he will be created for the context
@@ -20,20 +21,24 @@ public class Logger {
      *
      * @return
      */
-    public static java.util.logging.Logger get() {
-        if (l == null) {
-            l = java.util.logging.Logger.getLogger("jsona");
-            Handler[] handlers = l.getHandlers();
-            for (Handler h : handlers) {
-                l.removeHandler(h);
-            }
-            l.setUseParentHandlers(false);
+    public static org.apache.log4j.Logger get() {
 
-            ConsoleHandler handler = new ConsoleHandler();
-            handler.setLevel(Level.FINEST);
-            handler.setFormatter(new SingleLineLogger());
-            l.addHandler(handler);
+        if (logger == null) {
+            logger = org.apache.log4j.Logger.getRootLogger();
+
+            try {
+                SimpleLayout layout = new SimpleLayout();
+                ConsoleAppender consoleAppender = new ConsoleAppender(layout);
+                logger.addAppender(consoleAppender);
+                FileAppender fileAppender = new FileAppender(layout, "log/jsona.log", false);
+                logger.addAppender(fileAppender);
+                // ALL | DEBUG | INFO | WARN | ERROR | FATAL | OFF:
+                logger.setLevel(Level.INFO);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        return l;
+
+        return logger;
     }
 }

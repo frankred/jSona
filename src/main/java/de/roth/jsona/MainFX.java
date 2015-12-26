@@ -10,22 +10,14 @@ import de.roth.jsona.view.util.DialogUtil;
 import de.roth.jsona.vlc.VLCUtils;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import org.apache.log4j.BasicConfigurator;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
-import java.util.logging.Level;
 
-/**
- * This is where all begins...
- *
- * @author Frank Roth
- */
 public class MainFX extends Application {
 
     private Stage stage;
-    public static final String VERSION = "1.0.6";
+    public static final String VERSION = "1.0.7";
 
     @Override
     public void start(final Stage stage) throws Exception {
@@ -33,9 +25,6 @@ public class MainFX extends Application {
 
         init();
         checks();
-
-        // JavaFX 2.0 default theme, it's much faster then the JavaFX 8.0 default theme
-        System.setProperty("javafx.userAgentStylesheetUrl", "caspian");
 
         // Logo
         Logger.get().info("Starting jSona..." + System.lineSeparator() + getLogo(VERSION));
@@ -56,9 +45,6 @@ public class MainFX extends Application {
 
 
     public void init() {
-        // Logging
-        BasicConfigurator.configure();
-        Logger.get().setLevel(Level.ALL);
 
         // Configuration
         Config.load(Global.CONFIG);
@@ -93,10 +79,11 @@ public class MainFX extends Application {
         Logger.get().info("Try to automatically find the VLC path");
 
         if (VLCUtils.autoSetupVLCPath()) {
+            Config.getInstance().PATH_TO_VLC = "";
+            Config.getInstance().toFile(Global.CONFIG);
             Logger.get().info("VLC path found");
         } else {
-            Logger.get().warning("VLC not path found");
-
+            Logger.get().error("VLC not path found");
             String message = "VLC path was not found! \n \nPlease setup up 'PATH_TO_VLC' in " + new File(Global.CONFIG).getAbsolutePath();
             Config.getInstance().PATH_TO_VLC = "";
             Config.getInstance().toFile(Global.CONFIG);

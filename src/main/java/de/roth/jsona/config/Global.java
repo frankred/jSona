@@ -15,6 +15,9 @@ public class Global {
     // Themes
     public static final String THEMES_FOLDER = "themes";
 
+    // Language
+    public static final String LANGUAGE_FOLDER = "lang";
+
     // Data
     public static final String PLAYLIST_LIST_DATA = "playlists.data";
     public static final String CONFIG = "config.json";
@@ -30,18 +33,9 @@ public class Global {
     // Folders that has to exists
     public static final String[] CHECK_FOLDER_EXISTS = {CACHE_FOLDER, IMAGE_FOLDER, ARTIST_IMAGE_FOLDER};
 
-    // Ascii Filter
-    public static final String[] ASCII_FILTER = {"�", "�"};
-
     // View
     public static final String DEFAULT_PLAYLIST_NAME = "Playlist";
     public static final String NEW_FOLDER_NAME = "New";
-
-    // Playback status
-    public static final String PLAYBACK_STATUS_SPACE = " ";
-    public static final String PLAYBACK_STATUS_STOPPED = "Stopped";
-    public static final String PLAYBACK_STATUS_PLAYING = "Playing:";
-    public static final String PLAYBACK_STATUS_PAUSED = "Paused:";
 
     // Equalizer
     public static final String EQUALIZER_ON = "ON";

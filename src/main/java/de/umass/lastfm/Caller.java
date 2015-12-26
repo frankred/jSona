@@ -68,8 +68,6 @@ public class Caller {
     private static final String DEFAULT_API_ROOT = "http://ws.audioscrobbler.com/2.0/";
     private static final Caller instance = new Caller();
 
-    private final java.util.logging.Logger log = Logger.get();
-
     private String apiRootUrl = DEFAULT_API_ROOT;
 
     private Proxy proxy;
@@ -148,35 +146,6 @@ public class Caller {
      */
     public void setCache(Cache cache) {
         this.cache = cache;
-    }
-
-    /**
-     * Sets the <code>debugMode</code> property. If <code>debugMode</code> is
-     * <code>true</code> all call() methods will print debug information and
-     * error messages on failure to stdout and stderr respectively.<br/>
-     * Default is <code>false</code>. Set this to <code>true</code> while in
-     * development and for troubleshooting.
-     *
-     * @param debugMode <code>true</code> to enable debug mode
-     * @see Caller#getLogger()
-     * @deprecated Use the Logger instead
-     */
-    public void setDebugMode(boolean debugMode) {
-        this.debugMode = debugMode;
-        log.setLevel(debugMode ? Level.ALL : Level.OFF);
-    }
-
-    /**
-     * @return the debugMode property
-     * @see Caller#getLogger()
-     * @deprecated Use the Logger instead
-     */
-    public boolean isDebugMode() {
-        return debugMode;
-    }
-
-    public java.util.logging.Logger getLogger() {
-        return log;
     }
 
     /**
@@ -273,7 +242,6 @@ public class Caller {
         try {
             Result result = createResultFromInputStream(inputStream);
             if (!result.isSuccessful()) {
-                log.warning(String.format("API call failed with result: %s%n", result));
                 if (cache != null) {
                     cache.remove(cacheEntryName);
                 }
@@ -321,7 +289,6 @@ public class Caller {
         OutputStream outputStream = urlConnection.getOutputStream();
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
         String post = buildPostBody(method, params);
-        log.info("Request URL as POST-Methode '" + apiRootUrl + "?" + post + "'");
         writer.write(post);
         writer.close();
         return urlConnection;

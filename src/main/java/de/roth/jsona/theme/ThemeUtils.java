@@ -19,10 +19,6 @@ import java.util.List;
 public class ThemeUtils {
 
     public static String getThemePath() {
-        return getThemeFolder() + "/" + Config.getInstance().THEME;
-    }
-
-    public static String getThemeFolder() {
-        return Global.THEMES_FOLDER;
+        return Global.THEMES_FOLDER + "/" + Config.getInstance().THEME;
     }
 }
