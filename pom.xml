@@ -17,7 +17,7 @@
 
     <build>
 
-        <finalName>${artifactId}</finalName>
+        <finalName>${project.artifactId}</finalName>
 
         <plugins>
             <plugin>
@@ -35,19 +35,29 @@
             <resource>
                 <directory>src/main/java</directory>
                 <includes>
-                    <include> **/*.*</include>
+                    <include>**/*.*</include>
                 </includes>
             </resource>
             <resource>
+                <filtering>false</filtering>
                 <directory>src/main/resources</directory>
                 <includes>
-                    <include> **/*.*</include>
+                    <include>**/*.*</include>
+                </includes>
+            </resource>
+            <resource>
+                <filtering>false</filtering>
+                <directory>src/main/resources/natives</directory>
+                <includes>
+                    <include>libvlc.dll</include>
+                    <include>libvlccore.dll</include>
                 </includes>
             </resource>
         </resources>
     </build>
 
     <dependencies>
+
         <!-- Play media files -->
         <dependency>
             <groupId>uk.co.caprica</groupId>
@@ -88,9 +98,9 @@
 
         <!-- ID3 Tags -->
         <dependency>
-            <groupId>net.sf.javamusictag</groupId>
-            <artifactId>jid3lib</artifactId>
-            <version>0.5.4</version>
+            <groupId>com.mpatric</groupId>
+            <artifactId>mp3agic</artifactId>
+            <version>0.8.3</version>
         </dependency>
 
         <!-- Util -->
@@ -128,6 +138,12 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.lingala.zip4j</groupId>
+            <artifactId>zip4j</artifactId>
+            <version>1.3.2</version>
         </dependency>
 
         <dependency>

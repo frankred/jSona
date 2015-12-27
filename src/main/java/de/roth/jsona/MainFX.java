@@ -2,16 +2,20 @@ package de.roth.jsona;
 
 import de.roth.jsona.config.Config;
 import de.roth.jsona.config.Global;
-import de.roth.jsona.config.Validator;
 import de.roth.jsona.logic.LogicManagerFX;
 import de.roth.jsona.util.Logger;
 import de.roth.jsona.view.ViewManagerFX;
-import de.roth.jsona.view.util.DialogUtil;
-import de.roth.jsona.vlc.VLCUtils;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import org.apache.commons.io.FileUtils;
+import uk.co.caprica.vlcj.runtime.RuntimeUtil;
+
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Locale;
 
 public class MainFX extends Application {
@@ -24,7 +28,7 @@ public class MainFX extends Application {
         this.stage = stage;
 
         init();
-        checks();
+        bindVLC();
 
         // Logo
         Logger.get().info("Starting jSona..." + System.lineSeparator() + getLogo(VERSION));
@@ -53,42 +57,40 @@ public class MainFX extends Application {
         Locale.setDefault(Locale.ENGLISH);
     }
 
-    public void checks() throws IOException {
+    public void bindVLC() {
 
-        // If its windows then the vlc path is required
-        if (VLCUtils.vlcPathRequired()) {
-            if (Config.getInstance().PATH_TO_VLC == null) {
-                Logger.get().info("PATH_TO_VLC in '" + Global.CONFIG + "' was not defined");
+        String vlcNative = new String();
+        String libvlccore = new String();
+        String libvlc = new String();
 
-                searchVLCPath();
-                return;
-            }
-
-            if (Validator.isInvalidAbsolutePath(Config.getInstance().PATH_TO_VLC)) {
-                Logger.get().info("PATH_TO_VLC '" + Config.getInstance().PATH_TO_VLC + "' is invalid");
-
-                searchVLCPath();
-                return;
-            }
-
-            System.setProperty("jna.library.path", Config.getInstance().PATH_TO_VLC);
+        if (RuntimeUtil.isWindows()) {
+            vlcNative = "vlc-win-32";
+            libvlccore = "libvlccore.dll";
+            libvlc = "libvlc.dll";
         }
-    }
 
-    private void searchVLCPath() {
-        Logger.get().info("Try to automatically find the VLC path");
+        try {
+            File currentFolder = Paths.get("").toFile();
+            File vlcTargetDirectory = new File(currentFolder.getAbsolutePath() + System.getProperty("file.separator") + vlcNative);
+            if(vlcTargetDirectory.exists()){
+                return;
+            }
 
-        if (VLCUtils.autoSetupVLCPath()) {
-            Config.getInstance().PATH_TO_VLC = "";
-            Config.getInstance().toFile(Global.CONFIG);
-            Logger.get().info("VLC path found");
-        } else {
-            Logger.get().error("VLC not path found");
-            String message = "VLC path was not found! \n \nPlease setup up 'PATH_TO_VLC' in " + new File(Global.CONFIG).getAbsolutePath();
-            Config.getInstance().PATH_TO_VLC = "";
-            Config.getInstance().toFile(Global.CONFIG);
-            DialogUtil.showErrorDialog(this.stage, "VLC path was not found", message);
-            System.exit(0);
+            URL vlcNativeZipInJar = getClass().getClassLoader().getResource("vlc/" + vlcNative + ".zip");
+            File vlcNativeZip = new File(currentFolder.getAbsolutePath() + System.getProperty("file.separator") + vlcNative + ".zip");
+
+            // copy to current directory
+            FileUtils.copyURLToFile(vlcNativeZipInJar, vlcNativeZip);
+
+            // unzip to vlc-natives
+            unzip(vlcNativeZip, currentFolder);
+
+            // load vlc
+            System.load(vlcTargetDirectory.getAbsolutePath() + System.getProperty("file.separator") + libvlccore);
+            System.load(vlcTargetDirectory.getAbsolutePath() + System.getProperty("file.separator") + libvlc);
+        } catch (IOException e) {
+            Logger.get().error("Could not load vlc-win-32", e);
+            e.printStackTrace();
         }
     }
 
@@ -108,5 +110,14 @@ public class MainFX extends Application {
                 " (" + System.getProperty("os.arch") + ")" + System.lineSeparator() +
                 "javafx: " + com.sun.javafx.runtime.VersionInfo.getRuntimeVersion() +
                 System.lineSeparator();
+    }
+
+    public static void unzip(File source, File destination) {
+        try {
+            ZipFile zipFile = new ZipFile(source);
+            zipFile.extractAll(destination.getAbsolutePath());
+        } catch (ZipException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -41,7 +41,6 @@ Here is an example of the default configuration file. You have to setup your **V
 ```json
 {
   "ALLOW_JSONA_TO_OVERWRITE_ME": true,
-  "PATH_TO_VLC": "D:/Program Files/VideoLAN/VLC",
   "MAX_SEARCH_RESULT_AMOUNT": 512,
   "VOLUME": 100,
   "FOLDERS": [
@@ -74,9 +73,6 @@ And here an explanation of all possible attributes:
 
 #####ALLOW_JSONA_TO_OVERWRITE_ME
 If you set this value to true then jsona will overwrite your config.json with the current jSona config. For example if you change the volume in the player then the **VOLUME** value gets overwritten. There only a few configuration attributes that can be change during runtime (e.g.: PLAYBACK_MODE).  
-
-#####PATH_TO_VLC
-Path to your VLC root directory where the libvlc or libvlccore library is. (In windows the files are called libvlc.dll and libvlccore.dll). On a unix system, e.g. fedora the vlc libraries are under '/usr/lib64'. jSona has a dependency to VLC3, which only can be found here: [http://nightlies.videolan.org/build/](http://nightlies.videolan.org/build/).
 
 #####MAX_SEARCH_RESULT_AMOUNT
 Maximum search results of the lucene engine (smaller is faster)
