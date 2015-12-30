@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="item_container" prefHeight="16" minHeight="16" maxHeight="16" prefWidth="1.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+<AnchorPane fx:id="item_container" maxHeight="16" minHeight="16" prefHeight="16" prefWidth="1.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
   <children>
-    <BorderPane minWidth="0.0"  prefHeight="16" minHeight="16" maxHeight="16" prefWidth="-1.0" snapToPixel="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <BorderPane maxHeight="16" minHeight="16" minWidth="0.0" prefHeight="16" prefWidth="-1.0" snapToPixel="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <center>
         <BorderPane prefHeight="-1.0" prefWidth="-1.0">
           <center>
-            <Label fx:id="title" alignment="CENTER_LEFT" contentDisplay="LEFT" ellipsisString="" focusTraversable="false" minWidth="0.0" prefHeight="-1.0" prefWidth="-1.0" text="" underline="false" wrapText="false" BorderPane.alignment="CENTER_LEFT">
+            <Label fx:id="title" alignment="CENTER_LEFT" contentDisplay="LEFT" ellipsisString="" focusTraversable="false" minWidth="0.0" prefHeight="-1.0" prefWidth="-1.0" underline="false" wrapText="false" BorderPane.alignment="CENTER_LEFT">
               <font>
                 <Font size="11.0" />
               </font>
             </Label>
           </center>
           <left>
-            <Label fx:id="artist" contentDisplay="LEFT" ellipsisString="" focusTraversable="false" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" text="" wrapText="false" BorderPane.alignment="CENTER_LEFT">
+            <Label fx:id="artist" contentDisplay="LEFT" ellipsisString="" focusTraversable="false" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" wrapText="false" BorderPane.alignment="CENTER_LEFT">
               <font>
                 <Font name="System Bold" size="14.0" />
               </font>
@@ -27,20 +26,29 @@
           </left>
         </BorderPane>
       </center>
-      <left>
-        <ImageView fx:id="live" disable="false" fitHeight="12.0" fitWidth="0.0" opacity="1.0" pickOnBounds="true" preserveRatio="true" rotate="0.0" smooth="false" style="" visible="false" BorderPane.alignment="CENTER">
-          <image>
-            <Image url="@item_playing.png" />
-          </image>
-        </ImageView>
-      </left>
       <right>
-        <Label fx:id="duration" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" maxWidth="-1.0" prefHeight="-1.0" text="" wrapText="false" BorderPane.alignment="CENTER_RIGHT">
+        <Label fx:id="duration" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" maxWidth="-1.0" prefHeight="-1.0" wrapText="false" BorderPane.alignment="CENTER_RIGHT">
           <font>
             <Font size="10.0" />
           </font>
         </Label>
       </right>
+         <left>
+            <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+               <children>
+              <ImageView fx:id="live" fitHeight="12.0" fitWidth="0.0" opacity="1.0" pickOnBounds="true" preserveRatio="true" smooth="false" style="">
+                <image>
+                  <Image url="@item_playing.png" />
+                </image>
+              </ImageView>
+                  <ImageView fx:id="icon" pickOnBounds="true" preserveRatio="true" smooth="false">
+                     <image>
+                        <Image url="@icon_youtube.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </HBox>
+         </left>
     </BorderPane>
   </children>
 </AnchorPane>
