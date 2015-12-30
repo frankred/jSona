@@ -11,6 +11,8 @@ public class Global {
 
     // API KEYS
     public static final String LASTFM_API_KEY = "80fd8a5ed6b945de8782d6466cc674fd";
+    public static final String SOUNDCLOUD_API_CLIENT_ID = "e719e8c19ab08a571c4f85d63e055b5b";
+    public static final String SOUNDCLOUD_API_CLIENT_SECRET = "4c9c2fb3044797d32d03e2c2098956ce";
 
     // Themes
     public static final String THEMES_FOLDER = "themes";
