@@ -50,21 +50,7 @@ public class ExternalInformationFetcher {
         Runnable collectArtistInformation = new Runnable() {
             @Override
             public void run() {
-/*
-                if (item.getArtist() == null) {
-                    externalArtistInformationListener.ready(item);
 
-                    String filename = FilenameUtils.removeExtension(item.getFile().getName());
-                    filename = filename.replaceAll("_", " ");
-                    filename = filename.replace("-", " ");
-
-                    String itemImage = GoogleImageAPI.getFirstImageURL(filename, client);
-                    String itemImageFilePath = getArtistImageFilePath(item.getFile().getAbsolutePath());
-                    downloadAndInformListener(item, null, itemImage, itemImageFilePath, client, externalArtistInformationListener);
-                    saveInformationToCache(item.getFile().getName(), new ArtistCacheInformation(null, itemImageFilePath), artistsCache);
-                    return;
-                }
-*/
                 Logger.get().info("Collection informations for '" + item.getArtist() + "'.");
 
                 Artist artist = searchArtistOnLastFMInfo(item.getArtist());
@@ -82,10 +68,6 @@ public class ExternalInformationFetcher {
                 }
 
                 String artistImageUrl = getBiggestImageUrl(artist);
-
-                if (StringUtils.isBlank(artistImageUrl)) {
-                    artistImageUrl = GoogleImageAPI.getFirstImageURL(item.getArtist(), client);
-                }
 
                 String artistImageFilePath = null;
 

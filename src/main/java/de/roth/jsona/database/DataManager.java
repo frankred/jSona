@@ -171,7 +171,9 @@ public class DataManager {
     private void add(MusicListItem item) {
         try {
             // tag music file
-            item = MP3Tagger.tag(item);
+            if(item.getFile() != null){
+                item = MP3Tagger.tag(item);
+            }
 
             // add to lucene
             LuceneManager.getInstance().add(DocumentCreator.create(item));

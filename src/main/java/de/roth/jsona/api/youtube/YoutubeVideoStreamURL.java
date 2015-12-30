@@ -2,6 +2,7 @@ package de.roth.jsona.api.youtube;
 
 public class YoutubeVideoStreamURL {
 
+    private String title;
     private String url;
     private String type;
     private String itag;
@@ -135,5 +136,13 @@ public class YoutubeVideoStreamURL {
     @Override
     public String toString() {
         return "[type=" + this.type + ", itag=" + this.itag + ", quality=" + this.getQuality() + ", url=" + this.url + "]";
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

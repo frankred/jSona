@@ -7,6 +7,7 @@ import com.tulskiy.keymaster.common.HotKey;
 import com.tulskiy.keymaster.common.HotKeyListener;
 import com.tulskiy.keymaster.common.Provider;
 import de.roth.jsona.api.youtube.YoutubeAPI;
+import de.roth.jsona.api.youtube.YoutubeVideoStreamURL;
 import de.roth.jsona.config.Config;
 import de.roth.jsona.config.Global;
 import de.roth.jsona.database.DataManager;
@@ -21,18 +22,18 @@ import de.roth.jsona.folderwatch.DirWatcher;
 import de.roth.jsona.folderwatch.WatchDirListener;
 import de.roth.jsona.information.ArtistCacheInformation;
 import de.roth.jsona.information.Link;
-import de.roth.jsona.model.playlist.PlaylistManager;
-import de.roth.jsona.view.ViewManagerFX;
 import de.roth.jsona.keyevent.HotkeyConfig;
 import de.roth.jsona.model.MusicListItem;
 import de.roth.jsona.model.MusicListItem.Status;
 import de.roth.jsona.model.playlist.Playlist;
+import de.roth.jsona.model.playlist.PlaylistManager;
 import de.roth.jsona.tag.detection.DetectorRulesManager;
 import de.roth.jsona.tag.detection.FieldResult;
 import de.roth.jsona.util.Logger;
 import de.roth.jsona.util.NumberUtil;
 import de.roth.jsona.util.Serializer;
 import de.roth.jsona.util.TimeFormatter;
+import de.roth.jsona.view.ViewManagerFX;
 import de.roth.jsona.vlc.mediaplayer.MediaPlayerManager;
 import de.roth.jsona.vlc.mediaplayer.PlayBackMode;
 import de.umass.lastfm.Track;
@@ -44,12 +45,14 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.ScoreDoc;
 import org.codehaus.jettison.json.JSONException;
+import sun.rmi.runtime.Log;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventListener;
 
 import java.io.*;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -188,7 +191,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
                     Logger.get().info("Folder '" + f.getAbsolutePath() + "' declared.");
 
                     // No folder found
-                    if(f.exists() == false){
+                    if (f.exists() == false) {
                         Logger.get().warn("Folder " + f.getAbsolutePath() + " could not be found or opened");
                         ViewManagerFX.getInstance().getController().updateMusicFolderNotFound(f.getAbsolutePath(), f.getAbsolutePath(), 0);
                         continue;
@@ -455,6 +458,11 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
     }
 
     @Override
+    public void mediaSubItemTreeAdded(MediaPlayer mediaPlayer, libvlc_media_t libvlc_media_t) {
+
+    }
+
+    @Override
     public void mediaSubItemAdded(MediaPlayer mediaPlayer, libvlc_media_t subItem) {
     }
 
@@ -529,6 +537,26 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 
     @Override
     public void elementaryStreamSelected(MediaPlayer mediaPlayer, int i, int i1) {
+
+    }
+
+    @Override
+    public void corked(MediaPlayer mediaPlayer, boolean b) {
+
+    }
+
+    @Override
+    public void muted(MediaPlayer mediaPlayer, boolean b) {
+
+    }
+
+    @Override
+    public void volumeChanged(MediaPlayer mediaPlayer, float v) {
+
+    }
+
+    @Override
+    public void audioDeviceChanged(MediaPlayer mediaPlayer, String s) {
 
     }
 
@@ -641,7 +669,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 
     @Override
     public void event_player_next(MusicListItem item, MusicListItem nextItem) {
-        Logger.get().info("Play next file '" + nextItem.getFile().getAbsolutePath() + "'.");
+        Logger.get().info("Play next file '" + (nextItem.getFile() != null ? nextItem.getFile().getAbsolutePath() : nextItem.getUrl()) + "'.");
         this.mediaPlayerManager.play(nextItem);
         ViewManagerFX.getInstance().getController().setPlayerState(PlayerState.PLAYING);
         loadExternalInformation(nextItem);
@@ -928,6 +956,37 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
     @Override
     public void event_play_url(String url) {
 
+    }
+
+    @Override
+    public void event_playlist_url_dropped(final String url, final MusicListItem item) {
+        Timer youtubeVideoTimerTask = new Timer(true);
+        youtubeVideoTimerTask.schedule(new TimerTask() {
+            public void run() {
+                if (YoutubeAPI.isYoutubeLink(url)) {
+                    try {
+                        ArrayList<YoutubeVideoStreamURL> videos = YoutubeAPI.getVideoStreamURLs(new URL(url));
+                        YoutubeVideoStreamURL choice = new YoutubeVideoStreamURL();
+                        int highestItag = -1;
+
+                        for (YoutubeVideoStreamURL youtubeStream : videos) {
+                            if (youtubeStream.getQuality().contains("normal") && youtubeStream.getQuality().contains("MP4") && Integer.parseInt(youtubeStream.getItag()) > highestItag) {
+                                choice = youtubeStream;
+                                highestItag = Integer.parseInt(choice.getItag());
+                            }
+                        }
+
+                        item.setTitle(choice.getTitle());
+                        item.setUrl(choice.getUrl());
+
+                        Logger.get().info("Choosen video stream " + choice);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, 0);
     }
 
     @Override

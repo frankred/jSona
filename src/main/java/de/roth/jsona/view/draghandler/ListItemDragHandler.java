@@ -32,7 +32,7 @@ public class ListItemDragHandler implements EventHandler<DragEvent> {
                 currentCell.setStyle("-fx-border-style: solid; -fx-border-width: 0 0 1px 0; -fx-border-color: #0063AA;");
                 before = false;
             }
-        } else if (event.getEventType().toString().equals("DRAG_EXITED")) {
+        } else if (event.getEventType() == DragEvent.DRAG_EXITED) {
             currentCell.setStyle("-fx-border-style: none;");
         }
     }

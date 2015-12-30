@@ -19,6 +19,7 @@ public class MusicListItem implements Serializable, Observable {
     private static final long serialVersionUID = -3582887378286675733L;
     private String id;
     private File file;
+    private String url;
     private File rootFolder;
     private String duration;
     private String artist;
@@ -56,6 +57,14 @@ public class MusicListItem implements Serializable, Observable {
         this.file = file;
         this.rootFolder = rootFolder;
         this.tmp_status = Status.SET_NONE;
+        this.listeners = new ArrayList<InvalidationListener>();
+    }
+
+    public MusicListItem(String url, String id) {
+        this.id = id;
+        this.url = url;
+        this.tmp_status = Status.SET_NONE;
+        this.genre = -1;
         this.listeners = new ArrayList<InvalidationListener>();
     }
 
@@ -255,6 +264,16 @@ public class MusicListItem implements Serializable, Observable {
     public File getRootFolder() {
         return rootFolder;
     }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+        this.invalidate();
+    }
+
 
     @Override
     public void addListener(InvalidationListener listener) {

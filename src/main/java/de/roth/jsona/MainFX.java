@@ -62,32 +62,38 @@ public class MainFX extends Application {
         String vlcNative = new String();
         String libvlccore = new String();
         String libvlc = new String();
+        String vlcNativeSuffix = new String();
 
         if (RuntimeUtil.isWindows()) {
-            vlcNative = "vlc-win-32";
+            vlcNative = "vlc-3.0.0-git-20151220-0402";
+            vlcNativeSuffix = "-win64";
             libvlccore = "libvlccore.dll";
             libvlc = "libvlc.dll";
         }
 
         try {
-            File currentFolder = Paths.get("").toFile();
-            File vlcTargetDirectory = new File(currentFolder.getAbsolutePath() + System.getProperty("file.separator") + vlcNative);
-            if(vlcTargetDirectory.exists()){
+            File workingDirectory = new File(System.getProperty("java.io.tmpdir"));
+            URL vlcNativeZipInJar = getClass().getClassLoader().getResource("vlc/" + vlcNative + vlcNativeSuffix + ".zip");
+            File vlcNativeZip = new File(workingDirectory.getAbsolutePath() + System.getProperty("file.separator") + vlcNative + vlcNativeSuffix + ".zip");
+
+            if (vlcNativeZip.exists()) {
+                // load vlc
+                System.load(workingDirectory.getAbsolutePath() + System.getProperty("file.separator") + vlcNative + System.getProperty("file.separator") + libvlccore);
+                System.load(workingDirectory.getAbsolutePath() + System.getProperty("file.separator") + vlcNative + System.getProperty("file.separator") + libvlc);
                 return;
             }
-
-            URL vlcNativeZipInJar = getClass().getClassLoader().getResource("vlc/" + vlcNative + ".zip");
-            File vlcNativeZip = new File(currentFolder.getAbsolutePath() + System.getProperty("file.separator") + vlcNative + ".zip");
 
             // copy to current directory
             FileUtils.copyURLToFile(vlcNativeZipInJar, vlcNativeZip);
 
             // unzip to vlc-natives
-            unzip(vlcNativeZip, currentFolder);
+            unzip(vlcNativeZip, workingDirectory);
 
             // load vlc
-            System.load(vlcTargetDirectory.getAbsolutePath() + System.getProperty("file.separator") + libvlccore);
-            System.load(vlcTargetDirectory.getAbsolutePath() + System.getProperty("file.separator") + libvlc);
+            System.load(workingDirectory.getAbsolutePath() + System.getProperty("file.separator") + vlcNative + System.getProperty("file.separator") + libvlccore);
+            System.load(workingDirectory.getAbsolutePath() + System.getProperty("file.separator") + vlcNative + System.getProperty("file.separator") + libvlc);
+
+
         } catch (IOException e) {
             Logger.get().error("Could not load vlc-win-32", e);
             e.printStackTrace();

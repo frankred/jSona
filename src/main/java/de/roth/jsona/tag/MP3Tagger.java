@@ -11,6 +11,11 @@ import java.io.IOException;
 public class MP3Tagger {
 
     public static MusicListItem tag(MusicListItem item) {
+
+        if (item.getFile() == null) {
+            return item;
+        }
+
         try {
             Mp3File mp3file = new Mp3File(item.getFile(), 32768, false);
 

@@ -1132,12 +1132,11 @@ public class ViewController implements Initializable, ViewInterface {
                 event.consume();
             }
         });
+
         listView.setOnDragDropped(new EventHandler<DragEvent>() {
             public void handle(DragEvent event) {
-                @SuppressWarnings("unchecked")
-                ArrayList<MusicListItem> items = (ArrayList<MusicListItem>) event.getDragboard().getContent(DATA_FORMAT_LIST);
-                String url = (String) event.getDragboard().getUrl();
 
+                // calculate drop index
                 int dropIndex = dragHandler.getCurrentIndex();
                 if (dropIndex < listView.getItems().size()) {
                     if (dragHandler.isBefore()) {
@@ -1149,9 +1148,18 @@ public class ViewController implements Initializable, ViewInterface {
                     dropIndex = listView.getItems().size();
                 }
 
-                // Any transfer mode
+                String url = event.getDragboard().getString();
+                ArrayList<MusicListItem> items;
+
                 if (url != null) {
-                    logic.event_play_url(url);
+                    // URL
+                    items = new ArrayList<MusicListItem>(1);
+                    MusicListItem item = new MusicListItem(url, UUID.randomUUID().toString());
+                    items.add(item);
+                    logic.event_playlist_url_dropped(url, item);
+                } else {
+                    // MusicListItem
+                    items = (ArrayList<MusicListItem>) event.getDragboard().getContent(DATA_FORMAT_LIST);
                 }
 
                 switch (event.getTransferMode()) {
@@ -1169,6 +1177,13 @@ public class ViewController implements Initializable, ViewInterface {
 
 				/* ############# MOVE ############# */
                     case MOVE:
+
+                        // URL
+                        if (url != null) {
+                            listView.getItems().addAll(dropIndex, items);
+                            return;
+                        }
+
                         // save selection temporarily
                         int[] indices = new int[listView.getSelectionModel().getSelectedIndices().size()];
                         int j = 0;
@@ -1427,7 +1442,7 @@ public class ViewController implements Initializable, ViewInterface {
                 this.artist.setManaged(false);
                 this.artist.setVisible(false);
 
-                this.title.setText(item.getFile().getName());
+                this.title.setText(item.getFile() != null ? item.getFile().getName() : item.getTitle());
                 this.title.setManaged(true);
                 this.title.setVisible(true);
                 return;
@@ -1439,7 +1454,7 @@ public class ViewController implements Initializable, ViewInterface {
             this.artist.setVisible(true);
 
             if (item.getTitle() == null) {
-                this.title.setText(" - " + item.getFile().getName());
+                this.title.setText(" - " + item.getFile() != null ? item.getFile().getName() : item.getTitle());
                 this.title.setManaged(true);
                 this.title.setVisible(true);
                 return;
@@ -1496,7 +1511,7 @@ public class ViewController implements Initializable, ViewInterface {
             public void run() {
                 resetView();
                 setImage(artistImagePath);
-                setArtistLabel(item.getArtist(), item.getFile().getName());
+                setArtistLabel(item.getArtist(), item.getFile() != null ? item.getFile().getName() : item.getUrl());
                 setTitleLabel(item.getTitle());
                 setArtistBio(artistWiki);
                 setLinks(links);

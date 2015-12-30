@@ -27,7 +27,14 @@ public class DocumentCreator {
         Document doc = new Document();
 
         doc.add(new StringField("id", item.getId(), Field.Store.YES));
-        doc.add(new StringField("file", item.getFile().getAbsolutePath(), Field.Store.YES));
+
+        if(item.getFile() != null){
+            doc.add(new StringField("file", item.getFile().getAbsolutePath(), Field.Store.YES));
+        }
+
+        if(item.getUrl() != null){
+            doc.add(new StringField("url", item.getUrl(), Field.Store.YES));
+        }
 
         // put all search relevant stuff in the "all" fields. Only this field
         // will be scanned for later user searches

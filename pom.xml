@@ -62,7 +62,7 @@
         <dependency>
             <groupId>uk.co.caprica</groupId>
             <artifactId>vlcj</artifactId>
-            <version>3.1.0</version>
+            <version>3.9.0</version>
         </dependency>
 
         <!-- Live Search -->
@@ -152,12 +152,6 @@
             <version>1.3.7</version>
         </dependency>
 
-        <!-- Temporary for testin -->
-        <dependency>
-            <groupId>com.github.axet</groupId>
-            <artifactId>vget</artifactId>
-            <version>1.1.23</version>
-        </dependency>
         <dependency>
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
