@@ -684,6 +684,11 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
     }
 
     private void loadExternalInformation(MusicListItem item) {
+
+        if (item.getFile() == null) {
+            return;
+        }
+
         // if no id3 tagged on this file!
         if (item.getArtist() == null || item.getTitle() == null) {
 

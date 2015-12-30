@@ -39,7 +39,10 @@ public class DocumentCreator {
         // put all search relevant stuff in the "all" fields. Only this field
         // will be scanned for later user searches
         StringBuffer all = new StringBuffer();
-        all.append(item.getFile().getAbsolutePath());
+
+        if(item.getFile() != null){
+            all.append(item.getFile().getAbsolutePath());
+        }
 
         if (item.getArtist() != null && !item.getArtist().equals("")) {
             all.append(SPACER);
