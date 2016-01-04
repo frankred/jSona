@@ -40,7 +40,7 @@ public interface LogicInterfaceFX {
 
     public void event_play_url(String url);
 
-    public void event_playlist_url_dropped(String url, MusicListItem item);
+    public MusicListItem event_playlist_url_dropped(String url);
 
     public void event_search_music(String query);
 

@@ -3,6 +3,7 @@ package de.roth.jsona.file;
 import de.roth.jsona.database.DataManager;
 import de.roth.jsona.database.LuceneManager;
 import de.roth.jsona.model.MusicListItem;
+import de.roth.jsona.model.MusicListItemFile;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,16 +40,19 @@ public class FileTagger {
         int colorClassCounter = 0;
 
         // Tag all files - taking time...
-        for (File f : files) {
+        for (File file : files) {
+
             // Check if file already exists in cache
-            MusicListItem item = DataManager.getInstance().get(f);
+            MusicListItemFile item = (MusicListItemFile)DataManager.getInstance().get(file.getAbsolutePath());
 
             // new file -> tag it
             if (item == null) {
                 somethingChanged = true;
+
                 // create item
-                item = DataManager.getInstance().add(f, rootFolder);
-                item.setTmp_keep_in_cache(true);
+                item = new MusicListItemFile(file, rootFolder);
+                item = (MusicListItemFile)DataManager.getInstance().addItem(item);
+                item.setKeepInCache(true);
 
                 if (fillRecentlyAddedList) {
                     recentlyAdded.add(item);
@@ -70,17 +74,18 @@ public class FileTagger {
                 item.postSerialisationProcess();
 
                 // Found in cache, it's needed again so keep file in cache
-                item.setTmp_keep_in_cache(true);
+                item.setKeepInCache(true);
 
                 // Check for changes
-                if (item.getLastFileModification() > f.lastModified()) {
+                if (item.getLastFileModification() > file.lastModified()) {
                     somethingChanged = true;
 
                     // delete item
                     DataManager.getInstance().delete(item);
 
                     // recreate item
-                    item = DataManager.getInstance().add(f, rootFolder);
+                    item = new MusicListItemFile(file, rootFolder);
+                    DataManager.getInstance().addItem(item);
 
                     // File changed so add to cache and lucene
                     listener.taggerProgress(progress, total, item, true, true);
@@ -102,7 +107,7 @@ public class FileTagger {
             }
 
             // Set color
-            if (!currentParentFolder.getAbsolutePath().equals(f.getParentFile().getAbsolutePath())) {
+            if (!currentParentFolder.getAbsolutePath().equals(file.getParentFile().getAbsolutePath())) {
                 colorClassCounter = (colorClassCounter + 1) % 12;
             }
             item.setColorClass(colorClassCounter);
@@ -110,7 +115,7 @@ public class FileTagger {
             // Add
             items.add(item);
             ++progress;
-            currentParentFolder = f.getParentFile();
+            currentParentFolder = file.getParentFile();
         }
 
         if (somethingChanged) {

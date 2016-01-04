@@ -59,10 +59,8 @@ public class YoutubeAPI {
                         itag = (url.split("itag=")[1]).split("&")[0];
                     }
 
-                    YoutubeVideoStreamURL youtubeStreamUrl = new YoutubeVideoStreamURL();
-                    youtubeStreamUrl.setUrl(url);
+                    YoutubeVideoStreamURL youtubeStreamUrl = new YoutubeVideoStreamURL(url, itag);
                     youtubeStreamUrl.setType(type);
-                    youtubeStreamUrl.setItag(itag);
 
                     Pattern p = Pattern.compile("<title>(.*?)</title>");
                     Matcher m = p.matcher(youtubeVideoPageContent);

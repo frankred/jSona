@@ -3,6 +3,7 @@ package de.roth.jsona.tag;
 import com.mpatric.mp3agic.*;
 import com.mpatric.mp3agic.ID3v1;
 import de.roth.jsona.model.MusicListItem;
+import de.roth.jsona.model.MusicListItemFile;
 import de.roth.jsona.util.Logger;
 
 
@@ -10,7 +11,7 @@ import java.io.IOException;
 
 public class MP3Tagger {
 
-    public static MusicListItem tag(MusicListItem item) {
+    public static MusicListItem tag(MusicListItemFile item) {
 
         if (item.getFile() == null) {
             return item;
@@ -26,7 +27,7 @@ public class MP3Tagger {
                 item.setAlbum(v1.getAlbum());
                 item.setTrackNo(v1.getTrack());
                 item.setYear(v1.getYear());
-                item.setGenre(v1.getGenre());
+                item.setGenre(v1.getGenreDescription());
             }
 
             if (mp3file.hasId3v2Tag()) {
@@ -36,7 +37,7 @@ public class MP3Tagger {
                 item.setAlbum(v2.getAlbum());
                 item.setTrackNo(v2.getTrack());
                 item.setYear(v2.getYear());
-                item.setGenre(v2.getGenre());
+                item.setGenre(v2.getGenreDescription());
             }
         } catch (IOException e) {
             Logger.get().error(e);

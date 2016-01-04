@@ -7,7 +7,6 @@ import com.tulskiy.keymaster.common.HotKey;
 import com.tulskiy.keymaster.common.HotKeyListener;
 import com.tulskiy.keymaster.common.Provider;
 import de.roth.jsona.api.youtube.YoutubeAPI;
-import de.roth.jsona.api.youtube.YoutubeVideoStreamURL;
 import de.roth.jsona.config.Config;
 import de.roth.jsona.config.Global;
 import de.roth.jsona.database.DataManager;
@@ -24,7 +23,9 @@ import de.roth.jsona.information.ArtistCacheInformation;
 import de.roth.jsona.information.Link;
 import de.roth.jsona.keyevent.HotkeyConfig;
 import de.roth.jsona.model.MusicListItem;
-import de.roth.jsona.model.MusicListItem.Status;
+import de.roth.jsona.model.MusicListItem.PlaybackStatus;
+import de.roth.jsona.model.MusicListItemFile;
+import de.roth.jsona.model.MusicListItemYoutube;
 import de.roth.jsona.model.playlist.Playlist;
 import de.roth.jsona.model.playlist.PlaylistManager;
 import de.roth.jsona.tag.detection.DetectorRulesManager;
@@ -45,7 +46,6 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.ScoreDoc;
 import org.codehaus.jettison.json.JSONException;
-import sun.rmi.runtime.Log;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventListener;
@@ -187,31 +187,31 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
                 }
 
                 folderTaggedAmount = 0;
-                for (File f : folders) {
-                    Logger.get().info("Folder '" + f.getAbsolutePath() + "' declared.");
+                for (File folder : folders) {
+                    Logger.get().info("Folder '" + folder.getAbsolutePath() + "' declared.");
 
                     // No folder found
-                    if (f.exists() == false) {
-                        Logger.get().warn("Folder " + f.getAbsolutePath() + " could not be found or opened");
-                        ViewManagerFX.getInstance().getController().updateMusicFolderNotFound(f.getAbsolutePath(), f.getAbsolutePath(), 0);
+                    if (folder.exists() == false) {
+                        Logger.get().warn("Folder " + folder.getAbsolutePath() + " could not be found or opened");
+                        ViewManagerFX.getInstance().getController().updateMusicFolderNotFound(folder.getAbsolutePath(), folder.getAbsolutePath(), 0);
                         continue;
                     }
 
                     // watch folder changes
                     try {
-                        Logger.get().info("Start watching '" + f.getAbsolutePath() + "'.");
-                        folderWatcher.watch(f, watchDirListener);
+                        Logger.get().info("Start watching '" + folder.getAbsolutePath() + "'.");
+                        folderWatcher.watch(folder, watchDirListener);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
 
                     // start loading animation -> Platform.run
-                    ViewManagerFX.getInstance().getController().updateMusicFolderLoading(-1, 0, null, f.getAbsolutePath());
+                    ViewManagerFX.getInstance().getController().updateMusicFolderLoading(-1, 0, null, folder.getAbsolutePath());
 
                     // Check for new folders
                     boolean newFolder = true;
                     for (File of : oldFolders) {
-                        if (f.getAbsolutePath().equals(of.getAbsolutePath())) {
+                        if (folder.getAbsolutePath().equals(of.getAbsolutePath())) {
                             newFolder = false;
                         }
                     }
@@ -222,11 +222,11 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
                         // sense
                         // to add all files to the "recentlyAdded (New)" tab.
                         // tag entries
-                        Task<Void> fileScannerTask = new FileScannerTask(f, 0, fileTaggerListener, fileScannerListener, f.getAbsolutePath(), false);
+                        Task<Void> fileScannerTask = new FileScannerTask(folder, 0, fileTaggerListener, fileScannerListener, folder.getAbsolutePath(), false);
                         importTaggingExecutor.execute(fileScannerTask);
                     } else {
                         // tag entries
-                        Task<Void> fileScannerTask = new FileScannerTask(f, 0, fileTaggerListener, fileScannerListener, f.getAbsolutePath(), true);
+                        Task<Void> fileScannerTask = new FileScannerTask(folder, 0, fileTaggerListener, fileScannerListener, folder.getAbsolutePath(), true);
                         importTaggingExecutor.execute(fileScannerTask);
                     }
                 }
@@ -274,8 +274,8 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
                             DataManager.getInstance().retag(item);
 
                             // was active
-                            if (item.getTmp_status() == Status.SET_PAUSED || item.getTmp_status() == Status.SET_PLAYING) {
-                                item.setTmp_status(Status.SET_NONE);
+                            if (item.getStatus() == PlaybackStatus.SET_PAUSED || item.getStatus() == PlaybackStatus.SET_PLAYING) {
+                                item.setStatus(PlaybackStatus.SET_NONE);
                             }
                         }
                     }
@@ -338,16 +338,16 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
     }
 
     @Override
-    public void taggerProgress(int current, int total, MusicListItem item, boolean addedToCache, boolean addedToLucene) {
+    public void taggerProgress(int current, int total, MusicListItemFile item, boolean addedToCache, boolean addedToLucene) {
         // only log every 'SCANNER_AND_TAGGER_LOGGING_GRANULARITY'-th file,
         // because logging of many files is very time expensive
         if (current % Config.getInstance().SCANNER_AND_TAGGER_LOGGING_GRANULARITY == 0 || total == current) {
             if (addedToCache && addedToLucene) {
-                Logger.get().info("+cache +lucene '" + item.getFile().getAbsolutePath() + "'.");
+                Logger.get().info("+cache +lucene '" + item.toString() + "'.");
                 return;
             }
             if (addedToLucene) {
-                Logger.get().info("+lucene '" + item.getFile().getAbsolutePath() + "'.");
+                Logger.get().info("+lucene '" + item.toString() + "'.");
             }
         }
 
@@ -409,8 +409,8 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 
     @Override
     public void lengthChanged(MediaPlayer mediaPlayer, long newLengthInMs) {
-        if (this.mediaPlayerManager.getItem().getDuration() == null || this.mediaPlayerManager.getItem().getDuration().equals("")) {
-            this.mediaPlayerManager.getItem().setDuration(TimeFormatter.formatMilliseconds(newLengthInMs));
+        if (this.mediaPlayerManager.getCurrentItem().getDuration() == null || this.mediaPlayerManager.getCurrentItem().getDuration().equals("")) {
+            this.mediaPlayerManager.getCurrentItem().setDuration(TimeFormatter.formatMilliseconds(newLengthInMs));
         }
         ViewManagerFX.getInstance().getController().setCurrentTotalDuration(newLengthInMs);
     }
@@ -593,7 +593,8 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
             return;
         }
 
-        MusicListItem item = DataManager.getInstance().add(f, rootFolder);
+        MusicListItem item = new MusicListItemFile(f, rootFolder);
+        DataManager.getInstance().addItem(item);
         DataManager.getInstance().commit();
 
         // Add to folder tab
@@ -610,7 +611,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
     public void fileDeleted(Path pathDeleted, Path pathToWatch) {
 
         // Read from cache
-        MusicListItem item = DataManager.getInstance().get(pathDeleted.toFile());
+        MusicListItem item = DataManager.getInstance().get(pathDeleted.toFile().getAbsolutePath());
 
         if (item == null) {
             return;
@@ -629,7 +630,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
         File f = pathModified.toFile();
 
         // Read from cache
-        MusicListItem item = DataManager.getInstance().get(f);
+        MusicListItem item = DataManager.getInstance().get(f.getAbsolutePath());
 
         if (item == null) {
             return;
@@ -669,7 +670,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 
     @Override
     public void event_player_next(MusicListItem item, MusicListItem nextItem) {
-        Logger.get().info("Play next file '" + (nextItem.getFile() != null ? nextItem.getFile().getAbsolutePath() : nextItem.getUrl()) + "'.");
+        Logger.get().info("Play next file '" + nextItem.toString() + "'.");
         this.mediaPlayerManager.play(nextItem);
         ViewManagerFX.getInstance().getController().setPlayerState(PlayerState.PLAYING);
         loadExternalInformation(nextItem);
@@ -677,7 +678,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 
     @Override
     public void event_player_previous(MusicListItem item, MusicListItem prevItem) {
-        Logger.get().info("Play previous file '" + prevItem.getFile().getAbsolutePath() + "'.");
+        Logger.get().info("Play previous file '" + prevItem.toString() + "'.");
         this.mediaPlayerManager.play(prevItem);
         ViewManagerFX.getInstance().getController().setPlayerState(PlayerState.PLAYING);
         loadExternalInformation(prevItem);
@@ -685,65 +686,70 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 
     private void loadExternalInformation(MusicListItem item) {
 
-        if (item.getFile() == null) {
-            return;
-        }
+        if (item instanceof MusicListItemFile) {
 
-        // if no id3 tagged on this file!
-        if (item.getArtist() == null || item.getTitle() == null) {
+            MusicListItemFile itemFile = (MusicListItemFile) item;
 
-            ArrayList<FieldResult> results = DetectorRulesManager.getInstance().detect(item.getRootFolder(), item.getFile());
+            // if no id3 tagged on this file!
+            if (item.getArtist() == null || item.getTitle() == null) {
 
-            // if there are any solutions for filepath tagging
-            if (results.size() > 0) {
-                StringBuffer buffer = new StringBuffer();
-                for (FieldResult f : results) {
-                    switch (f.getField()) {
-                        case ARTIST:
-                            item.setArtist(f.getResult().trim());
-                            break;
-                        case TITLE:
-                            item.setTitle(f.getResult().trim());
-                            break;
-                        case ALBUM:
-                            item.setAlbum(f.getResult().trim());
-                            break;
-                        case TRACK_NO:
-                            item.setTrackNo(f.getResult().trim());
-                            break;
-                        default:
-                            break;
+                ArrayList<FieldResult> results = DetectorRulesManager.getInstance().detect(itemFile.getRootFolder(), itemFile.getFile());
+
+                // if there are any solutions for filepath tagging
+                if (results.size() > 0) {
+                    StringBuffer buffer = new StringBuffer();
+                    for (FieldResult f : results) {
+                        switch (f.getField()) {
+                            case ARTIST:
+                                item.setArtist(f.getResult().trim());
+                                break;
+                            case TITLE:
+                                item.setTitle(f.getResult().trim());
+                                break;
+                            case ALBUM:
+                                item.setAlbum(f.getResult().trim());
+                                break;
+                            case TRACK_NO:
+                                item.setTrackNo(f.getResult().trim());
+                                break;
+                            default:
+                                break;
+                        }
+                        buffer.append(f.toString());
                     }
-                    buffer.append(f.toString());
+                    Logger.get().info("Filepath detection results '" + buffer.toString() + "'.");
+                    DataManager.getInstance().updateCache(item);
+                    DataManager.getInstance().commit();
                 }
-                Logger.get().info("Filepath detection results '" + buffer.toString() + "'.");
-                DataManager.getInstance().updateCache(item);
-                DataManager.getInstance().commit();
             }
-        }
 
-        // Show information immediately
-        showArtistInformation(item);
-        ViewManagerFX.getInstance().getController().showInformation(item);
+            // Show information immediately
+            showArtistInformation(item);
+            ViewManagerFX.getInstance().getController().showInformation(item);
 
-        ArtistCacheInformation artistCacheInformation = null;
-        if (item.getArtist() == null) {
-            artistCacheInformation = this.informationCache.get(item.getFile().getName());
-        } else {
-            artistCacheInformation = this.informationCache.get(item.getArtist());
-        }
+            ArtistCacheInformation artistCacheInformation = null;
+            if (item.getArtist() == null) {
+                artistCacheInformation = this.informationCache.get(itemFile.getFile().getName());
+            } else {
+                artistCacheInformation = this.informationCache.get(itemFile.getArtist());
+            }
 
 
-        // Load external artist information
-        if (artistCacheInformation == null) {
+            // Load external artist information
+            if (artistCacheInformation == null) {
+                loadArtistInformation(item);
+                return;
+            }
+
+            showArtistInformation(artistCacheInformation, item);
             loadArtistInformation(item);
-            return;
         }
 
-        showArtistInformation(artistCacheInformation, item);
 
-
-        loadArtistInformation(item);
+        if (item instanceof MusicListItemYoutube) {
+            MusicListItemYoutube itemYoutube = (MusicListItemYoutube) item;
+            // do nothing
+        }
     }
 
     private void loadArtistInformation(MusicListItem item) {
@@ -811,7 +817,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
                                         // to avoid this side-effect you could
                                         // also use clone the returned
                                         // MusicListItem.
-                                        MusicListItem resultItem = DataManager.getInstance().get(doc.getField("file").stringValue());
+                                        MusicListItem resultItem = DataManager.getInstance().get(doc.getField("mediaURL").stringValue());
                                         if (resultItem == null) {
                                             continue;
                                         }
@@ -884,7 +890,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 
     @Override
     public void ready(MusicListItem item) {
-        if (this.mediaPlayerManager.getItem() == item) {
+        if (this.mediaPlayerManager.getCurrentItem() == item) {
             ViewManagerFX.getInstance().getController().showInformation(item);
         }
     }
@@ -892,7 +898,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
     @Override
     public void ready(MusicListItem item, ArtistCacheInformation artistInformation) {
         // download is ready but is the song still the same?
-        if (this.mediaPlayerManager.getItem() == item) {
+        if (this.mediaPlayerManager.getCurrentItem() == item) {
             showArtistInformation(artistInformation, item);
         }
     }
@@ -964,35 +970,27 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
     }
 
     @Override
-    public void event_playlist_url_dropped(final String url, final MusicListItem item) {
+    public MusicListItem event_playlist_url_dropped(final String url) {
         Timer youtubeVideoTimerTask = new Timer(true);
+        final MusicListItemYoutube item = new MusicListItemYoutube(url);
         youtubeVideoTimerTask.schedule(new TimerTask() {
             public void run() {
                 if (YoutubeAPI.isYoutubeLink(url)) {
                     try {
-                        ArrayList<YoutubeVideoStreamURL> videos = YoutubeAPI.getVideoStreamURLs(new URL(url));
-                        YoutubeVideoStreamURL choice = new YoutubeVideoStreamURL();
-                        int highestItag = -1;
-
-                        for (YoutubeVideoStreamURL youtubeStream : videos) {
-                            if (youtubeStream.getQuality().contains("normal") && youtubeStream.getQuality().contains("MP4") && Integer.parseInt(youtubeStream.getItag()) > highestItag) {
-                                choice = youtubeStream;
-                                highestItag = Integer.parseInt(choice.getItag());
-                            }
-                        }
-
-                        item.setTitle(choice.getTitle());
-                        item.setUrl(choice.getUrl());
-
-                        Logger.get().info("Choosen video stream " + choice);
-
+                        item.setProcessing(true);
+                        item.setStreams(YoutubeAPI.getVideoStreamURLs(new URL(url)));
+                        item.setTitle(item.getPreferedVideoStream().getTitle());
+                        Logger.get().info("Choosen video stream " + item.getPreferedVideoStream().toString());
+                        item.setProcessing(true);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
         }, 0);
-    }
+
+        return item;
+     }
 
     @Override
     public void onHotKey(HotKey hotKey) {

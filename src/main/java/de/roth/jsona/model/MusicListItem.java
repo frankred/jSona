@@ -3,92 +3,51 @@ package de.roth.jsona.model;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-
-import java.io.File;
+import javafx.scene.image.Image;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 
-/**
- * Core music item of jsona.
- *
- * @author Frank Roth
- */
-public class MusicListItem implements Serializable, Observable {
+public abstract class MusicListItem implements Serializable, Observable, MusicListItemViewable, VLCPlayable {
 
-    private static final long serialVersionUID = -3582887378286675733L;
+    private transient ArrayList<InvalidationListener> listeners;
+    private Image icon;
+    private transient int colorClass;
+
     private String id;
-    private File file;
-    private String url;
-    private File rootFolder;
+    private Date creationDate;
     private String duration;
+
     private String artist;
     private String title;
     private String album;
     private String trackNo;
     private String year;
-    private int genre;
+    private String genre;
     private String summary;
-    private Date creationDate;
-    private long lastFileModification;
 
-    public enum Status {
+    private boolean processing;
+    private transient boolean keepInCache = false;
+    private transient PlaybackStatus status;
+
+
+    public enum PlaybackStatus {
         SET_NONE, SET_PLAYING, SET_PAUSED
     }
 
-    // do not serialize
-    private transient int colorClass;
-    private transient ArrayList<InvalidationListener> listeners;
-    private String invalidateionListenerCause;
-
-    // this breaks MVC, but fuck my life, JavaFX does
-    // not support the access to the cell in the
-    // listView, so this property is set if the
-    // listCell changes it state and has to be
-    // repainted.
-    private transient Status tmp_status;
-    private transient boolean tmp_view_insertBeforeMe = false;
-    private transient boolean tmp_keep_in_cache = false;
-
-    public MusicListItem(File file, File rootFolder, String id) {
-        this.id = id;
-        this.genre = -1;
-        this.lastFileModification = file.lastModified();
-        this.file = file;
-        this.rootFolder = rootFolder;
-        this.tmp_status = Status.SET_NONE;
-        this.listeners = new ArrayList<InvalidationListener>();
-    }
-
-    public MusicListItem(String url, String id) {
-        this.id = id;
-        this.url = url;
-        this.tmp_status = Status.SET_NONE;
-        this.genre = -1;
-        this.listeners = new ArrayList<InvalidationListener>();
-    }
-
     public MusicListItem() {
-        this.tmp_status = Status.SET_NONE;
-        this.genre = -1;
+        this.id = UUID.randomUUID().toString();
+        this.status = PlaybackStatus.SET_NONE;
         this.listeners = new ArrayList<InvalidationListener>();
     }
 
     public void postSerialisationProcess() {
-        this.tmp_status = Status.SET_NONE;
-        this.tmp_view_insertBeforeMe = false;
+        this.status = PlaybackStatus.SET_NONE;
 
         if (this.listeners == null) {
             this.listeners = new ArrayList<InvalidationListener>();
         }
-    }
-
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
     }
 
     public String getAlbum() {
@@ -105,7 +64,6 @@ public class MusicListItem implements Serializable, Observable {
 
     public void setDuration(String duration) {
         this.duration = duration;
-        invalidateionListenerCause = "duration";
         invalidate();
     }
 
@@ -151,90 +109,29 @@ public class MusicListItem implements Serializable, Observable {
         this.summary = summary;
     }
 
-    public MusicListItem clone() {
-        MusicListItem item = new MusicListItem();
-        item.setLastFileModification(lastFileModification);
-        item.setGenre(genre);
-
-        if (this.id != null) {
-            item.setId(new String(this.id));
-        }
-
-        if (this.creationDate != null) {
-            item.setCreationDate((Date) this.creationDate.clone());
-        }
-
-        if (duration != null) {
-            item.setDuration(new String(duration));
-        }
-        if (file.getAbsolutePath() != null) {
-            item.setFile(new File(new String(file.getAbsolutePath())));
-        }
-        if (artist != null) {
-            item.setArtist(new String(artist));
-        }
-        if (title != null) {
-            item.setTitle(new String(title));
-        }
-        if (trackNo != null) {
-            item.setTrackNo(new String(trackNo));
-        }
-        if (album != null) {
-            item.setAlbum(new String(album));
-        }
-        if (year != null) {
-            item.setYear(new String(year));
-        }
-
-        if (summary != null) {
-            item.setSummary(new String(summary));
-        }
-        return item;
-    }
-
-    /**
-     * @return the creationDate
-     */
     public Date getCreationDate() {
         return creationDate;
     }
 
-    /**
-     * @param creationDate the creationDate to set
-     */
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
 
-    @Override
-    public String toString() {
-        return this.getFile().getAbsolutePath();
+    public PlaybackStatus getStatus() {
+        return status;
     }
 
-    public Status getTmp_status() {
-        return tmp_status;
-    }
-
-    public void setTmp_status(Status tmp_status) {
-        this.tmp_status = tmp_status;
-        invalidateionListenerCause = "status";
+    public void setStatus(PlaybackStatus status) {
+        this.status = status;
         invalidate();
     }
 
-    public long getLastFileModification() {
-        return lastFileModification;
+    public boolean keepInCache() {
+        return keepInCache;
     }
 
-    public void setLastFileModification(long lastFileModification) {
-        this.lastFileModification = lastFileModification;
-    }
-
-    public boolean isTmp_keep_in_cache() {
-        return tmp_keep_in_cache;
-    }
-
-    public void setTmp_keep_in_cache(boolean tmp_keep_in_cache) {
-        this.tmp_keep_in_cache = tmp_keep_in_cache;
+    public void setKeepInCache(boolean keepInCache) {
+        this.keepInCache = keepInCache;
     }
 
     public String getId() {
@@ -253,27 +150,29 @@ public class MusicListItem implements Serializable, Observable {
         this.colorClass = colorClass;
     }
 
-    public int getGenre() {
+    public String getGenre() {
         return genre;
     }
 
-    public void setGenre(int genre) {
+    public void setGenre(String  genre) {
         this.genre = genre;
     }
 
-    public File getRootFolder() {
-        return rootFolder;
+    public boolean isProcessing() {
+        return processing;
     }
 
-    public String getUrl() {
-        return url;
+    public void setProcessing(boolean processing) {
+        this.processing = processing;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
-        this.invalidate();
+    public Image getIcon() {
+        return icon;
     }
 
+    public void setIcon(Image icon) {
+        this.icon = icon;
+    }
 
     @Override
     public void addListener(InvalidationListener listener) {
@@ -300,5 +199,28 @@ public class MusicListItem implements Serializable, Observable {
                 }
             });
         }
+    }
+
+    @Override
+    public String getTextForArtistLabel() {
+        return null;
+    }
+
+    @Override
+    public String getTextForTitleLabel() {
+        return null;
+    }
+
+    @Override
+    public String getMediaURL() {
+        return null;
+    }
+
+    public boolean hasTitle(){
+        return this.getTitle() != null && !this.getTitle().equals("");
+    }
+
+    public boolean hasArtist(){
+        return this.getArtist() != null && !this.getArtist().equals("");
     }
 }

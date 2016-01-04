@@ -2,13 +2,13 @@ package de.roth.jsona.database;
 
 import de.roth.jsona.config.Global;
 import de.roth.jsona.model.MusicListItem;
+import de.roth.jsona.model.MusicListItemFile;
 import de.roth.jsona.tag.MP3Tagger;
 import de.roth.jsona.util.Logger;
 import de.roth.jsona.util.Serializer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexableField;
 
-import java.io.File;
 import java.util.*;
 
 /**
@@ -39,9 +39,9 @@ public class DataManager {
      * @param item
      */
     public void delete(MusicListItem item) {
-        Logger.get().info("- Delete '" + item.getFile().getAbsolutePath() + "'.");
+        Logger.get().info("- Delete '" + item.toString() + "'.");
         LuceneManager.getInstance().delete(item.getId());
-        this.cache.remove(item.getFile().getAbsolutePath());
+        this.cache.remove(item.toString());
     }
 
     /**
@@ -61,14 +61,11 @@ public class DataManager {
      * Create MusicListItem for the over given file, and add the item to cache
      * and index it via lucene.
      *
-     * @param f
-     * @return
      */
-    public MusicListItem add(File f, File rootFolder) {
+    public MusicListItem addItem(MusicListItem item) {
         try {
-            MusicListItem item = new MusicListItem(f, rootFolder, UUID.randomUUID().toString());
             item.setCreationDate(Calendar.getInstance().getTime());
-            item.setTmp_keep_in_cache(true);
+            item.setKeepInCache(true);
             this.add(item);
             return item;
         } catch (Exception e) {
@@ -103,13 +100,13 @@ public class DataManager {
                     Map.Entry<String, MusicListItem> pair = (Map.Entry<String, MusicListItem>) iter.next();
                     MusicListItem item = pair.getValue();
 
-                    if (!item.isTmp_keep_in_cache()) {
-                        Logger.get().info("Remove file '" + item.getFile().getAbsolutePath() + "' from cache.");
+                    if (!item.keepInCache()) {
+                        Logger.get().info("Remove file '" + item.toString() + "' from cache.");
                         iter.remove();
                     }
 
                     // Reset tmp property before saving...
-                    item.setTmp_keep_in_cache(false);
+                    item.setKeepInCache(false);
                 }
 
                 // Save new cache to file
@@ -123,22 +120,12 @@ public class DataManager {
     }
 
     /**
-     * Perform a cache lookup for the file with the over given file path and
-     * return the MusicListItem.
-     *
-     * @return MusicListItem
-     */
-    public MusicListItem get(File f) {
-        return cache.get(f.getAbsolutePath());
-    }
-
-    /**
      * Update a item in the cache
      *
      * @param item
      */
     public void updateCache(MusicListItem item) {
-        this.cache.put(item.getFile().getAbsolutePath(), item);
+        this.cache.put(item.toString(), item);
     }
 
     /**
@@ -171,15 +158,15 @@ public class DataManager {
     private void add(MusicListItem item) {
         try {
             // tag music file
-            if(item.getFile() != null){
-                item = MP3Tagger.tag(item);
+            if (item instanceof MusicListItemFile) {
+                item = MP3Tagger.tag((MusicListItemFile)item);
             }
 
             // add to lucene
             LuceneManager.getInstance().add(DocumentCreator.create(item));
 
             // add to cache
-            this.cache.put(item.getFile().getAbsolutePath(), item);
+            this.cache.put(item.toString(), item);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -189,8 +176,10 @@ public class DataManager {
         // Remove item from db
         LuceneManager.getInstance().delete(item.getId());
 
-        // Retag music file
-        MP3Tagger.tag(item);
+        // retag music file
+        if (item instanceof MusicListItemFile) {
+            item = MP3Tagger.tag((MusicListItemFile)item);
+        }
 
         // Add to db
         addLuceneOnly(item);

@@ -5,13 +5,15 @@ import de.roth.jsona.MainFX;
 import de.roth.jsona.config.Config;
 import de.roth.jsona.config.Global;
 import de.roth.jsona.information.Link;
+import de.roth.jsona.model.MusicListItemFile;
+import de.roth.jsona.model.MusicListItemViewable;
 import de.roth.jsona.view.draghandler.ListItemDragHandler;
 import de.roth.jsona.view.util.BrowserUtil;
 import de.roth.jsona.view.util.DialogUtil;
 import de.roth.jsona.view.util.TabUtil;
 import de.roth.jsona.logic.LogicInterfaceFX;
 import de.roth.jsona.model.MusicListItem;
-import de.roth.jsona.model.MusicListItem.Status;
+import de.roth.jsona.model.MusicListItem.PlaybackStatus;
 import de.roth.jsona.model.playlist.Playlist;
 import de.roth.jsona.theme.ThemeUtils;
 import de.roth.jsona.util.Logger;
@@ -163,7 +165,6 @@ public class ViewController implements Initializable, ViewInterface {
             outerContainer.setRightAnchor(applicationContainer, (double) 0);
             outerContainer.setBottomAnchor(applicationContainer, (double) 0);
             outerContainer.setLeftAnchor(applicationContainer, (double) 0);
-
         }
 
         // Initialize view
@@ -317,13 +318,14 @@ public class ViewController implements Initializable, ViewInterface {
     public void removeItem(final MusicListItem item) {
         Platform.runLater(new Runnable() {
             public void run() {
+
                 // Remove from playLists
                 for (ListView<MusicListItem> listView : playListViews) {
                     listView.getItems().remove(item);
                 }
 
                 // Remove from musicLists
-                musicFolderListViews.get(item.getRootFolder().getAbsolutePath()).getItems().remove(item);
+                musicFolderListViews.get(item.toString()).getItems().remove(item);
 
                 // Remove from new
                 musicFolderListViews.get(Global.NEW_FOLDER_NAME).getItems().remove(item);
@@ -910,16 +912,18 @@ public class ViewController implements Initializable, ViewInterface {
         // Determe index of list item
         int index = 0;
         for (MusicListItem i : listView.getItems()) {
-            if (i.getFile().getAbsolutePath().compareTo(item.getFile().getAbsolutePath()) >= 0) {
 
-                // If they have same parent folder, then item gets the same
-                // color
-                if (i.getFile().getParentFile().getAbsolutePath().equals(item.getFile().getParentFile().getAbsolutePath())) {
-                    item.setColorClass(i.getColorClass());
+            if (i.toString().compareTo(item.toString()) >= 0) {
+                if (i instanceof MusicListItemFile && item instanceof MusicListItemFile) {
+                    // If they have same parent folder, then item gets the same
+                    // color
+                    if (((MusicListItemFile) i).getFile().getParentFile().getAbsolutePath().equals(((MusicListItemFile) item).getFile().getParentFile().getAbsolutePath())) {
+                        item.setColorClass(i.getColorClass());
+                    }
                 }
-
                 break;
             }
+
             index++;
         }
 
@@ -1151,14 +1155,14 @@ public class ViewController implements Initializable, ViewInterface {
                 String url = event.getDragboard().getString();
                 ArrayList<MusicListItem> items;
 
+                // URL detected
                 if (url != null) {
-                    // URL
                     items = new ArrayList<MusicListItem>(1);
-                    MusicListItem item = new MusicListItem(url, UUID.randomUUID().toString());
+                    MusicListItem item = logic.event_playlist_url_dropped(url);
                     items.add(item);
-                    logic.event_playlist_url_dropped(url, item);
-                } else {
-                    // MusicListItem
+                }
+                // MusicListItem
+                else {
                     items = (ArrayList<MusicListItem>) event.getDragboard().getContent(DATA_FORMAT_LIST);
                 }
 
@@ -1321,162 +1325,6 @@ public class ViewController implements Initializable, ViewInterface {
         }
     }
 
-    public static class ListItemCell extends ListCell<MusicListItem> implements InvalidationListener {
-
-        public final String[] styleClasses = {"cell", "indexed-cell", "list-cell"};
-        public final String defaultCellClass = "listitem";
-        public final static String PLAYING_CLASS = "playing";
-
-        private AnchorPane listItem;
-        private Label artist;
-        private Label title;
-        private Label duration;
-        private ImageView live;
-
-        /**
-         * Constructor for musiclist
-         */
-        public ListItemCell() {
-            initCellLayout();
-        }
-
-        /**
-         * Constructor for playlist
-         *
-         * @param logic
-         */
-        public ListItemCell(final LogicInterfaceFX logic) {
-            initCellLayout();
-            if (logic != null) {
-                setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent mouseEvent) {
-                        if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
-                            if (mouseEvent.getClickCount() == 2) {
-                                // Fix: that the slider isn't toggling if length
-                                // changed is first called
-                                ListItemManager.getInstance().play(logic, getListView(), getItem());
-                            }
-                        }
-                    }
-                });
-            }
-        }
-
-        public void initCellLayout() {
-            try {
-                this.listItem = (AnchorPane) FXMLLoader.load(getClass().getClassLoader().getResource(ThemeUtils.getThemePath() + "/layout_list_item.fxml"));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            this.artist = (Label) this.listItem.lookup("#artist");
-            this.artist.setWrapText(true);
-            this.title = (Label) this.listItem.lookup("#title");
-            this.title.setWrapText(true);
-            this.duration = (Label) this.listItem.lookup("#duration");
-            this.live = (ImageView) this.listItem.lookup("#live");
-            this.live.setVisible(false);
-
-            // Create icon and hide
-            this.setGraphic(listItem);
-        }
-
-        @Override
-        public void updateItem(MusicListItem item, boolean empty) {
-
-            // If old item is not null remove listener because we dont need it
-            // anymore
-            if (getItem() != null) {
-                getItem().removeListener(this);
-            }
-            super.updateItem(item, empty);
-
-            if (empty || item == null) {
-                this.live.setVisible(false);
-                this.artist.setVisible(false);
-                this.duration.setVisible(false);
-                this.title.setVisible(false);
-                return;
-            }
-
-            repaint(item);
-            item.addListener(this);
-        }
-
-        @Override
-        public void invalidated(Observable arg0) {
-            repaint(getItem());
-        }
-
-        private void repaint(MusicListItem item) {
-
-            if (item.getTmp_status() == null) {
-                item.setTmp_status(Status.SET_NONE);
-            }
-
-            // Duration
-            this.duration.setVisible(true);
-            this.duration.setText(item.getDuration());
-
-            // Play icon
-            switch (item.getTmp_status()) {
-                case SET_PLAYING:
-                    this.setStyle("-fx-background: -fx-accent; -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-selection-bar; -fx-background-insets: 0.0, 0.0, 0.0; -fx-text-fill: -fx-selection-bar-text;");
-                    this.live.setManaged(true);
-                    this.live.setVisible(true);
-                    break;
-
-                case SET_NONE:
-                    this.setStyle("");
-                    this.live.setManaged(false);
-                    this.live.setVisible(false);
-                    break;
-                default:
-                    break;
-            }
-
-            // Filename
-            if (item.getArtist() == null) {
-                this.artist.setText(""); // visual layout bugfix only occurs in
-                // the caspain theme
-                this.artist.setManaged(false);
-                this.artist.setVisible(false);
-
-                this.title.setText(item.getFile() != null ? item.getFile().getName() : item.getTitle());
-                this.title.setManaged(true);
-                this.title.setVisible(true);
-                return;
-            }
-
-            // Use information
-            this.artist.setText(item.getArtist());
-            this.artist.setManaged(true);
-            this.artist.setVisible(true);
-
-            if (item.getTitle() == null) {
-                this.title.setText(" - " + item.getFile() != null ? item.getFile().getName() : item.getTitle());
-                this.title.setManaged(true);
-                this.title.setVisible(true);
-                return;
-            }
-
-            this.title.setText(" - " + item.getTitle());
-            this.title.setManaged(true);
-            this.title.setVisible(true);
-
-        }
-    }
-
-    @Override
-    public void showSearchResultError(final String message) {
-        Platform.runLater(new Runnable() {
-            public void run() {
-                searchResultsListView.getItems().clear();
-                searchResultsListView.getItems().add(new MusicListItem(new File(message), null, null));
-            }
-        });
-    }
-
     @Override
     public void showSearchResults(final ArrayList<MusicListItem> searchResult, final int counter) {
         if (Platform.isFxApplicationThread()) {
@@ -1511,8 +1359,8 @@ public class ViewController implements Initializable, ViewInterface {
             public void run() {
                 resetView();
                 setImage(artistImagePath);
-                setArtistLabel(item.getArtist(), item.getFile() != null ? item.getFile().getName() : item.getUrl());
-                setTitleLabel(item.getTitle());
+                setArtistLabel(item.getTextForArtistLabel(),"");
+                setTitleLabel(item.getTextForTitleLabel());
                 setArtistBio(artistWiki);
                 setLinks(links);
             }
@@ -1734,9 +1582,9 @@ public class ViewController implements Initializable, ViewInterface {
         }
 
         private void switchTo(int newIndex, MusicListItem newItem) {
-            currentItem.setTmp_status(Status.SET_NONE);
+            currentItem.setStatus(PlaybackStatus.SET_NONE);
             currentListView.scrollTo(newIndex - 5 < 0 ? 0 : newIndex - 5);
-            newItem.setTmp_status(Status.SET_PLAYING);
+            newItem.setStatus(PlaybackStatus.SET_PLAYING);
 
             setCurrentItem(newItem);
             setCurrentListView(currentListView);
@@ -1753,14 +1601,14 @@ public class ViewController implements Initializable, ViewInterface {
             if (listViewOld != null) {
                 oldItem = ListItemManager.getInstance().getCurrentItem();
                 if (oldItem != null) {
-                    oldItem.setTmp_status(Status.SET_NONE);
+                    oldItem.setStatus(PlaybackStatus.SET_NONE);
                 }
             }
 
             final int index = playMeListView.getItems().indexOf(playMe);
             if (playMe == null)
                 return;
-            playMe.setTmp_status(Status.SET_PLAYING);
+            playMe.setStatus(PlaybackStatus.SET_PLAYING);
             Platform.runLater(new Runnable() {
                 public void run() {
                     setCurrentListView(playMeListView);

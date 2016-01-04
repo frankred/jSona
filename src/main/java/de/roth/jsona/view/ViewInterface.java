@@ -20,6 +20,4 @@ public interface ViewInterface {
 
     public void showSearchResults(ArrayList<MusicListItem> searchResult, int searchResultCounter);
 
-    public void showSearchResultError(String message);
-
 }

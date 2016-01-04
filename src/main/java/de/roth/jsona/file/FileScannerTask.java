@@ -2,6 +2,7 @@ package de.roth.jsona.file;
 
 import de.roth.jsona.config.Config;
 import de.roth.jsona.model.MusicListItem;
+import de.roth.jsona.model.MusicListItemFile;
 import javafx.concurrent.Task;
 
 import java.io.File;

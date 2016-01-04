@@ -4,6 +4,7 @@ import com.sun.media.jfxmedia.events.PlayerStateEvent.PlayerState;
 import de.roth.jsona.config.Config;
 import de.roth.jsona.config.Global;
 import de.roth.jsona.model.MusicListItem;
+import de.roth.jsona.model.VLCPlayable;
 import de.roth.jsona.util.FileUtil;
 import de.roth.jsona.vlc.mediaplayer.job.MediaPlayerManagerPlayer;
 import uk.co.caprica.vlcj.binding.LibVlcConst;
@@ -55,15 +56,6 @@ public class MediaPlayerManager {
                 this.mediaPlayer.setEqualizer(this.factory.newEqualizer());
             }
         }
-
-        // Vlcj bug workarround - volume is accepted only if a media file
-        // played, so add a listener wait till empty.wav is play then set volume
-        // and remove listener
-        this.mediaPlayer.addMediaPlayerEventListener(new VlcjVolumeBugfixListener());
-
-        File emptyWav = new File(Global.CACHE_FOLDER + File.separator + "sound/empty.wav");
-        FileUtil.copyFile(getClass().getClassLoader().getResource("sound/empty.wav"), emptyWav);
-        this.play(new MusicListItem(emptyWav, null, null));
     }
 
     /**
@@ -92,26 +84,14 @@ public class MediaPlayerManager {
     public void play(MusicListItem item) {
         currentItem = item;
         if (currentItem != null) {
-            try {
-                this.state = PlayerState.PLAYING;
-
-                String mediaToPlay = new String();
-                if (item.getFile() != null) {
-                    mediaToPlay = new String(item.getFile().getAbsolutePath().getBytes("UTF-8"));
-                } else if (item.getUrl() != null) {
-                    mediaToPlay = item.getUrl();
-                }
-
-                executor.execute(new MediaPlayerManagerPlayer(mediaPlayer, mediaToPlay));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            this.state = PlayerState.PLAYING;
+            executor.execute(new MediaPlayerManagerPlayer(mediaPlayer, item.getMediaURL()));
         }
     }
 
     public void load(MusicListItem item) {
         currentItem = item;
-        mediaPlayer.prepareMedia(item.getFile().getAbsolutePath());
+        mediaPlayer.prepareMedia(item.getMediaURL());
         this.state = PlayerState.PAUSED;
     }
 
@@ -187,7 +167,7 @@ public class MediaPlayerManager {
      *
      * @return
      */
-    public MusicListItem getItem() {
+    public MusicListItem getCurrentItem() {
         return currentItem;
     }
 

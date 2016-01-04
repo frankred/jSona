@@ -1,5 +1,7 @@
 package de.roth.jsona.config;
 
+import de.roth.jsona.theme.ThemeUtils;
+
 import java.io.File;
 
 /**

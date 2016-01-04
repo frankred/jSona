@@ -27,21 +27,14 @@ public class DocumentCreator {
         Document doc = new Document();
 
         doc.add(new StringField("id", item.getId(), Field.Store.YES));
-
-        if(item.getFile() != null){
-            doc.add(new StringField("file", item.getFile().getAbsolutePath(), Field.Store.YES));
-        }
-
-        if(item.getUrl() != null){
-            doc.add(new StringField("url", item.getUrl(), Field.Store.YES));
-        }
+        doc.add(new StringField("mediaURL", item.toString(), Field.Store.YES));
 
         // put all search relevant stuff in the "all" fields. Only this field
         // will be scanned for later user searches
         StringBuffer all = new StringBuffer();
 
-        if(item.getFile() != null){
-            all.append(item.getFile().getAbsolutePath());
+        if(item.toString() != null){
+            all.append(item.toString());
         }
 
         if (item.getArtist() != null && !item.getArtist().equals("")) {
@@ -60,12 +53,8 @@ public class DocumentCreator {
         }
         doc.add(new StringField("all", all.toString().toLowerCase(), Field.Store.YES));
 
-        if (item.getGenre() >= 0) {
-            String genreName = GenreManager.getInstance().getGenreNameByIndex(item.getGenre());
-
-            if (genreName != null) {
-                doc.add(new StringField("genre", genreName.toLowerCase(), Field.Store.YES));
-            }
+        if (item.getGenre() != null) {
+            doc.add(new StringField("genre", item.getGenre().toLowerCase(), Field.Store.YES));
         }
 
         if (item.getYear() != null) {
