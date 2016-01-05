@@ -2,6 +2,7 @@ package de.roth.jsona.view;
 
 import de.roth.jsona.logic.LogicInterfaceFX;
 import de.roth.jsona.model.MusicListItem;
+import de.roth.jsona.model.MusicListItemYoutube;
 import de.roth.jsona.theme.ThemeUtils;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -25,6 +26,7 @@ public class ListItemCell extends ListCell<MusicListItem> implements Invalidatio
     private Label title;
     private Label duration;
     private ImageView live;
+    private ImageView icon;
 
     public ListItemCell(final LogicInterfaceFX logic) {
         initCellLayout();
@@ -57,6 +59,7 @@ public class ListItemCell extends ListCell<MusicListItem> implements Invalidatio
         this.duration = (Label) this.listItem.lookup("#duration");
         this.live = (ImageView) this.listItem.lookup("#live");
         this.live.setVisible(false);
+        this.icon = (ImageView) this.listItem.lookup("#icon");
 
         // Create icon and hide
         this.setGraphic(listItem);
@@ -77,6 +80,7 @@ public class ListItemCell extends ListCell<MusicListItem> implements Invalidatio
             this.artist.setVisible(false);
             this.duration.setVisible(false);
             this.title.setVisible(false);
+            this.icon.setVisible(false);
             return;
         }
 
@@ -99,7 +103,7 @@ public class ListItemCell extends ListCell<MusicListItem> implements Invalidatio
         this.duration.setVisible(true);
         this.duration.setText(item.getDuration());
 
-        // Play icon
+        // PlayBack icon
         switch (item.getStatus()) {
             case SET_PLAYING:
                 this.setStyle("-fx-background: -fx-accent; -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-selection-bar; -fx-background-insets: 0.0, 0.0, 0.0; -fx-text-fill: -fx-selection-bar-text;");
@@ -114,6 +118,15 @@ public class ListItemCell extends ListCell<MusicListItem> implements Invalidatio
                 break;
             default:
                 break;
+        }
+
+        // Icon
+        if (item instanceof MusicListItemYoutube && item.isProcessing() == false) {
+            this.icon.setManaged(true);
+            this.icon.setVisible(true);
+        } else {
+            this.icon.setManaged(false);
+            this.icon.setVisible(false);
         }
 
         if (item.getTextForArtistLabel() == null) {

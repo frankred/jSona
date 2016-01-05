@@ -36,7 +36,11 @@ public class MusicListItemYoutube extends MusicListItem implements VLCPlayable {
 
     @Override
     public String getMediaURL() {
-        return null;
+        if(isProcessing() == true){
+            return null;
+        }
+
+        return getPreferedVideoStream().getUrl();
     }
 
     public ArrayList<YoutubeVideoStreamURL> getStreams() {

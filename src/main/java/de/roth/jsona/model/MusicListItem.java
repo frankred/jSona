@@ -12,7 +12,7 @@ import java.util.UUID;
 public abstract class MusicListItem implements Serializable, Observable, MusicListItemViewable, VLCPlayable {
 
     private transient ArrayList<InvalidationListener> listeners;
-    private Image icon;
+    private transient Image icon;
     private transient int colorClass;
 
     private String id;

@@ -981,7 +981,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
                         item.setStreams(YoutubeAPI.getVideoStreamURLs(new URL(url)));
                         item.setTitle(item.getPreferedVideoStream().getTitle());
                         Logger.get().info("Choosen video stream " + item.getPreferedVideoStream().toString());
-                        item.setProcessing(true);
+                        item.setProcessing(false);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
