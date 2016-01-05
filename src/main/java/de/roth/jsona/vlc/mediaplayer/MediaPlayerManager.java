@@ -1,19 +1,19 @@
 package de.roth.jsona.vlc.mediaplayer;
 
-import com.sun.media.jfxmedia.events.PlayerStateEvent.PlayerState;
 import de.roth.jsona.config.Config;
-import de.roth.jsona.config.Global;
 import de.roth.jsona.model.MusicListItem;
-import de.roth.jsona.model.VLCPlayable;
-import de.roth.jsona.util.FileUtil;
+import de.roth.jsona.model.PlayerState;
 import de.roth.jsona.vlc.mediaplayer.job.MediaPlayerManagerPlayer;
+
 import uk.co.caprica.vlcj.binding.LibVlcConst;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
-import uk.co.caprica.vlcj.player.*;
+import uk.co.caprica.vlcj.player.AudioOutput;
+import uk.co.caprica.vlcj.player.Equalizer;
+import uk.co.caprica.vlcj.player.MediaPlayer;
+import uk.co.caprica.vlcj.player.MediaPlayerFactory;
+import uk.co.caprica.vlcj.player.ModuleDescription;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;

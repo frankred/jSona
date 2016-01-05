@@ -2,7 +2,7 @@ package de.roth.jsona.view;
 
 import de.roth.jsona.logic.LogicInterfaceFX;
 import de.roth.jsona.model.MusicListItem;
-import de.roth.jsona.model.playlist.Playlist;
+import de.roth.jsona.model.Playlist;
 
 import java.net.URL;
 import java.util.ArrayList;

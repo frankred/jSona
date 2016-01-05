@@ -1,4 +1,4 @@
-package de.roth.jsona.model.playlist;
+package de.roth.jsona.model;
 
 import de.roth.jsona.util.Serializer;
 

@@ -2,10 +2,11 @@ package de.roth.jsona.logic;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.sun.media.jfxmedia.events.PlayerStateEvent.PlayerState;
+
 import com.tulskiy.keymaster.common.HotKey;
 import com.tulskiy.keymaster.common.HotKeyListener;
 import com.tulskiy.keymaster.common.Provider;
+
 import de.roth.jsona.api.youtube.YoutubeAPI;
 import de.roth.jsona.config.Config;
 import de.roth.jsona.config.Global;
@@ -26,8 +27,9 @@ import de.roth.jsona.model.MusicListItem;
 import de.roth.jsona.model.MusicListItem.PlaybackStatus;
 import de.roth.jsona.model.MusicListItemFile;
 import de.roth.jsona.model.MusicListItemYoutube;
-import de.roth.jsona.model.playlist.Playlist;
-import de.roth.jsona.model.playlist.PlaylistManager;
+import de.roth.jsona.model.PlayerState;
+import de.roth.jsona.model.Playlist;
+import de.roth.jsona.model.PlaylistManager;
 import de.roth.jsona.tag.detection.DetectorRulesManager;
 import de.roth.jsona.tag.detection.FieldResult;
 import de.roth.jsona.util.Logger;
@@ -38,7 +40,7 @@ import de.roth.jsona.view.ViewManagerFX;
 import de.roth.jsona.vlc.mediaplayer.MediaPlayerManager;
 import de.roth.jsona.vlc.mediaplayer.PlayBackMode;
 import de.umass.lastfm.Track;
-import javafx.concurrent.Task;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.lucene.document.Document;
@@ -46,20 +48,33 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.ScoreDoc;
 import org.codehaus.jettison.json.JSONException;
+
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventListener;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import javafx.concurrent.Task;
 
 /**
  * Core class of the jSona, where everything comes together. This class
