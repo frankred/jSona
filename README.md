@@ -33,7 +33,7 @@ jSona has a dependency to VLC3, which only can be found here: [http://nightlies.
 ```sudo apt-get install vlc```
 
 ##Developpement Information
-If you want to develop under a linux system you need to [recompile the OpenJDK](http://stackoverflow.com/questions/18547362/javafx-and-openjdk) beacause JavaFX is not included, or you have to install Oracles JDK where JavaFX is included.
+If you want to develop under a linux system you need to [recompile the OpenJDK](http://stackoverflow.com/questions/18547362/javafx-and-openjdk) beacause JavaFX is not included, or you have to install Oracles JDK where JavaFX is included. To enjoy a good JavaFX support please use [Java SDK 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) within your IDE.
 
 ##Configuration file / config.json
 
