@@ -12,7 +12,7 @@ import de.roth.jsona.config.Config;
 import de.roth.jsona.config.Global;
 import de.roth.jsona.database.DataManager;
 import de.roth.jsona.database.LuceneManager;
-import de.roth.jsona.external.ExternalArtistInformationListener;
+import de.roth.jsona.external.ExternalInformationListener;
 import de.roth.jsona.external.ExternalInformationFetcher;
 import de.roth.jsona.file.FileScanner;
 import de.roth.jsona.file.FileScannerListener;
@@ -21,7 +21,6 @@ import de.roth.jsona.file.FileTaggerListener;
 import de.roth.jsona.folderwatch.DirWatcher;
 import de.roth.jsona.folderwatch.WatchDirListener;
 import de.roth.jsona.information.ArtistCacheInformation;
-import de.roth.jsona.information.Link;
 import de.roth.jsona.keyevent.HotkeyConfig;
 import de.roth.jsona.model.MusicListItem;
 import de.roth.jsona.model.MusicListItem.PlaybackStatus;
@@ -29,7 +28,6 @@ import de.roth.jsona.model.MusicListItemFile;
 import de.roth.jsona.model.MusicListItemYoutube;
 import de.roth.jsona.model.PlayerState;
 import de.roth.jsona.model.Playlist;
-import de.roth.jsona.model.PlaylistManager;
 import de.roth.jsona.tag.detection.DetectorRulesManager;
 import de.roth.jsona.tag.detection.FieldResult;
 import de.roth.jsona.util.Logger;
@@ -39,7 +37,6 @@ import de.roth.jsona.util.TimeFormatter;
 import de.roth.jsona.view.ViewManagerFX;
 import de.roth.jsona.vlc.mediaplayer.MediaPlayerManager;
 import de.roth.jsona.vlc.mediaplayer.PlayBackMode;
-import de.umass.lastfm.Track;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
@@ -82,11 +79,7 @@ import javafx.concurrent.Task;
  *
  * @author Frank Roth
  */
-public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListener, FileScannerListener, FileTaggerListener, WatchDirListener, ExternalArtistInformationListener, HotKeyListener {
-
-    // Manager
-    private PlaylistManager playlistManager;
-
+public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListener, FileScannerListener, FileTaggerListener, WatchDirListener, ExternalInformationListener, HotKeyListener {
 
     // Model
     private ArrayList<MusicListItem> newList;
@@ -106,17 +99,14 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
     private Provider hotkeysProvider;
 
     // Caches
-    private HashMap<String, ArtistCacheInformation> informationCache;
+    private HashMap<String, ArtistCacheInformation> artistInformationCache;
+    private HashMap<String, String> youtubePreviewImageCache;
 
     // Tmp
     private int folderTaggedAmount;
     private int searchResultCounter;
 
     public LogicManagerFX() {
-        // Manager
-        playlistManager = new PlaylistManager();
-
-
         // Model
         this.newList = new ArrayList<MusicListItem>();
 
@@ -135,7 +125,8 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
         this.importTaggingExecutor.allowCoreThreadTimeOut(false);
 
         // Caches
-        this.informationCache = new HashMap<String, ArtistCacheInformation>();
+        this.artistInformationCache = new HashMap<String, ArtistCacheInformation>();
+        this.youtubePreviewImageCache = new HashMap<String, String>();
 
         // Tmp
         this.folderTaggedAmount = 0;
@@ -248,7 +239,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
             }
         }, 0);
 
-        // Loading information cache
+        // Loading artist cache
         Timer artistCacheTimer = new Timer(true);
         artistCacheTimer.schedule(new TimerTask() {
             public void run() {
@@ -258,14 +249,36 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
                     Gson gson = new Gson();
                     try {
                         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(artistsJson)));
-                        informationCache = gson.fromJson(reader, new TypeToken<HashMap<String, ArtistCacheInformation>>() {
+                        artistInformationCache = gson.fromJson(reader, new TypeToken<HashMap<String, ArtistCacheInformation>>() {
                         }.getType());
                     } catch (FileNotFoundException e1) {
                         e1.printStackTrace();
                     }
                 } else {
                     // no jsona cache file found, create new cache
-                    informationCache = new HashMap<String, ArtistCacheInformation>();
+                    artistInformationCache = new HashMap<String, ArtistCacheInformation>();
+                }
+            }
+        }, 0);
+
+        // Loading youtube cache
+        Timer youtubeCacheTimer = new Timer(true);
+        youtubeCacheTimer.schedule(new TimerTask() {
+            public void run() {
+                // loading artists informations
+                File youtubeJson = new File(Global.YOUTUBE_JSON);
+                if (youtubeJson.exists()) {
+                    Gson gson = new Gson();
+                    try {
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(youtubeJson)));
+                        youtubePreviewImageCache = gson.fromJson(reader, new TypeToken<HashMap<String, String>>() {
+                        }.getType());
+                    } catch (FileNotFoundException e1) {
+                        e1.printStackTrace();
+                    }
+                } else {
+                    // no jsona cache file found, create new cache
+                    youtubePreviewImageCache = new HashMap<String, String>();
                 }
             }
         }, 0);
@@ -276,17 +289,18 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
             public void run() {
                 playlists = (ArrayList<Playlist>) Serializer.load(Global.PLAYLIST_LIST_DATA);
 
-
                 if (playlists != null) {
 
-                    for (Playlist p : playlists) {
+                    for (Playlist playlist : playlists) {
 
-                        p.setAtomicId("paylist_" + atomicInt.incrementAndGet());
+                        playlist.setId("paylist_" + atomicInt.incrementAndGet());
 
-                        for (MusicListItem item : p.getItems()) {
+                        for (MusicListItem item : playlist.getItems()) {
 
-                            // retag
-                            DataManager.getInstance().retag(item);
+                            if (item instanceof MusicListItemFile) {
+                                // retag
+                                DataManager.getInstance().retag(item);
+                            }
 
                             // was active
                             if (item.getStatus() == PlaybackStatus.SET_PAUSED || item.getStatus() == PlaybackStatus.SET_PLAYING) {
@@ -702,7 +716,6 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
     private void loadExternalInformation(MusicListItem item) {
 
         if (item instanceof MusicListItemFile) {
-
             MusicListItemFile itemFile = (MusicListItemFile) item;
 
             // if no id3 tagged on this file!
@@ -739,37 +752,57 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
             }
 
             // Show information immediately
-            showArtistInformation(item);
             ViewManagerFX.getInstance().getController().showInformation(item);
 
-            ArtistCacheInformation artistCacheInformation = null;
+            ArtistCacheInformation artistCacheInformation;
             if (item.getArtist() == null) {
-                artistCacheInformation = this.informationCache.get(itemFile.getFile().getName());
+                artistCacheInformation = this.artistInformationCache.get(itemFile.getFile().getName());
             } else {
-                artistCacheInformation = this.informationCache.get(itemFile.getArtist());
+                artistCacheInformation = this.artistInformationCache.get(itemFile.getArtist());
             }
 
-
-            // Load external artist information
             if (artistCacheInformation == null) {
-                loadArtistInformation(item);
+                fetchExternalInformation(item);
                 return;
             }
 
-            showArtistInformation(artistCacheInformation, item);
-            loadArtistInformation(item);
+            ViewManagerFX.getInstance().getController().showInformation(item);
+            fetchExternalInformation(item);
         }
 
 
         if (item instanceof MusicListItemYoutube) {
             MusicListItemYoutube itemYoutube = (MusicListItemYoutube) item;
-            // do nothing
+
+            // Show information immediately
+            ViewManagerFX.getInstance().getController().showInformation(itemYoutube);
+
+            String image = itemYoutube.getMainImage();
+
+            // Check item
+            if (image == null) {
+
+                // Check cache
+                image = this.youtubePreviewImageCache.get(itemYoutube.getUrl());
+                itemYoutube.setImagePath(image);
+
+                if (image == null) {
+                    this.fetchExternalInformation(itemYoutube);
+                    return;
+                }
+            }
+
+            ViewManagerFX.getInstance().getController().showInformation(itemYoutube);
         }
     }
 
-    private void loadArtistInformation(MusicListItem item) {
+    private void fetchExternalInformation(MusicListItem item) {
         try {
-            ExternalInformationFetcher.getInstance().collectArtistInformation(item, httpClient, this, informationCache);
+            if (item instanceof MusicListItemFile) {
+                ExternalInformationFetcher.getInstance().collectArtistInformation((MusicListItemFile) item, httpClient, this, artistInformationCache);
+            } else if (item instanceof MusicListItemYoutube) {
+                ExternalInformationFetcher.getInstance().collectYoutubeImagePreview((MusicListItemYoutube) item, httpClient, this, youtubePreviewImageCache);
+            }
         } catch (IOException e) {
             Logger.get().error(e);
         } catch (JSONException e) {
@@ -863,18 +896,13 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
         if (playlist != null) {
             Logger.get().info("Playlist '" + oldname + "' renamed to '" + newname + "'.");
             playlist.setName(newname);
-            final ArrayList<Playlist> p = this.playlists;
-            (new Thread(new Runnable() {
-                public void run() {
-                    Serializer.save(Global.PLAYLIST_LIST_DATA, p);
-                }
-            })).start();
+            this.savePlaylists();
         }
     }
 
     private Playlist findPlayListById(String atomicId) {
         for (Playlist p : this.playlists) {
-            if (p.getAtomicId().equals(atomicId)) {
+            if (p.getId().equals(atomicId)) {
                 return p;
             }
         }
@@ -882,15 +910,9 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
     }
 
     @Override
-    public void event_playlist_changed(String atomicId, List<MusicListItem> items) {
+    public void event_playlist_changed(Playlist playlist) {
         Logger.get().info("Saving playlists to '" + Global.PLAYLIST_LIST_DATA + "'.");
-        final ArrayList<Playlist> p = this.playlists;
-        (new Thread(new Runnable() {
-            public void run() {
-                Serializer.save(Global.PLAYLIST_LIST_DATA, p);
-            }
-        })).start();
-
+        this.savePlaylists();
     }
 
     @Override
@@ -900,7 +922,6 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
         }
         mediaPlayerManager.setVolume(newValue);
         Config.getInstance().VOLUME = newValue;
-
     }
 
     @Override
@@ -908,52 +929,6 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
         if (this.mediaPlayerManager.getCurrentItem() == item) {
             ViewManagerFX.getInstance().getController().showInformation(item);
         }
-    }
-
-    @Override
-    public void ready(MusicListItem item, ArtistCacheInformation artistInformation) {
-        // download is ready but is the song still the same?
-        if (this.mediaPlayerManager.getCurrentItem() == item) {
-            showArtistInformation(artistInformation, item);
-        }
-    }
-
-    private void showArtistInformation(MusicListItem item) {
-        ViewManagerFX.getInstance().getController().showInformation(null, null, null, item);
-    }
-
-    private void showArtistInformation(ArtistCacheInformation artistInformation, MusicListItem item) {
-        if (artistInformation == null) {
-            showArtistInformation(item);
-            return;
-        }
-
-        if (artistInformation.getArtist() == null) {
-            ViewManagerFX.getInstance().getController().showInformation(artistInformation.getImagePath(), null, getYoutubeLinksByTopTracks(artistInformation), item);
-            return;
-        }
-
-        if (artistInformation.getTopTracks() == null) {
-            ViewManagerFX.getInstance().getController().showInformation(artistInformation.getImagePath(), artistInformation.getArtist().getWikiSummary(), null, item);
-            return;
-        }
-
-        List<Link> links = getYoutubeLinksByTopTracks(artistInformation);
-
-        ViewManagerFX.getInstance().getController().showInformation(artistInformation.getImagePath(), artistInformation.getArtist().getWikiSummary(), links, item);
-    }
-
-    private List<Link> getYoutubeLinksByTopTracks(ArtistCacheInformation artistInformation) {
-        List<Link> links = new ArrayList<Link>();
-
-        if (artistInformation.getTopTracks() == null) {
-            return links;
-        }
-
-        for (Track track : artistInformation.getTopTracks()) {
-            links.add(new Link(YoutubeAPI.getSearchQueryUrl(track.getArtist() + " " + track.getName()), track.getName()));
-        }
-        return links;
     }
 
     @Override
@@ -965,18 +940,18 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
     public void event_playlist_new() {
         Logger.get().info("Add new playlist.");
         String atomicId = "paylist_" + atomicInt.incrementAndGet();
-        Playlist p = new Playlist(atomicId, Global.DEFAULT_PLAYLIST_NAME);
-        this.playlists.add(p);
-        ViewManagerFX.getInstance().getController().newPlaylist(this, p);
-        this.event_playlist_changed(p.getAtomicId(), p.getItems());
+        Playlist playlist = new Playlist(atomicId, Global.DEFAULT_PLAYLIST_NAME);
+        this.playlists.add(playlist);
+        ViewManagerFX.getInstance().getController().newPlaylist(this, playlist);
+        this.event_playlist_changed(playlist);
     }
 
     @Override
     public void event_playlist_remove(String atomicId) {
-        Playlist p = findPlayListById(atomicId);
-        Logger.get().info("Remove playlist with the name '" + p.getName() + "' including " + p.getItems().size() + " items.");
-        this.playlists.remove(p);
-        this.event_playlist_changed(p.getAtomicId(), p.getItems());
+        Playlist playlist = findPlayListById(atomicId);
+        Logger.get().info("Remove playlist with the name '" + playlist.getName() + "' including " + playlist.getItems().size() + " items.");
+        this.playlists.remove(playlist);
+        this.event_playlist_changed(playlist);
     }
 
     @Override
@@ -985,7 +960,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
     }
 
     @Override
-    public MusicListItem event_playlist_url_dropped(final String url) {
+    public MusicListItem event_playlist_url_dropped(final String url, final Playlist playlist) {
         Timer youtubeVideoTimerTask = new Timer(true);
         final MusicListItemYoutube item = new MusicListItemYoutube(url);
         youtubeVideoTimerTask.schedule(new TimerTask() {
@@ -997,6 +972,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
                         item.setTitle(item.getPreferedVideoStream().getTitle());
                         Logger.get().info("Choosen video stream " + item.getPreferedVideoStream().toString());
                         item.setProcessing(false);
+                        savePlaylists();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1005,7 +981,16 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
         }, 0);
 
         return item;
-     }
+    }
+
+    private void savePlaylists() {
+        final ArrayList<Playlist> p = playlists;
+        (new Thread(new Runnable() {
+            public void run() {
+                Serializer.save(Global.PLAYLIST_LIST_DATA, p);
+            }
+        })).start();
+    }
 
     @Override
     public void onHotKey(HotKey hotKey) {

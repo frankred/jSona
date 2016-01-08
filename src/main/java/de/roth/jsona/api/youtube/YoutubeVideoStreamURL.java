@@ -1,6 +1,8 @@
 package de.roth.jsona.api.youtube;
 
-public class YoutubeVideoStreamURL {
+import java.io.Serializable;
+
+public class YoutubeVideoStreamURL implements Serializable {
 
     public enum StreamType {
         AUDIO, VIDEO, VIDEO_AUDIO
@@ -17,7 +19,11 @@ public class YoutubeVideoStreamURL {
 
     public YoutubeVideoStreamURL(String url, String itag) {
         this.url = url;
-        this.itag = Integer.parseInt(itag);
+        try {
+            this.itag = Integer.parseInt(itag);
+        } catch (NumberFormatException e){
+            this.itag = -1;
+        }
         this.init();
     }
 

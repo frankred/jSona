@@ -30,12 +30,14 @@ public class Global {
     public static final String CACHE_FOLDER = "cache";
     public static final String FILES_CACHE = CACHE_FOLDER + File.separator + "files.cache";
     public static final String ARTISTS_JSON = CACHE_FOLDER + File.separator + "artists.cache";
+    public static final String YOUTUBE_JSON = CACHE_FOLDER + File.separator + "youtube.cache";
     public static final String FOLDER_CACHE = CACHE_FOLDER + File.separator + "folder.cache";
     public static final String IMAGE_FOLDER = CACHE_FOLDER + File.separator + "img";
     public static final String ARTIST_IMAGE_FOLDER = IMAGE_FOLDER + File.separator + "artists";
+    public static final String YOUTUBE_IMAGE_FOLDER = IMAGE_FOLDER + File.separator + "youtube";
 
     // Folders that has to exists
-    public static final String[] CHECK_FOLDER_EXISTS = {CACHE_FOLDER, IMAGE_FOLDER, ARTIST_IMAGE_FOLDER};
+    public static final String[] CHECK_FOLDER_EXISTS = {CACHE_FOLDER, IMAGE_FOLDER, ARTIST_IMAGE_FOLDER, YOUTUBE_IMAGE_FOLDER};
 
     // View
     public static final String DEFAULT_PLAYLIST_NAME = "Playlist";

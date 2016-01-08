@@ -1,19 +1,17 @@
 package de.roth.jsona.model;
 
-import de.roth.jsona.model.MusicListItem;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class Playlist implements Serializable {
 
-    private String atomicId;
+    private String id;
     private String name;
     private ArrayList<MusicListItem> items;
 
-    public Playlist(String atomicId, String name) {
-        this.atomicId = atomicId;
+    public Playlist(String id, String name) {
+        this.id = id;
         this.name = name;
         this.items = new ArrayList<MusicListItem>();
     }
@@ -34,12 +32,12 @@ public class Playlist implements Serializable {
         this.items = items;
     }
 
-    public String getAtomicId() {
-        return atomicId;
+    public String getId() {
+        return id;
     }
 
-    public void setAtomicId(String atomicId) {
-        this.atomicId = atomicId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override

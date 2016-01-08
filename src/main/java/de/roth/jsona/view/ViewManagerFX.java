@@ -63,8 +63,4 @@ public class ViewManagerFX {
     public ViewController getController() {
         return controller;
     }
-
-    public void setController(ViewController controller) {
-        this.controller = controller;
-    }
 }

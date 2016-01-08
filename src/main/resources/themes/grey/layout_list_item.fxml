@@ -12,16 +12,16 @@
     <children>
         <BorderPane maxHeight="16" minHeight="16" minWidth="0.0" prefHeight="16" prefWidth="-1.0" snapToPixel="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <center>
-                <BorderPane prefHeight="-1.0" prefWidth="-1.0">
+                <BorderPane prefHeight="-1.0" prefWidth="-1.0" BorderPane.alignment="CENTER_LEFT">
                     <center>
-                        <Label fx:id="title" alignment="CENTER_LEFT" contentDisplay="LEFT" ellipsisString="" focusTraversable="false" minWidth="0.0" prefHeight="-1.0" prefWidth="-1.0" underline="false" wrapText="false" BorderPane.alignment="CENTER_LEFT">
+                        <Label fx:id="title" alignment="CENTER_LEFT" contentDisplay="LEFT" ellipsisString="" focusTraversable="false" prefHeight="-1.0" prefWidth="-1.0" text="" textOverrun="CLIP" BorderPane.alignment="CENTER_LEFT">
                             <font>
                                 <Font size="11.0" />
                             </font>
                         </Label>
                     </center>
                     <left>
-                        <Label fx:id="artist" contentDisplay="LEFT" ellipsisString="" focusTraversable="false" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" wrapText="false" BorderPane.alignment="CENTER_LEFT">
+                        <Label fx:id="artist" contentDisplay="LEFT" ellipsisString="" focusTraversable="false" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" text="" BorderPane.alignment="CENTER_LEFT">
                             <font>
                                 <Font name="System Bold" size="14.0" />
                             </font>
@@ -37,7 +37,7 @@
                 </Label>
             </right>
             <left>
-                <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+                <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" BorderPane.alignment="CENTER">
                     <children>
                         <ImageView fx:id="live" fitHeight="12.0" fitWidth="0.0" opacity="1.0" pickOnBounds="true" preserveRatio="true" smooth="false" style="">
                             <image>
@@ -47,7 +47,7 @@
                                 <Insets left="2.0" right="3.0" />
                             </HBox.margin>
                         </ImageView>
-                        <ImageView fx:id="icon" pickOnBounds="true" preserveRatio="true" smooth="false"  visible="false" managed="false">
+                        <ImageView fx:id="icon" managed="false" pickOnBounds="true" preserveRatio="true" smooth="false" visible="false">
                             <image>
                                 <Image url="@icon_youtube.png" />
                             </image>

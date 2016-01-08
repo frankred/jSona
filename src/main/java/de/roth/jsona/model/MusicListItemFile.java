@@ -1,12 +1,14 @@
 package de.roth.jsona.model;
 
+import de.roth.jsona.information.Link;
 import javafx.scene.image.Image;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
-public class MusicListItemFile extends MusicListItem implements VLCPlayable {
+public class MusicListItemFile extends MusicListItem {
 
     private File file;
     private File rootFolder;
@@ -72,14 +74,39 @@ public class MusicListItemFile extends MusicListItem implements VLCPlayable {
     @Override
     public String getTextForTitleLabel() {
 
-        if(this.hasTitle() && !this.hasArtist()){
+        if (this.hasTitle() && !this.hasArtist()) {
             return this.getTitle() + "  (" + this.getFile().getName() + ")";
         }
 
-        if(this.hasTitle() && this.hasArtist()){
-            return this.getTitle()  + (this.getAlbum() != null && !this.getAlbum().equals("") ? "  (" + this.getAlbum() + ")" : "");
+        if (this.hasTitle() && this.hasArtist()) {
+            return " - " + this.getTitle() + (this.getAlbum() != null && !this.getAlbum().equals("") ? "  (" + this.getAlbum() + ")" : "");
         }
 
         return this.getFile().getName();
+    }
+
+    @Override
+    public String getMainImage() {
+        return this.getImagePath();
+    }
+
+    @Override
+    public String getHeading() {
+        return this.getArtist();
+    }
+
+    @Override
+    public String getSubheading() {
+        return this.getTitle();
+    }
+
+    @Override
+    public String getText() {
+        return this.getSummary();
+    }
+
+    @Override
+    public List<Link> getSubLinks() {
+        return this.getLinks();
     }
 }

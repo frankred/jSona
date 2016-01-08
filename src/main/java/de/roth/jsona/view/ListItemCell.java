@@ -10,10 +10,13 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+
+import java.io.File;
 
 public class ListItemCell extends ListCell<MusicListItem> implements InvalidationListener {
 
@@ -109,6 +112,7 @@ public class ListItemCell extends ListCell<MusicListItem> implements Invalidatio
                 this.setStyle("-fx-background: -fx-accent; -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-selection-bar; -fx-background-insets: 0.0, 0.0, 0.0; -fx-text-fill: -fx-selection-bar-text;");
                 this.live.setManaged(true);
                 this.live.setVisible(true);
+
                 break;
 
             case SET_NONE:
@@ -134,7 +138,7 @@ public class ListItemCell extends ListCell<MusicListItem> implements Invalidatio
             this.artist.setManaged(false);
             this.artist.setVisible(false);
         } else {
-            this.artist.setText(item.getArtist());
+            this.artist.setText(item.getTextForArtistLabel());
             this.artist.setManaged(true);
             this.artist.setVisible(true);
         }
@@ -144,7 +148,7 @@ public class ListItemCell extends ListCell<MusicListItem> implements Invalidatio
             this.title.setManaged(false);
             this.title.setVisible(false);
         } else {
-            this.title.setText((item.getTextForArtistLabel() == null ? "" : " - ") + item.getTextForTitleLabel());
+            this.title.setText(item.getTextForTitleLabel());
             this.title.setManaged(true);
             this.title.setVisible(true);
         }

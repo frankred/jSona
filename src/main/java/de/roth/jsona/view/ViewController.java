@@ -1129,7 +1129,7 @@ public class ViewController implements Initializable, ViewInterface {
     }
 
     private Tab createPlayList(final LogicInterfaceFX logic, final Playlist playlist, boolean selectTitle, boolean activateTab) {
-        Tab tab = TabUtil.createEditableTab(playlist.getAtomicId(), playlist.getName(), selectTitle, logic);
+        Tab tab = TabUtil.createEditableTab(playlist.getId(), playlist.getName(), selectTitle, logic);
 
         // get layout
         AnchorPane listPane = null;
@@ -1198,7 +1198,7 @@ public class ViewController implements Initializable, ViewInterface {
                 // URL detected
                 if (url != null) {
                     items = new ArrayList<MusicListItem>(1);
-                    MusicListItem item = logic.event_playlist_url_dropped(url);
+                    MusicListItem item = logic.event_playlist_url_dropped(url, playlist);
                     items.add(item);
                 }
                 // MusicListItem
@@ -1215,7 +1215,7 @@ public class ViewController implements Initializable, ViewInterface {
                             listView.getSelectionModel().selectRange(dropIndex, dropIndex + items.size());
                             event.setDropCompleted(true);
                             event.consume();
-                            logic.event_playlist_changed(playlist.getAtomicId(), listView.getItems());
+                            logic.event_playlist_changed(playlist);
                         }
                         break;
 
@@ -1279,7 +1279,7 @@ public class ViewController implements Initializable, ViewInterface {
                                 if (listView.getSelectionModel().getSelectedItems().size() == listView.getItems().size()) {
                                     listView.getItems().clear();
                                     keyEvent.consume();
-                                    logic.event_playlist_changed(playlist.getAtomicId(), listView.getItems());
+                                    logic.event_playlist_changed(playlist);
                                     return;
                                 }
 
@@ -1297,7 +1297,7 @@ public class ViewController implements Initializable, ViewInterface {
                                 listView.getSelectionModel().select(firstIndex);
 
                                 keyEvent.consume();
-                                logic.event_playlist_changed(playlist.getAtomicId(), listView.getItems());
+                                logic.event_playlist_changed(playlist);
 
                             }
                         });
@@ -1391,21 +1391,18 @@ public class ViewController implements Initializable, ViewInterface {
     }
 
     public void showInformation(final MusicListItem item) {
-        showInformation(null, null, null, item);
-    }
-
-    public void showInformation(final String artistImagePath, final String artistWiki, final List<Link> links, final MusicListItem item) {
         Platform.runLater(new Runnable() {
+
             public void run() {
                 resetView();
-                setImage(artistImagePath);
-                setArtistLabel(item.getTextForArtistLabel(),"");
-                setTitleLabel(item.getTextForTitleLabel());
-                setArtistBio(artistWiki);
-                setLinks(links);
+                setImage(item.getMainImage());
+                setHeading(item.getHeading(), "");
+                setSubheading(item.getSubheading());
+                setText(item.getText());
+                setLinks(item.getSubLinks());
             }
 
-            private void setArtistBio(String text) {
+            private void setText(String text) {
                 if (text == null) {
                     return;
                 }
@@ -1414,7 +1411,7 @@ public class ViewController implements Initializable, ViewInterface {
                 artistBio.setManaged(true);
             }
 
-            private void setTitleLabel(String text) {
+            private void setSubheading(String text) {
                 if (text == null) {
                     return;
                 }
@@ -1424,7 +1421,7 @@ public class ViewController implements Initializable, ViewInterface {
                 titleLabel.setVisible(true);
             }
 
-            private void setArtistLabel(String text, String alternativeText) {
+            private void setHeading(String text, String alternativeText) {
                 if (text == null) {
                     text = alternativeText;
                 }

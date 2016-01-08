@@ -1,5 +1,6 @@
 package de.roth.jsona.model;
 
+import de.roth.jsona.information.Link;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -7,13 +8,15 @@ import javafx.scene.image.Image;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
-public abstract class MusicListItem implements Serializable, Observable, MusicListItemViewable, VLCPlayable {
+public abstract class MusicListItem implements Serializable, Observable, MusicListItemViewable, VLCPlayable, MainViewViewable {
 
     private transient ArrayList<InvalidationListener> listeners;
-    private transient Image icon;
     private transient int colorClass;
+
+    private transient Image icon;
 
     private String id;
     private Date creationDate;
@@ -28,9 +31,11 @@ public abstract class MusicListItem implements Serializable, Observable, MusicLi
     private String summary;
 
     private boolean processing;
-    private transient boolean keepInCache = false;
     private transient PlaybackStatus status;
+    private transient boolean keepInCache = false;
 
+    private List<Link> links;
+    private String imagePath;
 
     public enum PlaybackStatus {
         SET_NONE, SET_PLAYING, SET_PAUSED
@@ -174,6 +179,14 @@ public abstract class MusicListItem implements Serializable, Observable, MusicLi
         this.icon = icon;
     }
 
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
     @Override
     public void addListener(InvalidationListener listener) {
         if (this.listeners == null) {
@@ -187,7 +200,7 @@ public abstract class MusicListItem implements Serializable, Observable, MusicLi
         this.listeners.remove(listener);
     }
 
-    private void invalidate() {
+    protected void invalidate() {
         final MusicListItem item = this;
         if (this.listeners != null && this.listeners.size() > 0) {
             // Need to be run
@@ -216,11 +229,24 @@ public abstract class MusicListItem implements Serializable, Observable, MusicLi
         return null;
     }
 
+    @Override
+    public List<Link> getSubLinks() {
+        return links;
+    }
+
+    public void setLinks(List<Link> links) {
+        this.links = links;
+    }
+
     public boolean hasTitle(){
         return this.getTitle() != null && !this.getTitle().equals("");
     }
 
     public boolean hasArtist(){
         return this.getArtist() != null && !this.getArtist().equals("");
+    }
+
+    public List<Link> getLinks() {
+        return links;
     }
 }

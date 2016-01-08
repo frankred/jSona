@@ -1,6 +1,7 @@
 package de.roth.jsona.logic;
 
 import de.roth.jsona.model.MusicListItem;
+import de.roth.jsona.model.Playlist;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ public interface LogicInterfaceFX {
 
     public void close();
 
-    public void event_playlist_changed(String atomicId, List<MusicListItem> items);
+    public void event_playlist_changed(Playlist playlist);
 
     public void event_playlist_namechanged(String atomicId, String oldname, String newname);
 
@@ -40,7 +41,7 @@ public interface LogicInterfaceFX {
 
     public void event_play_url(String url);
 
-    public MusicListItem event_playlist_url_dropped(String url);
+    public MusicListItem event_playlist_url_dropped(String url, Playlist playlist);
 
     public void event_search_music(String query);
 

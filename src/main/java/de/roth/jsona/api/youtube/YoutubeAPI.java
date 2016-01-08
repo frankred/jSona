@@ -1,6 +1,9 @@
 package de.roth.jsona.api.youtube;
 
+import de.roth.jsona.information.ArtistCacheInformation;
+import de.roth.jsona.information.Link;
 import de.roth.jsona.util.Logger;
+import de.umass.lastfm.Track;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -11,11 +14,22 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class YoutubeAPI {
+
+    public static String getID(String url) {
+        Pattern pattern = Pattern.compile("v=[a-zA-Z0-9_-]{11}", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(url);
+        while (matcher.find()) {
+            return matcher.group().substring(2);
+        }
+        return null;
+    }
 
     public static ArrayList<YoutubeVideoStreamURL> getVideoStreamURLs(URL youtubeVideoUrl) throws Exception {
         ArrayList<YoutubeVideoStreamURL> videos = new ArrayList<YoutubeVideoStreamURL>();
@@ -65,7 +79,9 @@ public class YoutubeAPI {
                     Pattern p = Pattern.compile("<title>(.*?)</title>");
                     Matcher m = p.matcher(youtubeVideoPageContent);
                     while (m.find() == true) {
-                        youtubeStreamUrl.setTitle(m.group(1));
+                        String title = m.group(1);
+                        // Remove " - YouTube" string
+                        youtubeStreamUrl.setTitle(title.substring(0, title.length() - 10));
                         break;
                     }
 
@@ -93,5 +109,19 @@ public class YoutubeAPI {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static List<Link> getYoutubeLinksByTracks(Collection<Track> tracks) {
+        List<Link> links = new ArrayList<Link>();
+
+        if (tracks == null) {
+            return links;
+        }
+
+        for (Track track : tracks) {
+            links.add(new Link(YoutubeAPI.getSearchQueryUrl(track.getArtist() + " " + track.getName()), track.getName()));
+        }
+
+        return links;
     }
 }

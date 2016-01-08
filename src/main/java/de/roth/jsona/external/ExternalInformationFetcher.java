@@ -2,13 +2,14 @@ package de.roth.jsona.external;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import de.roth.jsona.api.google.images.GoogleImageAPI;
 import de.roth.jsona.api.musicbrainz.Musicbrainz;
 import de.roth.jsona.api.musicbrainz.MusicbrainzSearchResult;
+import de.roth.jsona.api.youtube.YoutubeAPI;
 import de.roth.jsona.config.Global;
 import de.roth.jsona.http.HttpClientHelper;
 import de.roth.jsona.information.ArtistCacheInformation;
-import de.roth.jsona.model.MusicListItem;
+import de.roth.jsona.model.MusicListItemFile;
+import de.roth.jsona.model.MusicListItemYoutube;
 import de.roth.jsona.util.Logger;
 import de.umass.lastfm.Artist;
 import de.umass.lastfm.ImageSize;
@@ -17,7 +18,6 @@ import net.ricecode.similarity.JaroWinklerStrategy;
 import net.ricecode.similarity.StringSimilarityService;
 import net.ricecode.similarity.StringSimilarityServiceImpl;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jettison.json.JSONException;
 
@@ -28,7 +28,6 @@ import java.net.URISyntaxException;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.logging.Level;
 
 public class ExternalInformationFetcher {
 
@@ -46,11 +45,35 @@ public class ExternalInformationFetcher {
         return (instance);
     }
 
-    public void collectArtistInformation(final MusicListItem item, final HttpClient client, final ExternalArtistInformationListener externalArtistInformationListener, final HashMap<String, ArtistCacheInformation> artistsCache) throws IOException, JSONException, URISyntaxException {
+    public void collectYoutubeImagePreview(final MusicListItemYoutube item, final HttpClient client, final ExternalInformationListener externalInformationListener, final HashMap<String, String> youtubeCache) throws IOException, JSONException, URISyntaxException {
+        Runnable collectYoutubeInformation = new Runnable() {
+            @Override
+            public void run() {
+                Logger.get().info("Collection information for '" + item.getUrl() + "'.");
+
+                String videoID = YoutubeAPI.getID(item.getUrl());
+                Logger.get().info("Video ID detected '" + videoID + "'");
+
+                String imageURL = "http://img.youtube.com/vi/" + videoID + "/maxresdefault.jpg";
+                String imageFilePath = getYoutubeImageFilePath(videoID);
+
+                if (HttpClientHelper.downloadFile(imageURL, imageFilePath, client) == false) {
+                    Logger.get().info("Image download from '" + imageURL + "' failed.");
+                    return;
+                }
+
+                item.setImagePath(imageFilePath);
+                saveYoutubeInformationToCache(item.getUrl(), imageFilePath, youtubeCache);
+                externalInformationListener.ready(item);
+            }
+        };
+        new Thread(collectYoutubeInformation).start();
+    }
+
+    public void collectArtistInformation(final MusicListItemFile item, final HttpClient client, final ExternalInformationListener externalInformationListener, final HashMap<String, ArtistCacheInformation> artistsCache) throws IOException, JSONException, URISyntaxException {
         Runnable collectArtistInformation = new Runnable() {
             @Override
             public void run() {
-
                 Logger.get().info("Collection informations for '" + item.getArtist() + "'.");
 
                 Artist artist = searchArtistOnLastFMInfo(item.getArtist());
@@ -67,45 +90,49 @@ public class ExternalInformationFetcher {
                     artist = searchArtistWithLastFMCorrection(item.getArtist(), client);
                 }
 
-                String artistImageUrl = getBiggestImageUrl(artist);
+                if (artist == null) {
+                    externalInformationListener.ready(item);
+                }
 
+                item.setSummary(artist.getWikiSummary());
+
+                String artistImageUrl = getBiggestImageUrl(artist);
                 String artistImageFilePath = null;
 
-                // Image found -> Download image and refresh view
+                // Image found
                 if (StringUtils.isNotBlank(artistImageUrl)) {
                     createFolderIfNotExists(Global.ARTIST_IMAGE_FOLDER);
-                    artistImageFilePath = getArtistImageFilePath(artist);
-                    downloadAndInformListener(item, artist, artistImageUrl, artistImageFilePath, client, externalArtistInformationListener);
-                    saveInformationToCache(item, new ArtistCacheInformation(artist, artistImageFilePath), artistsCache);
+                    artistImageFilePath = Global.ARTIST_IMAGE_FOLDER + File.separator + Base64.getEncoder().encodeToString(artist.getName().getBytes());
+
+                    // Download
+                    boolean downloadSucceed = HttpClientHelper.downloadFile(artistImageUrl, artistImageFilePath, client);
+
+                    if (downloadSucceed == false) {
+                        Logger.get().info("Image download from '" + artistImageUrl + "' failed.");
+                        return;
+                    }
+                    item.setImagePath(artistImageFilePath);
+                    Logger.get().info("Image download from  '" + artistImageUrl + "' to the file '" + artistImageFilePath + "'.");
+
+                    ArtistCacheInformation artistCacheInformation = new ArtistCacheInformation(artist, artistImageFilePath);
+                    externalInformationListener.ready(item);
+                    saveArtistInformationToCache(item.getArtist(), artistCacheInformation, artistsCache);
                 }
 
                 // Top Tracks
                 Collection<Track> artistTopTracks = getLastFMTopTracks(artist.getName());
                 if (artistTopTracks != null && artistTopTracks.size() > 0) {
+                    item.setLinks(YoutubeAPI.getYoutubeLinksByTracks(artistTopTracks));
+
                     ArtistCacheInformation artistCacheInformation = new ArtistCacheInformation(artist, artistImageFilePath, artistTopTracks);
-                    externalArtistInformationListener.ready(item, artistCacheInformation);
-                    saveInformationToCache(item, artistCacheInformation, artistsCache);
+                    externalInformationListener.ready(item);
+                    saveArtistInformationToCache(item.getArtist(), artistCacheInformation, artistsCache);
                 }
             }
         };
         new Thread(collectArtistInformation).start();
     }
 
-    private void downloadAndInformListener(MusicListItem item, Artist artist, String artistImageUrl, String artistImageFilePath, HttpClient client, ExternalArtistInformationListener externalArtistInformationListener) {
-        if (artistImageUrl == null) {
-            return;
-        }
-
-        boolean downloadSucceed = HttpClientHelper.downloadFile(artistImageUrl, artistImageFilePath, client);
-
-        if (downloadSucceed == false) {
-            Logger.get().info("Image download from '" + artistImageUrl + "' failed.");
-            return;
-        }
-
-        Logger.get().info("Image download from  '" + artistImageUrl + "' to the file '" + artistImageFilePath + "'.");
-        externalArtistInformationListener.ready(item, new ArtistCacheInformation(artist, artistImageFilePath, null));
-    }
 
     private Collection<Track> getLastFMTopTracks(String artistQuery) {
         try {
@@ -117,15 +144,25 @@ public class ExternalInformationFetcher {
         return null;
     }
 
-    private String getArtistImageFilePath(Artist artist) {
-        return Global.ARTIST_IMAGE_FOLDER + File.separator + Base64.getEncoder().encodeToString(artist.getName().getBytes());
+    private String getYoutubeImageFilePath(String videoID) {
+        return Global.YOUTUBE_IMAGE_FOLDER + File.separator + videoID + ".jpg";
     }
 
-    private String getArtistImageFilePath(String path) {
-        return Global.ARTIST_IMAGE_FOLDER + File.separator + Base64.getEncoder().encodeToString(path.getBytes());
+    private void saveYoutubeInformationToCache(String url, String imagePath, HashMap<String, String> youtubeCache) {
+        youtubeCache.put(url, imagePath);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String artistsJson = gson.toJson(youtubeCache);
+        try {
+            FileWriter writer = new FileWriter(new File(Global.YOUTUBE_JSON));
+            writer.write(artistsJson);
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void saveInformationToCache(String key, ArtistCacheInformation cachableArtist, HashMap<String, ArtistCacheInformation> informationCache) {
+    private void saveArtistInformationToCache(String key, ArtistCacheInformation cachableArtist, HashMap<String, ArtistCacheInformation> informationCache) {
         informationCache.put(key, cachableArtist);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String artistsJson = gson.toJson(informationCache);
@@ -137,10 +174,6 @@ public class ExternalInformationFetcher {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void saveInformationToCache(MusicListItem item, ArtistCacheInformation cachableArtist, HashMap<String, ArtistCacheInformation> informationCache) {
-        saveInformationToCache(item.getArtist(), cachableArtist, informationCache);
     }
 
     private void createFolderIfNotExists(String folder) {
