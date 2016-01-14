@@ -1,6 +1,7 @@
 package de.roth.jsona.view;
 
 import de.roth.jsona.MainFX;
+import de.roth.jsona.api.youtube.YoutubeVideoStreamURL;
 import de.roth.jsona.config.Config;
 import de.roth.jsona.config.Global;
 import de.roth.jsona.information.Link;
@@ -14,11 +15,14 @@ import de.roth.jsona.theme.ThemeUtils;
 import de.roth.jsona.util.Logger;
 import de.roth.jsona.util.TimeFormatter;
 import de.roth.jsona.view.draghandler.ListItemDragHandler;
+import de.roth.jsona.view.util.AlignmentUtil;
 import de.roth.jsona.view.util.BrowserUtil;
 import de.roth.jsona.view.util.DialogUtil;
 import de.roth.jsona.view.util.TabUtil;
 import de.roth.jsona.vlc.mediaplayer.PlayBackMode;
 
+import javafx.geometry.Insets;
+import javafx.scene.control.*;
 import org.jsoup.Jsoup;
 
 import java.io.File;
@@ -50,22 +54,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.Slider;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -92,6 +80,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+
+import static de.roth.jsona.api.youtube.YoutubeVideoStreamURL.*;
 
 public class ViewController implements Initializable, ViewInterface {
 
@@ -1524,6 +1514,99 @@ public class ViewController implements Initializable, ViewInterface {
         return this.playlistTabs;
     }
 
+    public void showStreamSelectionDialog(final ArrayList<YoutubeVideoStreamURL> streams) {
+        Platform.runLater(new Runnable() {
+            public void run() {
+
+                final Stage dialog = DialogUtil.createDialog(stage, getClass().getClassLoader().getResource(ThemeUtils.getThemePath() + "/layout_select_stream_type_dialog.fxml"), false, languageBundle);
+                VBox container = (VBox) dialog.getScene().lookup("#streamTypes");
+                Button ok = (Button) dialog.getScene().lookup("#okButton");
+                Button abort = (Button) dialog.getScene().lookup("#abortButton");
+                Label message = (Label) dialog.getScene().lookup("#confirmMessage");
+
+                ArrayList<YoutubeVideoStreamURL> audio = new ArrayList<YoutubeVideoStreamURL>();
+                ArrayList<YoutubeVideoStreamURL> video = new ArrayList<YoutubeVideoStreamURL>();
+                ArrayList<YoutubeVideoStreamURL> audio_video = new ArrayList<YoutubeVideoStreamURL>();
+
+                for (YoutubeVideoStreamURL stream : streams) {
+                    if (stream.getStreamType() == StreamType.AUDIO) {
+                        audio.add(stream);
+                        continue;
+                    }
+
+                    if (stream.getStreamType() == StreamType.VIDEO) {
+                        video.add(stream);
+                        continue;
+                    }
+
+                    if (stream.getStreamType() == StreamType.VIDEO_AUDIO) {
+                        audio_video.add(stream);
+                        continue;
+                    }
+                }
+
+                ToggleGroup group = new ToggleGroup();
+
+                Insets headingPadding  = new Insets(18, 0, 6, 0);
+
+                if (audio.size() > 0) {
+                    Label audioHeading = new Label("Audio");
+                    audioHeading.getStyleClass().add("heading1");
+                    audioHeading.setPadding(headingPadding);
+                    container.getChildren().add(audioHeading);
+                    for (YoutubeVideoStreamURL stream : audio) {
+                        RadioButton r = new RadioButton(stream.toString());
+                        r.setToggleGroup(group);
+                        container.getChildren().add(r);
+                    }
+                }
+
+                if (video.size() > 0) {
+                    Label videoHeading = new Label("Video");
+                    videoHeading.getStyleClass().add("heading1");
+                    videoHeading.setPadding(headingPadding);
+                    container.getChildren().add(videoHeading);
+                    for (YoutubeVideoStreamURL stream : video) {
+                        RadioButton r = new RadioButton(stream.toString());
+                        r.setToggleGroup(group);
+                        container.getChildren().add(r);
+                    }
+                }
+
+                if (audio_video.size() > 0) {
+                    Label videoAudioHeading = new Label("Audio and Video");
+                    videoAudioHeading.getStyleClass().add("heading1");
+                    videoAudioHeading.setPadding(headingPadding);
+                    container.getChildren().add(videoAudioHeading);
+                    for (YoutubeVideoStreamURL stream : audio_video) {
+                        RadioButton r = new RadioButton(stream.toString());
+                        r.setToggleGroup(group);
+                        container.getChildren().add(r);
+                    }
+                }
+
+
+                ok.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent e) {
+                        dialog.hide();
+                    }
+                });
+
+                abort.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent e) {
+                        dialog.hide();
+                    }
+                });
+
+                AlignmentUtil.center(stage, dialog);
+
+                dialog.show();
+            }
+        });
+    }
+
     public static class ListItemManager {
         private Random random;
         private int currentItemIndexGuess;
@@ -1710,6 +1793,7 @@ public class ViewController implements Initializable, ViewInterface {
             this.playBackMode = playBackMode;
         }
     }
+
 
     public String getSearchText() {
         return this.searchText.getText();

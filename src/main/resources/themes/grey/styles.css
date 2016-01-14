@@ -188,6 +188,8 @@
 
 #artistLabel{
 	-fx-font-size: 36px;
+    -fx-stroke: red;
+    -fx-stroke-width: 1;
 }
 
 #artistBio{
@@ -217,4 +219,8 @@
 
 #closeWindowIcon:hover, #maximizeWindowIcon:hover, #minimizeWindowIcon:hover{
 	-fx-opacity: 0.7;
+}
+
+.heading1 {
+    -fx-font-weight: bold;
 }

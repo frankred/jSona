@@ -300,6 +300,8 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
                             if (item instanceof MusicListItemFile) {
                                 // retag
                                 DataManager.getInstance().retag(item);
+                            } else if (item instanceof MusicListItemYoutube) {
+
                             }
 
                             // was active
@@ -969,6 +971,7 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
                     try {
                         item.setProcessing(true);
                         item.setStreams(YoutubeAPI.getVideoStreamURLs(new URL(url)));
+                        ViewManagerFX.getInstance().getController().showStreamSelectionDialog(item.getStreams());
                         item.setTitle(item.getPreferedVideoStream().getTitle());
                         Logger.get().info("Choosen video stream " + item.getPreferedVideoStream().toString());
                         item.setProcessing(false);

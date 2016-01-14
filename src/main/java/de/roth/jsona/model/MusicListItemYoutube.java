@@ -84,7 +84,7 @@ public class MusicListItemYoutube extends MusicListItem {
     private void setPreferedVideoStream() {
         int highestItag = -1;
         for (YoutubeVideoStreamURL youtubeStream : this.getStreams()) {
-            if (youtubeStream.getStreamType() == YoutubeVideoStreamURL.StreamType.VIDEO_AUDIO && youtubeStream.getFormat().equals("MP4") && youtubeStream.getItag() > highestItag) {
+            if (youtubeStream.getStreamType() == YoutubeVideoStreamURL.StreamType.AUDIO && youtubeStream.getItag() > highestItag) {
                 this.preferedVideoStream = youtubeStream;
                 highestItag = this.preferedVideoStream.getItag();
             }
@@ -115,7 +115,7 @@ public class MusicListItemYoutube extends MusicListItem {
 
     @Override
     public String getText() {
-        return this.getPreferedVideoStream().getFormat() + " " + this.getPreferedVideoStream().getSizeRate() + " " + this.getPreferedVideoStream().getResolution();
+        return this.getPreferedVideoStream().getFormat() + " " + this.getPreferedVideoStream().getSizeRate() + (this.getPreferedVideoStream().getResolution() != null ? " " + this.getPreferedVideoStream().getResolution() : "");
     }
 
     @Override

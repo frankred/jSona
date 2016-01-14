@@ -1,7 +1,6 @@
 package de.roth.jsona.view.util;
 
 
-import de.roth.jsona.config.Global;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -12,9 +11,9 @@ import javafx.stage.StageStyle;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialogs;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ResourceBundle;
 
 /**
  * Simple Dialog generator
@@ -23,6 +22,11 @@ import java.net.URL;
  */
 public class DialogUtil {
 
+
+    public static Stage createDialog(Stage parent, URL layoutSource, boolean modal) {
+        return DialogUtil.createDialog(parent, layoutSource, modal, null);
+    }
+
     /**
      * Create a dialog and define a parent stage, and a dialog layout.fxml
      *
@@ -30,7 +34,7 @@ public class DialogUtil {
      * @param layoutSource
      * @return
      */
-    public static Stage createDialog(Stage parent, URL layoutSource, boolean modal) {
+    public static Stage createDialog(Stage parent, URL layoutSource, boolean modal, ResourceBundle bundle) {
         final Stage dialog = new Stage(StageStyle.TRANSPARENT);
         if (modal) {
             dialog.initModality(Modality.WINDOW_MODAL);
@@ -40,7 +44,13 @@ public class DialogUtil {
         dialog.initOwner(parent);
         dialog.setResizable(false);
 
-        FXMLLoader loader = new FXMLLoader(layoutSource);
+        FXMLLoader loader;
+        if (bundle == null) {
+            loader = new FXMLLoader(layoutSource);
+        } else {
+            loader = new FXMLLoader(layoutSource, bundle);
+        }
+
         Parent root = null;
         try {
             root = (Parent) loader.load();

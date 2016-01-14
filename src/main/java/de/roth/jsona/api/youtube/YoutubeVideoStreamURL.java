@@ -21,7 +21,7 @@ public class YoutubeVideoStreamURL implements Serializable {
         this.url = url;
         try {
             this.itag = Integer.parseInt(itag);
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             this.itag = -1;
         }
         this.init();
@@ -311,6 +311,14 @@ public class YoutubeVideoStreamURL implements Serializable {
 
     @Override
     public String toString() {
-        return "[type=" + this.type + ", itag=" + this.itag + ", url=" + this.url + "]";
+        return this.format + " " + this.sizeRate + " " + (this. resolution != null && !this.resolution.equals("") ? this. resolution : "");
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this.itag == ((YoutubeVideoStreamURL) obj).getItag()) {
+            return true;
+        }
+        return false;
     }
 }
