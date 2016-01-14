@@ -20,26 +20,6 @@ import de.roth.jsona.view.util.BrowserUtil;
 import de.roth.jsona.view.util.DialogUtil;
 import de.roth.jsona.view.util.TabUtil;
 import de.roth.jsona.vlc.mediaplayer.PlayBackMode;
-
-import javafx.geometry.Insets;
-import javafx.scene.control.*;
-import org.jsoup.Jsoup;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.PropertyResourceBundle;
-import java.util.Random;
-import java.util.ResourceBundle;
-
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -51,37 +31,29 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DataFormat;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
-import javafx.scene.input.TransferMode;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.input.*;
+import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import org.jsoup.Jsoup;
 
-import static de.roth.jsona.api.youtube.YoutubeVideoStreamURL.*;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+
+import static de.roth.jsona.api.youtube.YoutubeVideoStreamURL.StreamType;
 
 public class ViewController implements Initializable, ViewInterface {
 
@@ -1600,9 +1572,9 @@ public class ViewController implements Initializable, ViewInterface {
                     }
                 });
 
-                AlignmentUtil.center(stage, dialog);
 
                 dialog.show();
+                AlignmentUtil.center(stage, dialog);
             }
         });
     }
