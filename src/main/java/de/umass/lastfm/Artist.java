@@ -389,7 +389,13 @@ public class Artist extends MusicEntry {
         Result result = Caller.getInstance().call("artist.getCorrection", apiKey, "artist", artist);
         if (!result.isSuccessful())
             return null;
+
+        if(result == null || result.getContentElement() == null){
+            return new Artist(artist, null);
+        }
+
         DomElement correctionElement = result.getContentElement().getChild("correction");
+
         if (correctionElement == null)
             return new Artist(artist, null);
         DomElement artistElem = correctionElement.getChild("artist");

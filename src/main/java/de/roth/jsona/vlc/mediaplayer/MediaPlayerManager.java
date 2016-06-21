@@ -308,11 +308,6 @@ public class MediaPlayerManager {
 
         }
 
-        @Override
-        public void mediaSubItemTreeAdded(MediaPlayer mediaPlayer, libvlc_media_t libvlc_media_t) {
-
-        }
-
         public void mediaSubItemAdded(MediaPlayer arg0, libvlc_media_t arg1) {
 
         }
@@ -392,26 +387,6 @@ public class MediaPlayerManager {
 
         @Override
         public void elementaryStreamSelected(MediaPlayer mediaPlayer, int i, int i1) {
-
-        }
-
-        @Override
-        public void corked(MediaPlayer mediaPlayer, boolean b) {
-
-        }
-
-        @Override
-        public void muted(MediaPlayer mediaPlayer, boolean b) {
-
-        }
-
-        @Override
-        public void volumeChanged(MediaPlayer mediaPlayer, float v) {
-
-        }
-
-        @Override
-        public void audioDeviceChanged(MediaPlayer mediaPlayer, String s) {
 
         }
     }

@@ -489,11 +489,6 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
     }
 
     @Override
-    public void mediaSubItemTreeAdded(MediaPlayer mediaPlayer, libvlc_media_t libvlc_media_t) {
-
-    }
-
-    @Override
     public void mediaSubItemAdded(MediaPlayer mediaPlayer, libvlc_media_t subItem) {
     }
 
@@ -568,26 +563,6 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 
     @Override
     public void elementaryStreamSelected(MediaPlayer mediaPlayer, int i, int i1) {
-
-    }
-
-    @Override
-    public void corked(MediaPlayer mediaPlayer, boolean b) {
-
-    }
-
-    @Override
-    public void muted(MediaPlayer mediaPlayer, boolean b) {
-
-    }
-
-    @Override
-    public void volumeChanged(MediaPlayer mediaPlayer, float v) {
-
-    }
-
-    @Override
-    public void audioDeviceChanged(MediaPlayer mediaPlayer, String s) {
 
     }
 
