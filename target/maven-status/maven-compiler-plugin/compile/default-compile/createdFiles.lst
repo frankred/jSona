@@ -1,0 +1,5 @@
+de\roth\jsona\model\MainViewViewable.class
+de\roth\jsona\model\MusicListItemViewable.class
+de\roth\jsona\model\VLCPlayable.class
+de\roth\jsona\util\Serializer.class
+de\roth\jsona\model\MusicListItem$PlaybackStatus.class

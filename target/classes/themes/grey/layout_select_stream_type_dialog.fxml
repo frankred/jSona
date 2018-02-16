@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="container" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="360.0" style="-fx-background-color: #757575;" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+  <children>
+    <BorderPane styleClass="bg" stylesheets="@styles.css" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="1.0">
+         <bottom>
+            <AnchorPane BorderPane.alignment="CENTER">
+               <children>
+              <FlowPane alignment="CENTER" columnHalignment="RIGHT" hgap="4.0" orientation="HORIZONTAL" prefHeight="50.0" prefWidth="332.0" rowValignment="TOP" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <children>
+                  <Button id="okButton" fx:id="okButton" mnemonicParsing="false" text="OK" />
+                  <Button fx:id="abortButton" mnemonicParsing="false" text="Cancel" />
+                </children>
+              </FlowPane>
+               </children>
+            </AnchorPane>
+         </bottom>
+         <top>
+            <AnchorPane BorderPane.alignment="CENTER">
+               <children>
+              <Label fx:id="confirmMessage" alignment="CENTER" contentDisplay="CENTER" prefWidth="483.0" text="%dialog.select.stream.type" textAlignment="CENTER" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="12.0" />
+               </children>
+            </AnchorPane>
+         </top>
+         <center>
+            <VBox fx:id="streamTypes" BorderPane.alignment="CENTER">
+               <opaqueInsets>
+                  <Insets left="18.0" right="18.0" />
+               </opaqueInsets>
+               <BorderPane.margin>
+                  <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
+               </BorderPane.margin></VBox>
+         </center>
+    </BorderPane>
+  </children>
+</AnchorPane>

@@ -1,11 +1,9 @@
 {
   "ALLOW_JSONA_TO_OVERWRITE_ME": false,
+  "PATH_TO_VLCJ": "D:/Program Files/VideoLAN/VLC",
   "MAX_SEARCH_RESULT_AMOUNT": 512,
   "VOLUME": 80,
-  "FOLDERS": [
-    "D:/media/musik",
-    "L:/VIDEO"
-  ],
+  "FOLDERS": ["D:/media/musik", "L:/VIDEO"],
   "PLAYBACK_MODE": "NORMAL",
   "RECENTLY_ADDED_UNITL_TIME_IN_DAYS": -7,
   "THEME": "grey",

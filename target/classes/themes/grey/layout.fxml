@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.web.*?>
+
+<AnchorPane fx:id="outerContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="860.0" style="-fx-background-color: #757575;" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+  <children>
+    <AnchorPane fx:id="applicationContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="598.0" prefWidth="857.0" style="" styleClass="bg" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="1.0">
+      <children>
+        <BorderPane fx:id="informationContainer" layoutY="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0">
+          <center>
+            <AnchorPane minHeight="215.0" prefHeight="-1.0">
+              <children>
+                <FlowPane fx:id="topTracks" hgap="8.0" maxHeight="12.0" minHeight="12.0" prefHeight="12.0" visible="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="188.0" />
+                <Label fx:id="artistLabel" alignment="TOP_LEFT" contentDisplay="CENTER" disable="false" graphicTextGap="0.0" minHeight="46.0" prefHeight="52.0" rotate="0.0" style="-fx-translate-y: -8px;" text="jSona" textAlignment="LEFT" translateZ="0.0" underline="false" wrapText="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <effect>
+                    <Lighting>
+                      <bumpInput>
+                        <Shadow />
+                      </bumpInput>
+                      <light>
+                        <javafx.scene.effect.Light.Distant color="#cc3100" />
+                      </light>
+                    </Lighting>
+                  </effect>
+                  <font>
+                    <Font size="36.0" />
+                  </font>
+                </Label>
+                <Label fx:id="titleLabel" text="by Frank Roth" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="44.0">
+                  <font>
+                    <Font size="18.0" />
+                  </font>
+                </Label>
+                <Label fx:id="artistBio" alignment="TOP_LEFT" contentDisplay="LEFT" prefHeight="88.0" prefWidth="-1.0" text="Lorem" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="86.0" />
+              </children>
+            </AnchorPane>
+          </center>
+          <left>
+            <AnchorPane fx:id="imageContainer" prefHeight="-1.0" prefWidth="-1.0">
+              <children>
+                <ImageView fx:id="artistImage" fitHeight="200.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true" rotate="0.0" smooth="true" style="-fx-effect: dropshadow( three-pass-box , rgba(0,0,0,1) , 6, 0.0 , 0 , 1 );" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="0.0" />
+              </children>
+            </AnchorPane>
+          </left>
+        </BorderPane>
+        <Pane prefHeight="376.0" prefWidth="858.0" styleClass="bg" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="218.0" />
+        <SplitPane fx:id="musicListsAnchorContainer" dividerPositions="0.5" focusTraversable="true" prefHeight="303.0" prefWidth="829.0" style="" AnchorPane.bottomAnchor="66.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="229.0">
+          <items>
+            <AnchorPane id="musicListsAnchorContainer" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+              <children>
+                <TabPane fx:id="musicTabs" style="&#9;-fx-border-style: none;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <tabs>
+                    <Tab id="search" fx:id="searchTab" text="Search">
+                      <content>
+                        <AnchorPane fx:id="searchContent" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                          <children>
+                            <TextField fx:id="searchText" prefHeight="26.0" prefWidth="411.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="1.0" />
+                            <ListView fx:id="searchResultsListView" prefHeight="243.99990000000253" prefWidth="411.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="26.0" />
+                          </children>
+                        </AnchorPane>
+                      </content>
+                    </Tab>
+                  </tabs>
+                </TabPane>
+              </children>
+            </AnchorPane>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+              <children>
+                <TabPane fx:id="playlistTabs" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+              </children>
+            </AnchorPane>
+          </items>
+        </SplitPane>
+        <Button fx:id="playButton" layoutX="54.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-radius: 80 80 80 80;" text="" underline="false" wrapText="false" AnchorPane.bottomAnchor="15.0">
+          <graphic>
+            <ImageView fx:id="playButtonImage" fitHeight="32.0" fitWidth="32.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="false" translateX="2.0" x="20.0" />
+          </graphic>
+        </Button>
+        <Button fx:id="nextButton" layoutX="100.0" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" style="-fx-background-radius: 80 80 80 80;" text="" underline="false" wrapText="false" AnchorPane.bottomAnchor="19.0">
+          <graphic>
+            <ImageView fx:id="nextButtonImage" fitHeight="16.0" fitWidth="16.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="false" translateX="0.0" x="20.0" />
+          </graphic>
+        </Button>
+        <Button fx:id="prevButton" layoutX="17.0" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" style="-fx-background-radius: 80 80 80 80;" text="" underline="false" wrapText="false" AnchorPane.bottomAnchor="20.0">
+          <graphic>
+            <ImageView fx:id="prevButtonImage" fitHeight="16.0" fitWidth="16.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="false" translateX="0.0" x="20.0" />
+          </graphic>
+        </Button>
+        <StackPane prefHeight="24.0" prefWidth="125.0" styleClass="sliderProgress" AnchorPane.bottomAnchor="23.0" AnchorPane.leftAnchor="148.0">
+          <children>
+            <ProgressBar fx:id="volumeProgress" minHeight="14.0" minWidth="118.0" prefHeight="14.0" prefWidth="118.0" progress="0.0" style="-fx-background-radius: 10;" styleClass="volumeProgress" StackPane.alignment="CENTER" />
+            <Slider id="volume" fx:id="volumeSlider" minHeight="14.0" minWidth="125.0" prefWidth="125.0" showTickLabels="false" showTickMarks="false" snapToTicks="false" style="" StackPane.alignment="CENTER" />
+          </children>
+        </StackPane>
+        <StackPane prefWidth="378.0" styleClass="sliderProgress" AnchorPane.bottomAnchor="28.0" AnchorPane.leftAnchor="358.0" AnchorPane.rightAnchor="121.0">
+          <children>
+            <ProgressBar fx:id="durationProgress" maxWidth="1.7976931348623157E308" minHeight="10.0" prefHeight="10.0" prefWidth="-1.0" progress="0.0" style="-fx-background-radius: 10;" styleClass="durationProgress">
+              <StackPane.margin>
+                <Insets left="6.0" right="6.0" />
+              </StackPane.margin>
+            </ProgressBar>
+            <Slider fx:id="durationSlider" showTickLabels="false" showTickMarks="false" snapToTicks="false" StackPane.alignment="CENTER">
+              <StackPane.margin>
+                <Insets />
+              </StackPane.margin>
+            </Slider>
+          </children>
+        </StackPane>
+        <Button fx:id="modeButton" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" style="-fx-background-radius: 80 80 80 80;&#10;-fx-focus-color: transparent;" text="" AnchorPane.bottomAnchor="19.0" AnchorPane.rightAnchor="15.0">
+          <graphic>
+            <ImageView fx:id="modeButtonImage" fitHeight="16.0" fitWidth="16.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="false" translateX="0.0" x="20.0" />
+          </graphic>
+        </Button>
+        <Label fx:id="durationLabel" prefWidth="63.0" text="" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="48.0" />
+        <Label fx:id="volumeLabel" layoutX="281.0" prefWidth="63.0" text="100" AnchorPane.bottomAnchor="28.0" />
+        <Hyperlink fx:id="removePlaylistButton" prefWidth="-1.0" text="x" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="214.0" />
+        <ImageView fx:id="equalizerIcon" fitHeight="16.0" fitWidth="16.0" layoutX="319.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="28.0">
+          <effect>
+            <Lighting diffuseConstant="1.1904761904761905" specularConstant="1.2698412698412698" specularExponent="23.80952380952381" surfaceScale="0.0">
+              <bumpInput>
+                <Shadow />
+              </bumpInput>
+              <light>
+                <javafx.scene.effect.Light.Distant color="BLACK" />
+              </light>
+            </Lighting>
+          </effect>
+          <image>
+            <Image url="@equalizer.png" />
+          </image>
+        </ImageView>
+        <ImageView fx:id="resizer" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" scaleX="1.0" scaleY="1.0" scaleZ="1.0" AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="1.0">
+          <image>
+            <Image url="@resize.png" />
+          </image>
+        </ImageView>
+        <ImageView fx:id="closeWindowIcon" fitHeight="26.0" fitWidth="26.0" opacity="0.2" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0">
+          <image>
+            <Image url="@close_window.png" />
+          </image>
+        </ImageView>
+        <ImageView fx:id="maximizeWindowIcon" fitHeight="26.0" fitWidth="26.0" opacity="0.2" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="4.0">
+          <image>
+            <Image url="@maximize_window.png" />
+          </image>
+        </ImageView>
+        <ImageView fx:id="minimizeWindowIcon" fitHeight="26.0" fitWidth="26.0" opacity="0.2" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="60.0" AnchorPane.topAnchor="4.0">
+          <image>
+            <Image url="@minimize_window.png" />
+          </image>
+        </ImageView>
+      </children>
+      <stylesheets>
+        <URL value="@styles.css" />
+      </stylesheets>
+    </AnchorPane>
+  </children>
+</AnchorPane>
