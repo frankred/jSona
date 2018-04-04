@@ -99,8 +99,6 @@ If you change the duration slider with the help of the arrow keys(left or right)
 ##### WINDOW_OS_DECORATION
 If you set the value on **false** the normal OS window decoration will be used. If you set the value on **true** it has no os window decoration. It will look a little bit more beautiful!
 
-![jSona screenshot - undecorated: false](https://dl.dropboxusercontent.com/u/3669658/github/jSona/jsona_undecorated_2.png "undecorated: false")
-
 ##### TITLE
 Window title of jSona. Will only be displayed if the **WINDOW_UNDECORATED** property is set to **false**.
 
