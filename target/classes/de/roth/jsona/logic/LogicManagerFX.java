@@ -990,10 +990,9 @@ public class LogicManagerFX implements LogicInterfaceFX, MediaPlayerEventListene
 
     @Override
     public void event_stream_selected(MusicListItemYoutube item) {
-        Logger.get().info("Choosen video stream " + item.getSelectedVideoStream());
+        Logger.get().info("Choosen video stream " + item.getSelectedVideoStream() + ": " + item.getSelectedVideoStream().getUrl());
         item.setProcessing(false);
         savePlaylists();
-
     }
 
     private void savePlaylists() {

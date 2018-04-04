@@ -1,4 +1,4 @@
-![jSona screenshot](https://dl.dropboxusercontent.com/u/3669658/github/jSona/logo.png "jSona logo")
+![jSona screenshot](https://www.dropbox.com/s/ukgg4k61d0lesol/logo.png?dl=0 "jSona logo")
 
 jSona is a configuration file(JSON), [vlcj](https://github.com/caprica/vlcj) and [JavaFx](http://www.oracle.com/technetwork/java/javafx/overview/index.html) based music and media player. The aim of jSona is to always keep your playlists in synch with your music folders. For fast fulltext search jSona uses [Apache Lucene](http://lucene.apache.org/core/). The follwing features are fully supported:
 
@@ -8,14 +8,14 @@ jSona is a configuration file(JSON), [vlcj](https://github.com/caprica/vlcj) and
   - Create multiple playlists
   - Fulltext search
 
-##Screenhot
+## Screenhot
 ![jSona screenshot](https://dl.dropboxusercontent.com/u/3669658/github/jSona/jsona_ui_1.0.5_java7u8.png "Hey dude...")
 
-##New features
+## New features
 You want **new features**? On the following page you can vote for and submit new feature requests.
 [http://jsona.idea.informer.com](http://jsona.idea.informer.com)
 
-##Download
+## Download
 jSona has a dependency to VLC3, which only can be found here: [http://nightlies.videolan.org/build/](http://nightlies.videolan.org/).
 * [Current version](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.5.jar)
 * [Version 1.0.5](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.5.jar)
@@ -25,17 +25,17 @@ jSona has a dependency to VLC3, which only can be found here: [http://nightlies.
 * [Version 1.0.1](https://dl.dropboxusercontent.com/u/3669658/github/jsona/binary/jSona-1.0.1.zip)
 * [Version 1.0.0](https://dl.dropboxusercontent.com/u/3669658/github/jSona/binary/jSona-1.0.0.zip)
 
-###Install VLC3 on Ubuntu
+### Install VLC3 on Ubuntu
 ```sudo add-apt-repository ppa:videolan/master-daily```
 
 ```sudo apt-get update```
 
 ```sudo apt-get install vlc```
 
-##Developpement Information
+## Developpement Information
 If you want to develop under a linux system you need to [recompile the OpenJDK](http://stackoverflow.com/questions/18547362/javafx-and-openjdk) beacause JavaFX is not included, or you have to install Oracles JDK where JavaFX is included. To enjoy a good JavaFX support please use [Java SDK 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) within your IDE.
 
-##Configuration file / config.json
+## Configuration file / config.json
 
 Here is an example of the default configuration file. You have to setup your **VLC path** correctly. If you use Java 32-bit/64-bit you also have to use VLC-32-bit/64-bit.
 ```json
@@ -45,9 +45,7 @@ Here is an example of the default configuration file. You have to setup your **V
   "VOLUME": 100,
   "FOLDERS": [
     "D:/media/music",
-    "C:/share",
-    "C:/downloads/music",
-    "\\nas\share\music"
+    "C:/share"
   ],
   "INCLUDE_EXTENSIONS": [
     ".mp3",
@@ -71,54 +69,54 @@ Here is an example of the default configuration file. You have to setup your **V
 
 And here an explanation of all possible attributes:
 
-#####ALLOW_JSONA_TO_OVERWRITE_ME
+##### ALLOW_JSONA_TO_OVERWRITE_ME
 If you set this value to true then jsona will overwrite your config.json with the current jSona config. For example if you change the volume in the player then the **VOLUME** value gets overwritten. There only a few configuration attributes that can be change during runtime (e.g.: PLAYBACK_MODE).  
 
-#####MAX_SEARCH_RESULT_AMOUNT
+##### MAX_SEARCH_RESULT_AMOUNT
 Maximum search results of the lucene engine (smaller is faster)
 
-#####VOLUME
+##### VOLUME
 Default startup volume. Will be overwritten by jSona (always save the recently changed volume).
 
-#####FOLDERS
+##### FOLDERS
 Your music folders. Care of JSON-Syntax and correct backslashes (/). jSona also supports the usage of the Uniform Naming Convention and folders in a network (e.g.: "\\\\servername\folder\path"). See example above... 
 
-#####INCLUDE_EXTENSIONS
+##### INCLUDE_EXTENSIONS
 This array says what kind of files you want to add to jSona. If it is empty or this field is deleted then every file with every extension will be included to your playlists.
 
-#####PLAYBACK_MODE
+##### PLAYBACK_MODE
 Playbackmode of jSona. Choose one of them: {NORMAL, SHUFFLE}. Will be overwritten by jSona (always save the recently changed playback mode).
 
-#####RECENTLY_ADDED_UNITL_TIME_IN_DAYS
+##### RECENTLY_ADDED_UNITL_TIME_IN_DAYS
 How long do you want to show new songs in the "New" tab. If you choose -7 then new songs will be displayed for one week in the "New" tab. This number should always be negative.
 
-#####THEME
+##### THEME
 Currently there is only one theme available: {"grey"}.
 
-#####KEY_SKIP_TIME
+##### KEY_SKIP_TIME
 If you change the duration slider with the help of the arrow keys(left or right) or hotkeys the slider rewind or skips 10 seconds.
 
-#####WINDOW_OS_DECORATION
+##### WINDOW_OS_DECORATION
 If you set the value on **false** the normal OS window decoration will be used. If you set the value on **true** it has no os window decoration. It will look a little bit more beautiful!
 
 ![jSona screenshot - undecorated: false](https://dl.dropboxusercontent.com/u/3669658/github/jSona/jsona_undecorated_2.png "undecorated: false")
 
-#####TITLE
+##### TITLE
 Window title of jSona. Will only be displayed if the **WINDOW_UNDECORATED** property is set to **false**.
 
-#####HEIGHT
+##### HEIGHT
 Height of the window in pixels.
 
-#####WIDTH
+##### WIDTH
 Width of the window in pixels.
 
-#####MIN_HEIGHT
+##### MIN_HEIGHT
 Minimum window height.
 
-#####MIN_WIDTH
+##### MIN_WIDTH
 Minimum window width.
 
-#####COLORIZE_ITEMS
+##### COLORIZE_ITEMS
 If the value is set to **true** the same music items will be displayed with a different smooth background color. If the value is set to **false** then the default JavaFX list background will be used (see screenshot above).
 
 ![jSona screenshot](https://dl.dropboxusercontent.com/u/3669658/github/jSona/jsona_colorized_items.png "You Got Rick Rolled!")
