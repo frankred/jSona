@@ -1,4 +1,4 @@
-![jSona screenshot](https://www.dropbox.com/s/ukgg4k61d0lesol/logo.png?dl=0 "jSona logo")
+![jSona screenshot](https://i.imgur.com/B039TAj.png "jSona logo")
 
 jSona is a configuration file(JSON), [vlcj](https://github.com/caprica/vlcj) and [JavaFx](http://www.oracle.com/technetwork/java/javafx/overview/index.html) based music and media player. The aim of jSona is to always keep your playlists in synch with your music folders. For fast fulltext search jSona uses [Apache Lucene](http://lucene.apache.org/core/). The follwing features are fully supported:
 
