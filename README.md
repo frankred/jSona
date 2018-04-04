@@ -119,9 +119,7 @@ Minimum window width.
 ##### COLORIZE_ITEMS
 If the value is set to **true** the same music items will be displayed with a different smooth background color. If the value is set to **false** then the default JavaFX list background will be used (see screenshot above).
 
-![jSona screenshot](https://dl.dropboxusercontent.com/u/3669658/github/jSona/jsona_colorized_items.png "You Got Rick Rolled!")
-
-#####FILEPATH_BASED_MUSIC_INFORMATIONS
+##### FILEPATH_BASED_MUSIC_INFORMATIONS
 There is the possibility to define rules to detect music information with the help of the file path. Currently there are two kind of rules {"ROOT_SUBFOLDER_LEVEL_RULE", "FILENAME_RULE"}. The "ROOT_SUBFOLDER_LEVEL_RULE" is a rule based on the subfolder level according to the root directory. With the help of the "FILENAME_RULE" you can match everything according to the filename (not file path) of the file. It is possible to ignore file endings and to replace underscores with a space.
 
 The follwing examples should help you with to use these rules.
@@ -180,10 +178,10 @@ With the follwing rules you can match the genre (%GENRE%), the artist (%ARTIST%)
 ```
 Every matching **%VARIABLE%** will be trimmed at the ending, so it does not mather if you choose **%TRACK_NO% - %TITLE%** or **%TRACK_NO%-%TITLE%** as a pattern. It is also possible to ignore areas in the path by producing non declared Variables like: %TMP%, %I_DONT_NEED_THAT%, %IGNORE%... you can create anything...
 
-#####SCANNER_AND_TAGGER_LOGGING_GRANULARITY
+##### SCANNER_AND_TAGGER_LOGGING_GRANULARITY
 Logging every file in the scanner and tagging process can be very time expensive. Because of that you can define the granularity of the scanner and tagging logging. If the value is set to 1 every file is logged (time expensive). If the value is set to 128 only every 128th and the last file will be logged. This value can be every number > 0.
 
-#####HOTKEYS
+##### HOTKEYS
 Here is a list of all modifiers and keys that can be used: https://github.com/frankred/jSona/wiki/Key-Codes.
 Currently only global hotkeys work. Supported application events are: {PLAYER_VOLUME_UP, PLAYER_VOLUME_DOWN, PLAYER_PLAY_PAUSE, VIEW_HIDE_SHOW, PLAYER_NEXT, PLAYER_PREVIOUS, PLAYER_TIME_UP, PLAYER_TIME_DOWN}
 
@@ -220,29 +218,29 @@ Currently only global hotkeys work. Supported application events are: {PLAYER_VO
 }
 ```
 
-##Changelog
+## Changelog
 
-###1.0.5
+### 1.0.5
 * Bugfixing {ListView, Layout}
 * Repeat mode added (THX [Naios](https://github.com/Naios))
 * File extension whitelist mechanism added (THX [Naios](https://github.com/Naios))
 
-###1.0.4
+### 1.0.4
 * Bugfixing {ListView, Title Information changed, ListView layout, fileCreated, fileModified}
 * Equalizer implemented (for testing only, unstable, unsavable)
 
-###1.0.3
+### 1.0.3
 * Loading animation for each folder added in frontend.
 
-###1.0.2
+### 1.0.2
 * HOTKEYS can now be defined in the config.json.
 * VOLUME_UP_DOWN_AMOUNT amount for hotkeys can be defined in the config.json.
 
-###1.0.1
+### 1.0.1
 * Music information like artist or title can now be detected from the filepath with the help of detector rules in the config.json.
 * Logging granularity of file scanner and tagger can now be defined in the config.json.
 
-##Installation and Start
+## Installation and Start
 Download the current zip file and extract it. Then put in your correct VLC path into the config.json file and start jSona with the following command.
 ```
 java -jar jSona-1.0.4.jar
@@ -254,11 +252,11 @@ If you want to run jSona without getting showed the console (only works on Windo
 start javaw -jar jSona-1.0.4.jar
 ```
 
-##Help / FAQ
+## Help / FAQ
 Here is a screenshot of jSona that explains the easy to use user interface.
 ![jSona explaining the UI](https://dl.dropboxusercontent.com/u/3669658/github/jSona/jsona_explaining_the_ui.png)
 
-##Thank you very much!
+## Thank you very much!
 This project is based on a set of amazing projects. Thank you to all programmers!
 * [VLCJ](https://github.com/caprica/vlcj)
 * [Undecorator](https://github.com/in-sideFX/Undecorator)
@@ -268,7 +266,7 @@ This project is based on a set of amazing projects. Thank you to all programmers
 * [JavaFX](http://www.oracle.com/technetwork/java/javafx/overview/index.html)
 * [Yootheme](http://www.yootheme.com/icons)
 
-##License
+## License
 MIT - **Free Software, Hell Yeah!**
 
     
